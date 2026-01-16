@@ -70,9 +70,137 @@ task_groups:
 ```
 
 {{IF use_claude_code_subagents}}
-### NEXT: Ask user to assign subagents to each task group
+### NEXT: Auto-detect layer specialists for each task group
 
-Next we must determine which subagents should be assigned to which task groups.  Ask the user to provide this info using the following request to user and WAIT for user's response:
+First, load the specialist registry and analyze each task group to suggest appropriate layer specialists:
+
+```bash
+# Load specialist registry if it exists
+SPECIALIST_REGISTRY="agent-os/agents/specialists/registry.yml"
+SPECIALISTS_AVAILABLE="false"
+
+if [ -f "$SPECIALIST_REGISTRY" ]; then
+    SPECIALISTS_AVAILABLE="true"
+    echo "✅ Layer specialists available"
+    
+    # Extract available specialists
+    AVAILABLE_SPECIALISTS=$(grep -A1 "^  - name:" "$SPECIALIST_REGISTRY" | grep "name:" | sed 's/.*name: //')
+    echo "Available specialists:"
+    echo "$AVAILABLE_SPECIALISTS"
+fi
+
+# Also check for standard agents
+STANDARD_AGENTS=$(find agent-os/agents -maxdepth 1 -name "*.md" -type f | xargs -I{} basename {} .md)
+echo "Standard agents: $STANDARD_AGENTS"
+```
+
+For each task group in `tasks.md`, analyze the task content to detect which abstraction layer it targets:
+
+```bash
+# Layer detection keywords (from registry or defaults)
+declare -A LAYER_KEYWORDS
+LAYER_KEYWORDS[ui]="component view screen button form modal layout style css render widget"
+LAYER_KEYWORDS[api]="endpoint route controller handler request response middleware api rest graphql"
+LAYER_KEYWORDS[data]="model schema migration query database repository entity storage persistence"
+LAYER_KEYWORDS[platform]="ios android native device system config platform infrastructure"
+LAYER_KEYWORDS[test]="test spec mock fixture coverage assertion expect describe"
+
+# For each task group, count keyword matches to suggest layer
+detect_task_layer() {
+    local task_content="$1"
+    local task_lower=$(echo "$task_content" | tr '[:upper:]' '[:lower:]')
+    
+    local best_layer=""
+    local best_score=0
+    
+    for layer in "${!LAYER_KEYWORDS[@]}"; do
+        local score=0
+        for keyword in ${LAYER_KEYWORDS[$layer]}; do
+            if echo "$task_lower" | grep -q "$keyword"; then
+                ((score++))
+            fi
+        done
+        
+        if [ $score -gt $best_score ]; then
+            best_score=$score
+            best_layer=$layer
+        fi
+    done
+    
+    if [ $best_score -gt 0 ]; then
+        echo "${best_layer}-specialist"
+    else
+        echo "implementer"  # Default to generic implementer
+    fi
+}
+
+# Generate suggestions for each task group
+SUGGESTIONS=""
+TASK_NUM=1
+while read -r task_group; do
+    SUGGESTED_AGENT=$(detect_task_layer "$task_group")
+    SUGGESTIONS="${SUGGESTIONS}${TASK_NUM}. ${task_group} → ${SUGGESTED_AGENT}\n"
+    ((TASK_NUM++))
+done < <(grep -E "^## Task Group|^### " agent-os/specs/[this-spec]/tasks.md | head -20)
+```
+
+Present auto-detected suggestions to user for confirmation:
+
+```
+I've analyzed the task groups and detected these layer-specialist suggestions:
+
+$SUGGESTIONS
+
+Available specialists:
+- ui-specialist (UI/frontend layer)
+- api-specialist (API/backend layer)  
+- data-specialist (Data/database layer)
+- platform-specialist (Platform/infrastructure layer)
+- test-specialist (Testing layer)
+- implementer (Generic, cross-layer tasks)
+
+Would you like to:
+1. Accept these suggestions
+2. Modify some assignments (specify which)
+3. Assign manually for all task groups
+
+Reply with your choice (1/2/3) or specify modifications like "2: change api-specialist, 4: change ui-specialist"
+```
+
+Using the user's responses, update `orchestration.yml` to specify the agent names. The file should look like:
+
+```yaml
+task_groups:
+  - name: [task-group-name]
+    claude_code_subagent: [specialist-name]
+    detected_layer: [layer]  # For reference
+  - name: [task-group-name]
+    claude_code_subagent: [specialist-name]
+    detected_layer: [layer]
+  # Repeat for each task group
+```
+
+For example, after this step with layer detection:
+
+```yaml
+task_groups:
+  - name: user-profile-ui
+    claude_code_subagent: ui-specialist
+    detected_layer: ui
+  - name: profile-api-endpoints
+    claude_code_subagent: api-specialist
+    detected_layer: api
+  - name: user-data-model
+    claude_code_subagent: data-specialist
+    detected_layer: data
+  - name: cross-layer-integration
+    claude_code_subagent: implementer
+    detected_layer: mixed
+```
+
+### FALLBACK: Manual assignment if no specialists
+
+If layer specialists don't exist (user hasn't run `/deploy-agents` or `/create-basepoints`), fall back to manual assignment:
 
 ```
 Please specify the name of each subagent to be assigned to each task group:
@@ -82,32 +210,10 @@ Please specify the name of each subagent to be assigned to each task group:
 3. [task-group-name]
 [repeat for each task-group you've added to orchestration.yml]
 
-Simply respond with the subagent names and corresponding task group number and I'll update orchestration.yml accordingly.
-```
+Available agents:
+[list agents from agent-os/agents/]
 
-Using the user's responses, update `orchestration.yml` to specify those subagent names.  `orchestration.yml` should end up looking like this:
-
-```yaml
-task_groups:
-  - name: [task-group-name]
-    claude_code_subagent: [subagent-name]
-  - name: [task-group-name]
-    claude_code_subagent: [subagent-name]
-  - name: [task-group-name]
-    claude_code_subagent: [subagent-name]
-  # Repeat for each task group found in tasks.md
-```
-
-For example, after this step, the `orchestration.yml` file might look like this (exact names will vary):
-
-```yaml
-task_groups:
-  - name: core-functionality
-    claude_code_subagent: core-specialist
-  - name: user-interface
-    claude_code_subagent: interface-specialist
-  - name: interface-implementation
-    claude_code_subagent: interface-specialist
+Simply respond with the subagent names and corresponding task group number.
 ```
 {{ENDIF use_claude_code_subagents}}
 

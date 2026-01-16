@@ -62,6 +62,55 @@ echo "5️⃣ Running project structure alignment validation..."
 {{workflows/validation/validate-project-structure-alignment}}
 ```
 
+### Step 2b: Run Layer-Specific Validations (if specialists exist)
+
+Run layer-specific validations based on detected abstraction layers:
+
+```bash
+# Check if layer specialists exist (indicates layers were detected)
+SPECIALIST_REGISTRY="agent-os/agents/specialists/registry.yml"
+LAYER_VALIDATIONS_RUN=0
+
+if [ -f "$SPECIALIST_REGISTRY" ] || [ -f "agent-os/basepoints/headquarter.md" ]; then
+    echo "6️⃣ Running layer-specific validations..."
+    
+    # Detect which layers exist in the project
+    DETECTED_LAYERS=""
+    if [ -f "agent-os/basepoints/headquarter.md" ]; then
+        DETECTED_LAYERS=$(grep -A 50 "Detected Abstraction Layers" agent-os/basepoints/headquarter.md | \
+            grep -E "^\| \*\*[A-Z]+" | \
+            sed 's/.*\*\*\([A-Z_]*\)\*\*.*/\1/' | \
+            tr '[:upper:]' '[:lower:]')
+    fi
+    
+    # Run UI validation if UI layer exists
+    if echo "$DETECTED_LAYERS" | grep -qiE "ui|frontend|presentation|view"; then
+        echo "   🎨 Running UI pattern validation..."
+        {{workflows/validation/validate-ui-patterns}}
+        ((LAYER_VALIDATIONS_RUN++))
+    fi
+    
+    # Run API validation if API layer exists
+    if echo "$DETECTED_LAYERS" | grep -qiE "api|backend|service"; then
+        echo "   🔌 Running API pattern validation..."
+        {{workflows/validation/validate-api-patterns}}
+        ((LAYER_VALIDATIONS_RUN++))
+    fi
+    
+    # Run Data validation if Data layer exists
+    if echo "$DETECTED_LAYERS" | grep -qiE "data|database|persistence|storage"; then
+        echo "   💾 Running Data pattern validation..."
+        {{workflows/validation/validate-data-patterns}}
+        ((LAYER_VALIDATIONS_RUN++))
+    fi
+    
+    echo "   ✅ Layer validations complete: $LAYER_VALIDATIONS_RUN layer(s) validated"
+else
+    echo "6️⃣ Skipping layer-specific validations (no specialists/layers detected)"
+    echo "   ℹ️ Run /create-basepoints and /deploy-agents to enable layer validation"
+fi
+```
+
 ### Step 3: Load All Validation Results
 
 Load results from all validation utilities:
@@ -107,8 +156,27 @@ else
     STRUCTURE_VALIDATION_TOTAL=0
 fi
 
+# Load layer validation results
+UI_VALIDATION_TOTAL=0
+API_VALIDATION_TOTAL=0
+DATA_VALIDATION_TOTAL=0
+
+if [ -f "agent-os/output/validation/ui-validation-results.md" ]; then
+    UI_VALIDATION_TOTAL=$(grep -c "❌\|⚠️" agent-os/output/validation/ui-validation-results.md 2>/dev/null || echo 0)
+fi
+
+if [ -f "agent-os/output/validation/api-validation-results.md" ]; then
+    API_VALIDATION_TOTAL=$(grep -c "❌\|⚠️\|🚨" agent-os/output/validation/api-validation-results.md 2>/dev/null || echo 0)
+fi
+
+if [ -f "agent-os/output/validation/data-validation-results.md" ]; then
+    DATA_VALIDATION_TOTAL=$(grep -c "❌\|⚠️\|🚨" agent-os/output/validation/data-validation-results.md 2>/dev/null || echo 0)
+fi
+
+LAYER_VALIDATION_TOTAL=$((UI_VALIDATION_TOTAL + API_VALIDATION_TOTAL + DATA_VALIDATION_TOTAL))
+
 # Calculate total issues
-TOTAL_ISSUES=$((PLACEHOLDER_TOTAL + UNNECESSARY_LOGIC_TOTAL + TECH_VALIDATION_TOTAL + CYCLE_VALIDATION_TOTAL + STRUCTURE_VALIDATION_TOTAL))
+TOTAL_ISSUES=$((PLACEHOLDER_TOTAL + UNNECESSARY_LOGIC_TOTAL + TECH_VALIDATION_TOTAL + CYCLE_VALIDATION_TOTAL + STRUCTURE_VALIDATION_TOTAL + LAYER_VALIDATION_TOTAL))
 ```
 
 ### Step 4: Generate Comprehensive Validation Report
@@ -151,7 +219,22 @@ cat > "$CACHE_PATH/comprehensive-validation-report.json" << EOF
     "technology_issues": $TECH_VALIDATION_TOTAL,
     "cycle_issues": $CYCLE_VALIDATION_TOTAL,
     "structure_issues": $STRUCTURE_VALIDATION_TOTAL,
+    "layer_validation_issues": $LAYER_VALIDATION_TOTAL,
     "total_issues": $TOTAL_ISSUES
+  },
+  "layer_validations": {
+    "ui_layer": {
+      "total": $UI_VALIDATION_TOTAL,
+      "report_file": "agent-os/output/validation/ui-validation-results.md"
+    },
+    "api_layer": {
+      "total": $API_VALIDATION_TOTAL,
+      "report_file": "agent-os/output/validation/api-validation-results.md"
+    },
+    "data_layer": {
+      "total": $DATA_VALIDATION_TOTAL,
+      "report_file": "agent-os/output/validation/data-validation-results.md"
+    }
   }
 }
 EOF
@@ -172,6 +255,7 @@ cat > "$CACHE_PATH/comprehensive-validation-summary.md" << EOF
 - **Technology Issues:** $TECH_VALIDATION_TOTAL
 - **Command Cycle Issues:** $CYCLE_VALIDATION_TOTAL
 - **Project Structure Issues:** $STRUCTURE_VALIDATION_TOTAL
+- **Layer Validation Issues:** $LAYER_VALIDATION_TOTAL
 
 ## Validation Categories
 
@@ -194,6 +278,12 @@ cat > "$CACHE_PATH/comprehensive-validation-summary.md" << EOF
 ### 5. Project Structure Alignment Validation
 - **Total Issues Found:** $STRUCTURE_VALIDATION_TOTAL
 - **Report:** See \`project-structure-alignment-validation-summary.md\` for details
+
+### 6. Layer-Specific Validations
+- **UI Layer Issues:** $UI_VALIDATION_TOTAL
+- **API Layer Issues:** $API_VALIDATION_TOTAL
+- **Data Layer Issues:** $DATA_VALIDATION_TOTAL
+- **Reports:** See \`agent-os/output/validation/\` for layer reports
 
 ## Detailed Reports
 

@@ -130,14 +130,210 @@ if [ "$PROJECT_NATURE" = "simple" ]; then
 fi
 ```
 
-### Step 5: Create Project-Specific Agents
+### Step 5: Generate Layer-Specialist Agents
 
-Create new agents based on project-specific needs:
+Generate specialized agents for each detected abstraction layer from basepoints:
 
 ```bash
-# Analyze if project needs specialized agents based on:
-# - Unique abstraction layers
-# - Specific technology requirements
+echo "📋 Generating layer-specialist agents..."
+
+# Extract abstraction layers from headquarter.md
+if [ -f "agent-os/basepoints/headquarter.md" ]; then
+    # Parse detected layers from headquarter
+    DETECTED_LAYERS=$(grep -A 50 "Detected Abstraction Layers" agent-os/basepoints/headquarter.md | \
+        grep -E "^\| \*\*[A-Z]+" | \
+        sed 's/.*\*\*\([A-Z_]*\)\*\*.*/\1/' | \
+        tr '[:upper:]' '[:lower:]')
+    
+    echo "Detected layers: $DETECTED_LAYERS"
+    
+    # Create layer-specialist registry
+    mkdir -p agent-os/agents/specialists
+    
+    SPECIALISTS_CREATED=0
+    
+    for layer in $DETECTED_LAYERS; do
+        # Skip meta layers that don't need specialists
+        if [[ "$layer" =~ ^(root|documentation|config)$ ]]; then
+            continue
+        fi
+        
+        # Generate specialist name
+        SPECIALIST_NAME="${layer}-specialist"
+        SPECIALIST_FILE="agent-os/agents/specialists/${SPECIALIST_NAME}.md"
+        
+        # Extract layer-specific patterns from basepoints
+        LAYER_PATTERNS=""
+        LAYER_STANDARDS=""
+        LAYER_CONTEXT=""
+        
+        # Find module basepoints for this layer
+        if [ -d "agent-os/basepoints/modules" ]; then
+            LAYER_MODULES=$(find agent-os/basepoints/modules -name "*.md" -exec grep -l -i "$layer" {} \; 2>/dev/null | head -5)
+            if [ -n "$LAYER_MODULES" ]; then
+                LAYER_CONTEXT="Reference these basepoints for ${layer} layer patterns:\n"
+                for module in $LAYER_MODULES; do
+                    LAYER_CONTEXT="${LAYER_CONTEXT}- @agent-os/$(echo $module | sed 's|^agent-os/||')\n"
+                done
+            fi
+        fi
+        
+        # Map layer to relevant standards
+        case "$layer" in
+            ui|frontend|presentation|view)
+                LAYER_STANDARDS="@agent-os/standards/global/conventions.md"
+                LAYER_FOCUS="UI components, user interactions, visual presentation, accessibility"
+                ;;
+            api|backend|service|logic)
+                LAYER_STANDARDS="@agent-os/standards/global/conventions.md\n@agent-os/standards/quality/assurance.md"
+                LAYER_FOCUS="Business logic, API endpoints, service orchestration, data validation"
+                ;;
+            data|database|persistence|storage)
+                LAYER_STANDARDS="@agent-os/standards/global/conventions.md"
+                LAYER_FOCUS="Data models, database operations, migrations, caching strategies"
+                ;;
+            platform|infrastructure|system)
+                LAYER_STANDARDS="@agent-os/standards/global/conventions.md\n@agent-os/standards/quality/assurance.md"
+                LAYER_FOCUS="Platform-specific code, system integration, deployment configuration"
+                ;;
+            test|testing|quality)
+                LAYER_STANDARDS="@agent-os/standards/testing/test-writing.md\n@agent-os/standards/quality/assurance.md"
+                LAYER_FOCUS="Test implementation, coverage, quality validation, test patterns"
+                ;;
+            *)
+                LAYER_STANDARDS="@agent-os/standards/global/conventions.md"
+                LAYER_FOCUS="Domain-specific implementation for ${layer} layer"
+                ;;
+        esac
+        
+        # Generate the specialist agent file
+        cat > "$SPECIALIST_FILE" << EOF
+---
+name: ${SPECIALIST_NAME}
+description: Specialist for ${layer} layer implementation. Use for tasks targeting the ${layer} abstraction layer.
+tools: Write, Read, Bash, WebFetch, Playwright
+color: blue
+model: inherit
+---
+
+You are a specialist developer with deep expertise in the **${layer}** abstraction layer. Your role is to implement tasks that specifically target this layer while maintaining consistency with the project's established patterns.
+
+## Layer Focus
+
+${LAYER_FOCUS}
+
+## Layer-Specific Context
+
+$(echo -e "$LAYER_CONTEXT")
+
+## Implementation Workflow
+
+{{workflows/implementation/implement-tasks}}
+
+## Layer-Aware Guidelines
+
+1. **Stay in your layer**: Focus on ${layer}-layer concerns. If a task requires crossing layers, flag it for coordination.
+
+2. **Use layer patterns**: Reference the basepoints for this layer to maintain consistency:
+$(echo -e "$LAYER_CONTEXT")
+
+3. **Layer boundaries**: Understand how this layer interfaces with adjacent layers. Don't bleed concerns across boundaries.
+
+4. **Layer-specific validation**: After implementation, verify:
+   - Code follows ${layer} layer patterns from basepoints
+   - No unintended layer boundary violations
+   - Standards compliance for this layer
+
+## Standards
+
+$(echo -e "$LAYER_STANDARDS")
+
+{{UNLESS standards_as_claude_code_skills}}
+## Additional Standards
+
+{{standards/global/*}}
+{{ENDUNLESS standards_as_claude_code_skills}}
+EOF
+        
+        echo "✅ Created layer specialist: ${SPECIALIST_NAME}"
+        ((SPECIALISTS_CREATED++))
+    done
+    
+    # Create specialist registry for orchestration
+    cat > "agent-os/agents/specialists/registry.yml" << EOF
+# Layer Specialist Registry
+# Auto-generated during deploy-agents
+# Used by orchestrate-tasks to suggest specialists for task groups
+
+specialists:
+$(for layer in $DETECTED_LAYERS; do
+    if [[ ! "$layer" =~ ^(root|documentation|config)$ ]]; then
+        echo "  - name: ${layer}-specialist"
+        echo "    layer: ${layer}"
+        echo "    file: agent-os/agents/specialists/${layer}-specialist.md"
+    fi
+done)
+
+# Layer keyword mapping for auto-detection
+layer_keywords:
+  ui:
+    - component
+    - view
+    - screen
+    - button
+    - form
+    - modal
+    - layout
+    - style
+    - css
+    - render
+  api:
+    - endpoint
+    - route
+    - controller
+    - handler
+    - request
+    - response
+    - middleware
+  data:
+    - model
+    - schema
+    - migration
+    - query
+    - database
+    - repository
+    - entity
+  platform:
+    - ios
+    - android
+    - native
+    - device
+    - system
+    - config
+  test:
+    - test
+    - spec
+    - mock
+    - fixture
+    - coverage
+EOF
+    
+    echo "✅ Created specialist registry: agent-os/agents/specialists/registry.yml"
+    echo "📊 Total specialists created: $SPECIALISTS_CREATED"
+else
+    echo "⚠️  No headquarter.md found - skipping layer specialist generation"
+    echo "   Run /create-basepoints first to detect abstraction layers"
+fi
+```
+
+### Step 5b: Create Project-Specific Agents
+
+Create additional agents based on unique project needs:
+
+```bash
+# Analyze if project needs specialized agents beyond layer specialists
+# - Unique domain patterns (e.g., payment-specialist, auth-specialist)
+# - Specific technology requirements (e.g., graphql-specialist)
 # - Complex domain patterns
 
 PROJECT_AGENT_NEEDS=$(analyze_agent_needs "$BASEPOINTS_KNOWLEDGE")
@@ -148,7 +344,15 @@ if [ -n "$PROJECT_AGENT_NEEDS" ]; then
         AGENT_PURPOSE=$(echo "$agent_need" | cut -d':' -f2-)
         
         cat > "agent-os/agents/${AGENT_NAME}.md" << EOF
-# Agent: ${AGENT_NAME}
+---
+name: ${AGENT_NAME}
+description: ${AGENT_PURPOSE}
+tools: Write, Read, Bash, WebFetch, Playwright
+color: purple
+model: inherit
+---
+
+You are a specialist with expertise in ${AGENT_NAME//-/ }. Your role is to handle tasks specifically related to this domain.
 
 ## Purpose
 
@@ -156,18 +360,27 @@ ${AGENT_PURPOSE}
 
 ## Responsibilities
 
-1. [Responsibility based on project patterns]
-2. [Responsibility based on project architecture]
+1. Implement features related to this domain
+2. Maintain consistency with established patterns
+3. Follow project standards and conventions
 
 ## Context
 
 This agent was created based on patterns detected in the project's codebase during deploy-agents specialization.
+
+## Implementation Workflow
+
+{{workflows/implementation/implement-tasks}}
 
 ## Guidelines
 
 - Follow project standards and conventions
 - Reference basepoints knowledge for patterns
 - Maintain consistency with project architecture
+
+{{UNLESS standards_as_claude_code_skills}}
+{{standards/global/*}}
+{{ENDUNLESS standards_as_claude_code_skills}}
 EOF
         
         echo "✅ Created project-specific agent: ${AGENT_NAME}"
@@ -181,7 +394,9 @@ Verify all agents are consistent and properly configured:
 
 ```bash
 # Count agents
-AGENTS_COUNT=$(find agent-os/agents -name "*.md" -type f | wc -l | tr -d ' ')
+CORE_AGENTS_COUNT=$(find agent-os/agents -maxdepth 1 -name "*.md" -type f | wc -l | tr -d ' ')
+SPECIALIST_COUNT=$(find agent-os/agents/specialists -name "*.md" -type f 2>/dev/null | wc -l | tr -d ' ')
+TOTAL_AGENTS=$((CORE_AGENTS_COUNT + SPECIALIST_COUNT))
 
 # Log to reports
 mkdir -p agent-os/output/deploy-agents/reports
@@ -190,23 +405,60 @@ cat > agent-os/output/deploy-agents/reports/agents-specialization.md << EOF
 
 ## Summary
 - Project Nature: $PROJECT_NATURE
-- Total Agents: $AGENTS_COUNT
+- Core Agents: $CORE_AGENTS_COUNT
+- Layer Specialists: $SPECIALIST_COUNT
+- Total Agents: $TOTAL_AGENTS
 
-## Agents Processed
-$(find agent-os/agents -name "*.md" -type f | while read f; do
+## Core Agents
+$(find agent-os/agents -maxdepth 1 -name "*.md" -type f | while read f; do
     echo "- $(basename "$f" .md)"
 done)
 
+## Layer Specialists
+$(if [ -d "agent-os/agents/specialists" ]; then
+    find agent-os/agents/specialists -name "*.md" -type f | while read f; do
+        echo "- $(basename "$f" .md)"
+    done
+else
+    echo "- (none generated - run /create-basepoints first)"
+fi)
+
+## Specialist Registry
+$(if [ -f "agent-os/agents/specialists/registry.yml" ]; then
+    echo "✅ Registry created at: agent-os/agents/specialists/registry.yml"
+    echo ""
+    echo "Layer mappings:"
+    grep -A1 "^  - name:" agent-os/agents/specialists/registry.yml | \
+        grep -E "name:|layer:" | \
+        sed 's/^  /    /'
+else
+    echo "⚠️ No registry - specialists will use default layer detection"
+fi)
+
+## Usage in Workflows
+
+Layer specialists are automatically used by:
+- \`/orchestrate-tasks\` - Suggests specialists based on task layer
+- \`/implement-tasks\` - Delegates to appropriate specialist
+
+### How it works:
+1. Task group content is analyzed for layer keywords
+2. Matching specialist is selected (or falls back to implementer)
+3. Specialist has layer-specific basepoints context
+4. Implementation stays consistent with layer patterns
+
 ## Actions Taken
-- Updated agents with project context from basepoints
+- Updated core agents with project context from basepoints
+- Generated layer specialists from detected abstraction layers
+- Created specialist registry for orchestration
 - Simplified agents for project complexity level
-- Created project-specific agents where needed
 
 ## Next Steps
 Proceed to specialize workflows in phase 10.
 EOF
 
 echo "✅ Agents specialization complete"
+echo "📊 Core agents: $CORE_AGENTS_COUNT | Layer specialists: $SPECIALIST_COUNT"
 echo "📁 Report saved to: agent-os/output/deploy-agents/reports/agents-specialization.md"
 ```
 

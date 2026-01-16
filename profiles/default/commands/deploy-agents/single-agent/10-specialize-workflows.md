@@ -113,31 +113,160 @@ for workflow_file in $EXISTING_WORKFLOWS; do
 done
 ```
 
-### Step 4: Simplify Workflows for Simple Projects
+### Step 4: Simplify Workflows Based on Complexity
 
-For simple projects, remove or combine unnecessary workflows:
+Apply complexity-based simplification to reduce overhead for simpler projects:
 
 ```bash
+echo "📋 Applying complexity-based workflow configuration..."
+
+# Define workflow tiers by complexity
+declare -A WORKFLOW_TIERS
+WORKFLOW_TIERS[simple]="specification implementation basepoints"
+WORKFLOW_TIERS[moderate]="specification implementation basepoints planning detection research"
+WORKFLOW_TIERS[complex]="specification implementation basepoints planning detection research validation scope-detection deep-reading human-review codebase-analysis"
+
+# Get active workflow categories for this complexity
+ACTIVE_CATEGORIES="${WORKFLOW_TIERS[$PROJECT_NATURE]}"
+
+# Create workflow configuration
+cat > "agent-os/workflows/workflow-config.yml" << EOF
+# Workflow Configuration
+# Auto-generated based on project complexity: $PROJECT_NATURE
+
+project_nature: $PROJECT_NATURE
+
+# Active workflow categories for this project
+active_categories:
+$(echo "$ACTIVE_CATEGORIES" | tr ' ' '\n' | while read cat; do
+    echo "  - $cat"
+done)
+
+# Workflow simplification rules
+simplification:
+  simple:
+    # Skip these for simple projects
+    skip_workflows:
+      - deep-reading/*
+      - human-review/*
+      - scope-detection/*
+      - validation/validate-*-patterns.md  # Layer validations optional
+    # Combine these into lighter alternatives
+    combine:
+      - specification/* → specification/write-spec.md only
+    # Max iterations for research
+    max_research_iterations: 1
+    
+  moderate:
+    skip_workflows:
+      - deep-reading/read-implementation-deep.md
+    max_research_iterations: 3
+    
+  complex:
+    skip_workflows: []
+    max_research_iterations: 5
+    # Enable all layer validations
+    enable_layer_validations: true
+
+# Layer validation configuration
+layer_validations:
+  enabled: $([ "$PROJECT_NATURE" = "complex" ] && echo "true" || echo "false")
+  validators:
+    - validate-ui-patterns.md
+    - validate-api-patterns.md
+    - validate-data-patterns.md
+EOF
+
+echo "✅ Created workflow configuration: agent-os/workflows/workflow-config.yml"
+
+# For simple projects, create a simplified workflow manifest
 if [ "$PROJECT_NATURE" = "simple" ]; then
     echo "📋 Simplifying workflows for simple project..."
     
-    # List of workflow categories that can be simplified for simple projects
-    SIMPLIFIABLE_CATEGORIES=(
-        "validation"
-        "scope-detection"
-        "deep-reading"
-        "human-review"
-    )
+    # Create a simplified-workflows.md guide
+    cat > "agent-os/workflows/simplified-workflows.md" << EOF
+# Simplified Workflows for Simple Project
+
+This project is classified as **simple**, so workflows have been streamlined.
+
+## Active Workflows
+
+| Category | Status | Notes |
+|----------|--------|-------|
+| specification | ✅ Active | Full spec workflow |
+| implementation | ✅ Active | Full implementation workflow |
+| basepoints | ✅ Active | Basic knowledge extraction |
+| planning | ⚠️ Minimal | Use /adapt-to-product only |
+| detection | ⚠️ Minimal | Tech stack detection only |
+| validation | ❌ Skipped | Use project's own tests |
+| research | ❌ Skipped | Manual research if needed |
+| deep-reading | ❌ Skipped | Direct file reading |
+| human-review | ❌ Skipped | Direct user interaction |
+| scope-detection | ❌ Skipped | Use simple layer detection |
+
+## Recommended Workflow
+
+For simple projects:
+
+\`\`\`
+/adapt-to-product → /create-basepoints → /deploy-agents
+    ↓
+/shape-spec → /write-spec → /create-tasks → /implement-tasks
+\`\`\`
+
+Skip /orchestrate-tasks for simple projects - use /implement-tasks directly.
+
+## Re-enabling Workflows
+
+If your project grows in complexity, re-run:
+\`\`\`
+/deploy-agents
+\`\`\`
+
+This will reassess complexity and enable appropriate workflows.
+EOF
     
-    for category in "${SIMPLIFIABLE_CATEGORIES[@]}"; do
-        CATEGORY_DIR="agent-os/workflows/$category"
-        if [ -d "$CATEGORY_DIR" ]; then
-            echo "ℹ️  Workflow category marked as optional for simple project: $category"
-            # Could optionally remove or mark these workflows
-        fi
-    done
+    echo "✅ Created simplified workflow guide: agent-os/workflows/simplified-workflows.md"
+fi
+
+# For complex projects, ensure all layer validations are enabled
+if [ "$PROJECT_NATURE" = "complex" ]; then
+    echo "📋 Enabling comprehensive workflows for complex project..."
     
-    echo "✅ Workflows simplified for simple project"
+    # Ensure layer validation workflows are properly configured
+    if [ -d "agent-os/agents/specialists" ]; then
+        cat > "agent-os/workflows/layer-validation-config.md" << EOF
+# Layer Validation Configuration
+
+This project is **complex** with detected abstraction layers.
+
+## Enabled Layer Validations
+
+| Layer | Validator | Specialist |
+|-------|-----------|------------|
+$(find agent-os/agents/specialists -name "*.md" -type f 2>/dev/null | while read f; do
+    SPECIALIST=$(basename "$f" .md)
+    LAYER=$(echo "$SPECIALIST" | sed 's/-specialist//')
+    echo "| $LAYER | validate-${LAYER}-patterns.md | $SPECIALIST |"
+done)
+
+## Validation Trigger Points
+
+Layer validations run automatically:
+- After each /implement-tasks completion
+- During /orchestrate-tasks verification phase
+- When running /cleanup-agent-os
+
+## Disabling Layer Validations
+
+To skip layer validations (not recommended), add to your command:
+\`\`\`
+Skip layer validations for this implementation.
+\`\`\`
+EOF
+        
+        echo "✅ Configured layer validations for complex project"
+    fi
 fi
 ```
 

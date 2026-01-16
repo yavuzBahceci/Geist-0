@@ -316,16 +316,33 @@ Phase 8: Specialize Standards (Enhanced)
 ├─ 🆕 Replace {{PROJECT_BUILD_COMMAND}} etc.
 └─ 🆕 Configure validate-implementation.md
     ↓
-Phase 9-11: Finalize
-├─ Specialize agents
-├─ Specialize workflows
-└─ Adapt structure and finalize
+Phase 9: Specialize Agents (Enhanced)
+├─ 🆕 Generate layer-specialist agents
+│   ├─ Read detected abstraction layers from headquarter.md
+│   ├─ Create: ui-specialist, api-specialist, data-specialist, etc.
+│   ├─ Each specialist knows layer-specific basepoints
+│   └─ Generate: agent-os/agents/specialists/registry.yml
+├─ Evaluate agent relevance based on complexity
+└─ Create project-specific agents
+    ↓
+Phase 10: Specialize Workflows (Enhanced)
+├─ 🆕 Apply complexity-based simplification
+│   ├─ Simple: specification + implementation only
+│   ├─ Moderate: + planning + detection + research
+│   └─ Complex: all workflows + layer validations
+├─ Create workflow-config.yml
+└─ Configure layer validation triggers
+    ↓
+Phase 11: Adapt structure and finalize
 ```
 
 **Outputs**:
 - Specialized commands in `agent-os/commands/`
 - Specialized workflows in `agent-os/workflows/`
 - Configured validation commands
+- 🆕 Layer specialists in `agent-os/agents/specialists/`
+- 🆕 Specialist registry in `agent-os/agents/specialists/registry.yml`
+- 🆕 Workflow config in `agent-os/workflows/workflow-config.yml`
 
 ---
 
@@ -476,9 +493,13 @@ Phase 2: Shape Spec (Enhanced)
 | `validate-references.md` | Check @agent-os/ refs resolve | Broken refs |
 | `generate-validation-report.md` | Generate markdown report | Report |
 | `validation-registry.md` | Core + project validators | Validator list |
-| `validate-implementation.md` | Run build/test/lint | Pass/fail (NEW) |
-| `validate-detection-accuracy.md` | Validate detection results | Accuracy report (NEW) |
-| `detection-tests.md` | Integration tests for detection | Test results (NEW) |
+| `validate-implementation.md` | Run build/test/lint | Pass/fail |
+| `validate-detection-accuracy.md` | Validate detection results | Accuracy report |
+| `detection-tests.md` | Integration tests for detection | Test results |
+| `validate-ui-patterns.md` | 🆕 Validate UI layer patterns | UI issues |
+| `validate-api-patterns.md` | 🆕 Validate API layer patterns | API issues |
+| `validate-data-patterns.md` | 🆕 Validate data layer patterns | Data issues |
+| `orchestrate-validation.md` | 🆕 Run all validators incl. layer | Comprehensive report |
 
 ### Human Review Workflows (Enhanced)
 
@@ -639,6 +660,166 @@ BUILD_COMMAND="npm run build"
 TEST_COMMAND="npm test"
 ...
 ```
+```
+
+---
+
+## Layer Specialists (NEW)
+
+During `/deploy-agents`, Geist generates layer-specialist agents based on detected abstraction layers:
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                      LAYER SPECIALIST GENERATION                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+headquarter.md                    Generated Specialists
+┌──────────────────────┐         ┌──────────────────────────────────────────┐
+│ Detected Layers:     │         │ agent-os/agents/specialists/             │
+│ • UI/Frontend        │ ──────► │ ├─ ui-specialist.md                      │
+│ • API/Backend        │         │ ├─ api-specialist.md                     │
+│ • Data/Persistence   │         │ ├─ data-specialist.md                    │
+│ • Platform           │         │ ├─ platform-specialist.md                │
+│ • Testing            │         │ └─ registry.yml                          │
+└──────────────────────┘         └──────────────────────────────────────────┘
+```
+
+### How Specialists Work
+
+Each specialist knows:
+- **Layer-specific patterns** from basepoints
+- **Relevant standards** for that layer
+- **How to stay within layer boundaries**
+
+### Auto-Assignment in Orchestration
+
+During `/orchestrate-tasks`, task groups are analyzed and matched to specialists:
+
+```
+Task: "Create user profile component"
+  ↓ Keyword analysis: "component", "profile"
+  ↓ Detected layer: UI
+  ↓ Suggested: ui-specialist
+```
+
+### Specialist Registry
+
+The registry enables automatic specialist selection:
+
+```yaml
+# agent-os/agents/specialists/registry.yml
+specialists:
+  - name: ui-specialist
+    layer: ui
+  - name: api-specialist
+    layer: api
+  - name: data-specialist
+    layer: data
+
+layer_keywords:
+  ui: [component, view, screen, button, form, modal]
+  api: [endpoint, route, controller, handler, request]
+  data: [model, schema, migration, query, database]
+```
+
+---
+
+## Complexity-Based Simplification (NEW)
+
+Geist automatically adjusts workflow complexity based on project nature:
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    COMPLEXITY-BASED WORKFLOW TIERS                           │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+PROJECT NATURE        ACTIVE WORKFLOWS                    SKIPPED
+──────────────────────────────────────────────────────────────────────────────
+SIMPLE                specification                       validation
+                      implementation                      deep-reading
+                      basepoints                          human-review
+                                                         scope-detection
+                                                         layer validations
+
+MODERATE              specification                       deep-reading (partial)
+                      implementation
+                      basepoints
+                      planning
+                      detection
+                      research
+
+COMPLEX               ALL WORKFLOWS                       none
+                      + layer validations
+                      + comprehensive research
+                      + human review checkpoints
+```
+
+### Workflow Configuration
+
+Generated during `/deploy-agents`:
+
+```yaml
+# agent-os/workflows/workflow-config.yml
+
+project_nature: moderate
+
+active_categories:
+  - specification
+  - implementation
+  - basepoints
+  - planning
+  - detection
+  - research
+
+simplification:
+  max_research_iterations: 3
+  
+layer_validations:
+  enabled: false  # Only for complex projects
+```
+
+### Simple Projects
+
+For simple projects, a guide is generated:
+
+```
+agent-os/workflows/simplified-workflows.md
+
+Recommended flow:
+/adapt-to-product → /create-basepoints → /deploy-agents
+       ↓
+/shape-spec → /write-spec → /create-tasks → /implement-tasks
+
+Skip: /orchestrate-tasks (use /implement-tasks directly)
+```
+
+---
+
+## Layer Validation (NEW)
+
+For complex projects, layer-specific validations run automatically:
+
+| Layer | Validator | What It Checks |
+|-------|-----------|----------------|
+| UI | `validate-ui-patterns.md` | Component structure, naming, styling, accessibility |
+| API | `validate-api-patterns.md` | Endpoint naming, HTTP methods, error handling, auth |
+| Data | `validate-data-patterns.md` | Model naming, query patterns, migrations, validation |
+
+### Validation Triggers
+
+Layer validations run:
+- After `/implement-tasks` completion
+- During `/orchestrate-tasks` verification
+- When running `/cleanup-agent-os`
+
+### Comprehensive Validation Report
+
+```
+agent-os/output/validation/
+├── ui-validation-results.md
+├── api-validation-results.md
+├── data-validation-results.md
+└── comprehensive-validation-report.json
 ```
 
 ---
