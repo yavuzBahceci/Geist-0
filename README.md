@@ -1,5 +1,26 @@
 # Geist
 
+
+## Why Use Geist?
+
+**Geist gives your AI coding tools (Cursor, Claude Desktop, etc.) the "memory" they don't have.**
+
+When you use AI to build features, it doesn't know your project's patterns, architecture, or conventions. You repeat yourself. It suggests generic solutions. Things break because it doesn't understand your codebase.
+
+**Geist solves this by creating "basepoints"**—living documentation of your project's patterns, architecture, and decisions. Every AI command automatically includes relevant context, so suggestions match your actual codebase.
+
+**How it works with Cursor and Claude:**
+- Geist analyzes your codebase and documents your patterns
+- You run commands like `/shape-spec` or `/implement-tasks` in your AI chat
+- Geist automatically injects relevant project context into the prompts
+- AI suggestions align with your existing code, architecture, and standards
+- No more context-switching or explaining your project structure repeatedly
+
+**The result:** AI that understands your project and suggests solutions that fit, not generic code you'll have to adapt.
+
+---
+
+
 ### Agent OS, for any project.
 
 ---
