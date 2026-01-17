@@ -17,3 +17,9 @@ Now that we've implemented all tasks in tasks.md, we must run final verification
 ### Step 4: Create final verification report
 
 {{workflows/implementation/verification/create-verification-report}}
+
+### Step 5: Capture Session Feedback
+
+After verification completes, capture the implementation outcome for session learning:
+
+{{workflows/learning/capture-session-feedback}}

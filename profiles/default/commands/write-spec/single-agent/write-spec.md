@@ -93,6 +93,10 @@ Review it closely to ensure everything aligns with your vision and requirements.
 👉 Run `/create-tasks` to break down the spec into implementable tasks.
 ```
 
+## Step 6: Save Handoff
+
+{{workflows/prompting/save-handoff}}
+
 {{UNLESS standards_as_claude_code_skills}}
 ## User Standards & Preferences Compliance
 

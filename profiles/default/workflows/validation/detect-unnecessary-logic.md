@@ -3,10 +3,13 @@
 ## Core Responsibilities
 
 1. **Detect Project-Agnostic Conditionals**: Find conditional logic that should be removed after specialization
-2. **Detect Generic Examples**: Identify generic examples that should be replaced with project-specific ones
-3. **Detect Abstract Patterns**: Find abstract patterns that should be replaced with concrete project patterns
-4. **Detect profiles/default References**: Find any references to "profiles/default" in specialized commands
-5. **Generate Report**: Create report with recommendations for removal
+2. **Detect Resolved {{IF}}/{{UNLESS}} Blocks**: Find conditional blocks that can be resolved after specialization (remove tags, keep/remove content based on resolved flag)
+3. **Detect Generic Examples**: Identify generic examples that should be replaced with project-specific ones
+4. **Detect Abstract Patterns**: Find abstract patterns that should be replaced with concrete project patterns
+5. **Detect Generic Fallback Logic**: Find generic fallback logic (e.g., "generic implementer") that should be replaced with project-specific alternatives
+6. **Detect Redundant Abstraction Layers**: Find abstraction layers that are no longer needed after specialization (e.g., "if basepoints exist" checks)
+7. **Detect profiles/default References**: Find any references to "profiles/default" in specialized commands
+8. **Generate Report**: Create report with recommendations for conversion, abstraction, or removal
 
 ## Workflow
 
@@ -97,6 +100,87 @@ echo "$FILES_TO_SCAN" | while read file_path; do
 done
 ```
 
+### Step 3a: Detect Resolved {{IF}}/{{UNLESS}} Conditionals (if validating installed agent-os)
+
+Find {{IF}}/{{UNLESS}} blocks that can be resolved after specialization:
+
+```bash
+# Initialize results
+RESOLVED_CONDITIONALS=""
+
+# Only check if validating installed agent-os (specialized commands)
+if [ "$VALIDATION_CONTEXT" = "installed-agent-os" ]; then
+    # Load project profile to determine resolved flags
+    PROJECT_PROFILE=$(cat agent-os/config/project-profile.yml 2>/dev/null || echo "")
+    
+    echo "$FILES_TO_SCAN" | while read file_path; do
+        if [ -z "$file_path" ] || [ ! -f "$file_path" ]; then
+            continue
+        fi
+        
+        FILE_CONTENT=$(cat "$file_path")
+        
+        # Detect {{IF}}/{{UNLESS}} blocks
+        if echo "$FILE_CONTENT" | grep -qE '\{\{IF[[:space:]]+[a-z_]+\}\}|\{\{UNLESS[[:space:]]+[a-z_]+\}\}'; then
+            LINE_NUMBERS=$(grep -nE '\{\{IF[[:space:]]+[a-z_]+\}\}|\{\{UNLESS[[:space:]]+[a-z_]+\}\}' "$file_path" | cut -d: -f1 | tr '\n' ',' | sed 's/,$//')
+            RESOLVED_CONDITIONALS="${RESOLVED_CONDITIONALS}\nconditional:$file_path:$LINE_NUMBERS:Resolved {{IF}}/{{UNLESS}} block (can be removed after specialization)"
+        fi
+    done
+fi
+```
+
+### Step 3b: Detect Generic Examples and Fallback Logic
+
+Find generic examples and fallback logic that should be replaced:
+
+```bash
+# Initialize results
+GENERIC_FALLBACKS=""
+
+echo "$FILES_TO_SCAN" | while read file_path; do
+    if [ -z "$file_path" ] || [ ! -f "$file_path" ]; then
+        continue
+    fi
+    
+    FILE_CONTENT=$(cat "$file_path")
+    
+    # Detect generic fallback logic
+    if echo "$FILE_CONTENT" | grep -qE "generic implementer|default implementer|fallback.*generic|project-agnostic.*fallback|technology-agnostic.*fallback"; then
+        LINE_NUMBERS=$(grep -nE "generic implementer|default implementer|fallback.*generic|project-agnostic.*fallback|technology-agnostic.*fallback" "$file_path" | cut -d: -f1 | tr '\n' ',' | sed 's/,$//')
+        GENERIC_FALLBACKS="${GENERIC_FALLBACKS}\nfallback:$file_path:$LINE_NUMBERS:Generic fallback logic (should be replaced with project-specific)"
+    fi
+    
+    # Detect unnecessary conditional checks after specialization
+    if echo "$FILE_CONTENT" | grep -qE "if.*basepoints.*exist|if.*basepoints.*available|Check if basepoints"; then
+        LINE_NUMBERS=$(grep -nE "if.*basepoints.*exist|if.*basepoints.*available|Check if basepoints" "$file_path" | cut -d: -f1 | tr '\n' ',' | sed 's/,$//')
+        GENERIC_FALLBACKS="${GENERIC_FALLBACKS}\nfallback:$file_path:$LINE_NUMBERS:Unnecessary basepoints check (basepoints always exist after specialization)"
+    fi
+done
+```
+
+### Step 3c: Detect Redundant Abstraction Layers
+
+Find abstraction layers that are no longer needed after specialization:
+
+```bash
+# Initialize results
+REDUNDANT_ABSTRACTIONS=""
+
+echo "$FILES_TO_SCAN" | while read file_path; do
+    if [ -z "$file_path" ] || [ ! -f "$file_path" ]; then
+        continue
+    fi
+    
+    FILE_CONTENT=$(cat "$file_path")
+    
+    # Detect redundant abstraction patterns
+    if echo "$FILE_CONTENT" | grep -qE "project-agnostic.*wrapper|technology-agnostic.*layer|abstract.*wrapper"; then
+        LINE_NUMBERS=$(grep -nE "project-agnostic.*wrapper|technology-agnostic.*layer|abstract.*wrapper" "$file_path" | cut -d: -f1 | tr '\n' ',' | sed 's/,$//')
+        REDUNDANT_ABSTRACTIONS="${REDUNDANT_ABSTRACTIONS}\nabstraction:$file_path:$LINE_NUMBERS:Redundant abstraction layer (can be simplified)"
+    fi
+done
+```
+
 ### Step 4: Detect profiles/default References
 
 Find references to "profiles/default" in specialized commands (should only exist in template):
@@ -130,10 +214,13 @@ Generate comprehensive unnecessary logic detection report:
 ```bash
 # Count findings
 CONDITIONALS_COUNT=$(echo "$PROJECT_AGNOSTIC_CONDITIONALS" | grep -c . || echo "0")
+RESOLVED_CONDITIONALS_COUNT=$(echo "$RESOLVED_CONDITIONALS" | grep -c . || echo "0")
 EXAMPLES_COUNT=$(echo "$GENERIC_EXAMPLES" | grep -c . || echo "0")
 PATTERNS_COUNT=$(echo "$ABSTRACT_PATTERNS" | grep -c . || echo "0")
+FALLBACKS_COUNT=$(echo "$GENERIC_FALLBACKS" | grep -c . || echo "0")
+ABSTRACTIONS_COUNT=$(echo "$REDUNDANT_ABSTRACTIONS" | grep -c . || echo "0")
 REFERENCES_COUNT=$(echo "$PROFILES_SELF_REFERENCES" | grep -c . || echo "0")
-TOTAL_COUNT=$((CONDITIONALS_COUNT + EXAMPLES_COUNT + PATTERNS_COUNT + REFERENCES_COUNT))
+TOTAL_COUNT=$((CONDITIONALS_COUNT + RESOLVED_CONDITIONALS_COUNT + EXAMPLES_COUNT + PATTERNS_COUNT + FALLBACKS_COUNT + ABSTRACTIONS_COUNT + REFERENCES_COUNT))
 
 # Create JSON report
 cat > "$CACHE_PATH/unnecessary-logic-detection.json" << EOF
@@ -167,6 +254,30 @@ $(echo "$ABSTRACT_PATTERNS" | grep -v "^$" | while IFS=':' read -r type file_pat
 done | sed '$ s/,$//')
       ]
     },
+    "resolved_conditionals": {
+      "count": $RESOLVED_CONDITIONALS_COUNT,
+      "issues": [
+$(echo "$RESOLVED_CONDITIONALS" | grep -v "^$" | while IFS=':' read -r type file_path line_numbers description; do
+    echo "        {\"type\": \"$type\", \"file\": \"$file_path\", \"lines\": \"$line_numbers\", \"description\": \"$description\"},"
+done | sed '$ s/,$//')
+      ]
+    },
+    "generic_fallbacks": {
+      "count": $FALLBACKS_COUNT,
+      "issues": [
+$(echo "$GENERIC_FALLBACKS" | grep -v "^$" | while IFS=':' read -r type file_path line_numbers description; do
+    echo "        {\"type\": \"$type\", \"file\": \"$file_path\", \"lines\": \"$line_numbers\", \"description\": \"$description\"},"
+done | sed '$ s/,$//')
+      ]
+    },
+    "redundant_abstractions": {
+      "count": $ABSTRACTIONS_COUNT,
+      "issues": [
+$(echo "$REDUNDANT_ABSTRACTIONS" | grep -v "^$" | while IFS=':' read -r type file_path line_numbers description; do
+    echo "        {\"type\": \"$type\", \"file\": \"$file_path\", \"lines\": \"$line_numbers\", \"description\": \"$description\"},"
+done | sed '$ s/,$//')
+      ]
+    },
     "profiles_self_references": {
       "count": $REFERENCES_COUNT,
       "issues": [
@@ -178,8 +289,11 @@ done | sed '$ s/,$//')
   },
   "recommendations": {
     "project_agnostic_conditionals": "Remove conditional logic that checks for project-agnostic scenarios. After specialization, these checks are no longer needed.",
+    "resolved_conditionals": "Remove {{IF}}/{{UNLESS}} blocks that are resolved after specialization. Keep content if condition is true, remove entire block if false.",
     "generic_examples": "Replace generic examples with project-specific ones from basepoints or actual project structure.",
     "abstract_patterns": "Replace abstract pattern references with concrete project patterns from basepoints.",
+    "generic_fallbacks": "Replace generic fallback logic (e.g., 'generic implementer') with project-specific alternatives from specialist registry.",
+    "redundant_abstractions": "Simplify or remove abstraction layers that are no longer needed after specialization (e.g., 'if basepoints exist' checks).",
     "profiles_self_references": "Remove all references to 'profiles/default' from specialized commands. Specialized commands should not reference the template."
   }
 }
@@ -197,8 +311,11 @@ cat > "$CACHE_PATH/unnecessary-logic-detection-summary.md" << EOF
 
 - **Total Issues Found:** $TOTAL_COUNT
 - **Project-Agnostic Conditionals:** $CONDITIONALS_COUNT
+- **Resolved {{IF}}/{{UNLESS}} Conditionals:** $RESOLVED_CONDITIONALS_COUNT
 - **Generic Examples:** $EXAMPLES_COUNT
 - **Abstract Patterns:** $PATTERNS_COUNT
+- **Generic Fallback Logic:** $FALLBACKS_COUNT
+- **Redundant Abstraction Layers:** $ABSTRACTIONS_COUNT
 - **profiles/default References:** $REFERENCES_COUNT
 
 ## Project-Agnostic Conditionals
@@ -228,6 +345,36 @@ $(echo "$ABSTRACT_PATTERNS" | grep -v "^$" | while IFS=':' read -r type file_pat
     echo "  - File: \`$file_path\`"
     echo "  - Lines: $line_numbers"
     echo "  - Recommendation: Replace with concrete project patterns from basepoints"
+    echo ""
+done)
+
+## Resolved {{IF}}/{{UNLESS}} Conditionals
+
+$(echo "$RESOLVED_CONDITIONALS" | grep -v "^$" | while IFS=':' read -r type file_path line_numbers description; do
+    echo "- **$description**"
+    echo "  - File: \`$file_path\`"
+    echo "  - Lines: $line_numbers"
+    echo "  - Recommendation: Remove {{IF}}/{{UNLESS}} blocks that are resolved after specialization"
+    echo ""
+done)
+
+## Generic Fallback Logic
+
+$(echo "$GENERIC_FALLBACKS" | grep -v "^$" | while IFS=':' read -r type file_path line_numbers description; do
+    echo "- **$description**"
+    echo "  - File: \`$file_path\`"
+    echo "  - Lines: $line_numbers"
+    echo "  - Recommendation: Replace with project-specific alternatives from basepoints or specialist registry"
+    echo ""
+done)
+
+## Redundant Abstraction Layers
+
+$(echo "$REDUNDANT_ABSTRACTIONS" | grep -v "^$" | while IFS=':' read -r type file_path line_numbers description; do
+    echo "- **$description**"
+    echo "  - File: \`$file_path\`"
+    echo "  - Lines: $line_numbers"
+    echo "  - Recommendation: Simplify or remove abstraction layers that are no longer needed after specialization"
     echo ""
 done)
 

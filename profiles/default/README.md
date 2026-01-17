@@ -70,7 +70,9 @@ profiles/default/
 │   ├── deep-reading/         # Deep code reading
 │   ├── human-review/         # Trade-off and contradiction detection
 │   ├── implementation/       # Implementation workflows
+│   ├── learning/             # 🆕 Session feedback and learning
 │   ├── planning/             # Product planning
+│   ├── prompting/            # 🆕 Prompt construction and optimization
 │   ├── scope-detection/      # Scope and layer detection
 │   ├── specification/        # Specification workflows
 │   └── validation/           # Deterministic validation
@@ -199,6 +201,22 @@ MAINTENANCE PHASE (after codebase changes)
 │     → Updates only affected basepoints                                      │
 │     → Re-specializes all commands                                           │
 │     → Validates and reports                                                  │
+│                                                                              │
+│     🆕 PHASE 7: Review Session Learnings                                    │
+│     ┌─────────────────────────────────────────────────────────────────────┐ │
+│     │ • Extract patterns from session data                                 │ │
+│     │ • Analyze prompt effectiveness                                       │ │
+│     │ • Generate adaptation suggestions                                    │ │
+│     │ • Present for human review (approve/select/skip)                    │ │
+│     └─────────────────────────────────────────────────────────────────────┘ │
+│                                                                              │
+│     🆕 PHASE 8: Adapt Commands (if approved)                                │
+│     ┌─────────────────────────────────────────────────────────────────────┐ │
+│     │ • Apply user-approved adaptations to commands                        │ │
+│     │ • Create backup before changes                                       │ │
+│     │ • Log all changes to applied.md                                      │ │
+│     │ • Archive session to history                                         │ │
+│     └─────────────────────────────────────────────────────────────────────┘ │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -334,6 +352,16 @@ Phase 10: Specialize Workflows (Enhanced)
 └─ Configure layer validation triggers
     ↓
 Phase 11: Adapt structure and finalize
+    ↓
+Phase 12: Optimize Prompts (NEW)
+├─ 🆕 Analyze codebase patterns and conventions
+├─ 🆕 Generate project-specific prompt improvements
+└─ 🆕 Present suggestions for user approval
+    ↓
+Phase 13: Apply Prompt Optimizations (NEW)
+├─ 🆕 Apply user-approved improvements
+├─ 🆕 Create backup before changes
+└─ 🆕 Log all changes for audit
 ```
 
 **Outputs**:
@@ -363,6 +391,8 @@ Phase 1: Initialize
 └─ Store feature description
     ↓
 Phase 2: Shape Spec (Enhanced)
+├─ 🆕 Step 0: Construct Optimal Prompt
+│   └─ {{workflows/prompting/construct-prompt}}
 ├─ 🆕 Extract basepoints knowledge
 │   ├─ Detect abstraction layer
 │   ├─ Find relevant patterns
@@ -371,7 +401,8 @@ Phase 2: Shape Spec (Enhanced)
 ├─ 🆕 Suggest reusable modules from basepoints
 ├─ Gather requirements through Q&A
 ├─ 🆕 Run validation before completing
-└─ 🆕 Generate validation report
+└─ 🆕 Save Handoff
+    └─ {{workflows/prompting/save-handoff}}
 ```
 
 **Outputs**:
@@ -392,13 +423,16 @@ Phase 2: Shape Spec (Enhanced)
 │  write-spec Flow (Enhanced)                                      │
 └─────────────────────────────────────────────────────────────────┘
 
+├─ 🆕 Step 0: Construct Optimal Prompt
+│   └─ {{workflows/prompting/construct-prompt}}
 ├─ 🆕 Load extracted knowledge from cache
 ├─ 🆕 Reference applicable standards in spec
 ├─ 🆕 Suggest existing code from basepoints
 ├─ Write detailed specification
 ├─ 🆕 Detect trade-offs for human review
 ├─ 🆕 Run validation before completing
-└─ 🆕 Generate resources-consulted.md
+└─ 🆕 Save Handoff
+    └─ {{workflows/prompting/save-handoff}}
 ```
 
 **Outputs**:
@@ -413,13 +447,16 @@ Phase 2: Shape Spec (Enhanced)
 
 **Flow**:
 ```
+├─ 🆕 Step 0: Construct Optimal Prompt
+│   └─ {{workflows/prompting/construct-prompt}}
 ├─ 🆕 Load extracted knowledge from cache
 ├─ 🆕 Include implementation hints from patterns
 ├─ 🆕 Reference basepoints strategies in descriptions
 ├─ Create task groups
 ├─ Create tasks with acceptance criteria
 ├─ 🆕 Run validation before completing
-└─ 🆕 Update validation report
+└─ 🆕 Save Handoff
+    └─ {{workflows/prompting/save-handoff}}
 ```
 
 **Outputs**:
@@ -437,6 +474,11 @@ Phase 2: Shape Spec (Enhanced)
 │  implement-tasks / orchestrate-tasks Flow (Enhanced)             │
 └─────────────────────────────────────────────────────────────────┘
 
+├─ 🆕 Step 0: Construct Optimal Prompt
+│   └─ {{workflows/prompting/construct-prompt}}
+│      ├─ Load basepoints context
+│      ├─ Load session learnings (patterns, anti-patterns)
+│      └─ Build optimized prompt
 ├─ 🆕 Load module-specific patterns from cache
 ├─ 🆕 Provide coding patterns in context
 ├─ 🆕 Reference standards for code style
@@ -446,8 +488,14 @@ Phase 2: Shape Spec (Enhanced)
 │   ├─ {{PROJECT_TEST_COMMAND}}
 │   ├─ {{PROJECT_LINT_COMMAND}}
 │   └─ {{PROJECT_TYPECHECK_COMMAND}}
+├─ 🆕 Capture Session Feedback (NEW)
+│   └─ {{workflows/learning/capture-session-feedback}}
+│      ├─ Record implementation outcome
+│      ├─ Track patterns used
+│      └─ Record prompt effectiveness
 ├─ 🆕 Check for human review (trade-offs)
-└─ 🆕 Auto-proceed to next prompt if validation passes
+└─ 🆕 Save Handoff
+    └─ {{workflows/prompting/save-handoff}}
 ```
 
 **Outputs**:
@@ -500,6 +548,26 @@ Phase 2: Shape Spec (Enhanced)
 | `validate-api-patterns.md` | 🆕 Validate API layer patterns | API issues |
 | `validate-data-patterns.md` | 🆕 Validate data layer patterns | Data issues |
 | `orchestrate-validation.md` | 🆕 Run all validators incl. layer | Comprehensive report |
+
+### Learning Workflows (NEW)
+
+| Workflow | Purpose | Output |
+|----------|---------|--------|
+| `capture-session-feedback.md` | Capture implementation outcomes | Session feedback data |
+| `extract-session-patterns.md` | Extract successful/failed patterns | Pattern files |
+| `present-learnings-for-review.md` | Present learnings to user | User approval choice |
+| `apply-command-adaptations.md` | Apply approved adaptations | Updated commands |
+
+### Prompting Workflows (NEW)
+
+| Workflow | Purpose | Output |
+|----------|---------|--------|
+| `construct-prompt.md` | **CORE** - Construct optimal prompt for commands | Optimized prompt |
+| `save-handoff.md` | Save context for next command | Handoff file |
+| `prompting-best-practices.md` | Reference guide for prompt construction | Best practices |
+| `generate-optimizations.md` | Generate project-specific prompt improvements | Optimization suggestions |
+| `apply-prompt-changes.md` | Apply approved prompt optimizations | Updated commands |
+| `analyze-prompt-effectiveness.md` | Analyze prompt effectiveness from session | Effectiveness analysis |
 
 ### Human Review Workflows (Enhanced)
 
@@ -824,6 +892,140 @@ agent-os/output/validation/
 
 ---
 
+## Prompting Specialist & Learning System (NEW)
+
+Geist includes a **Prompting Specialist** that optimizes prompts across all commands and a **Learning System** that captures feedback to continuously improve.
+
+### Prompting Specialist
+
+The Prompting Specialist is integrated into **ALL command flows** to construct optimal prompts:
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    PROMPTING SPECIALIST - CORE FLOW                          │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+Every Command Execution:
+├─ Step 0: Construct Optimal Prompt
+│  └─ {{workflows/prompting/construct-prompt}}
+│     ├─ Load basepoints context
+│     ├─ Load session learnings (successful/failed patterns)
+│     ├─ Load previous handoff context
+│     ├─ Build context block (project info, patterns, constraints)
+│     ├─ Build instruction block (clear objective, steps, boundaries)
+│     └─ Build output specification (file format, handoff info)
+│
+└─ Final Step: Save Handoff
+   └─ {{workflows/prompting/save-handoff}}
+      ├─ Capture what was completed
+      ├─ Highlight key decisions
+      └─ Prepare context for next command
+```
+
+### Prompt Construction Process
+
+The Prompting Specialist constructs prompts with:
+
+1. **Context Block**
+   - Project identity (tech stack, architecture from `headquarter.md`)
+   - Relevant patterns (successful patterns from session learnings)
+   - Constraints (anti-patterns to avoid from failed patterns)
+   - Previous output (handoff context from last command)
+
+2. **Instruction Block**
+   - Clear objective (single-sentence goal)
+   - Numbered steps (with expected outputs)
+   - Boundaries (DO/DO NOT sections)
+
+3. **Output Specification**
+   - File path and format
+   - Handoff context for next command
+   - Validation criteria
+
+### First Installation Optimization
+
+During `/deploy-agents`, two new phases optimize prompts for the project:
+
+**Phase 12: Optimize Prompts**
+- Analyzes codebase patterns and conventions
+- Generates project-specific prompt improvements
+- Presents suggestions for user approval
+
+**Phase 13: Apply Prompt Optimizations**
+- Applies user-approved improvements
+- Creates backup before changes
+- Logs all changes for audit
+
+### Session Feedback & Learning
+
+After each `/implement-tasks` run, the system captures feedback:
+
+```
+agent-os/output/session-feedback/
+├── current-session.md           # Active session
+├── patterns/
+│   ├── successful.md            # Patterns with 100% success, 3+ uses
+│   └── failed.md                # Anti-patterns that caused failures
+└── prompts/
+    ├── effective.md             # Prompts that worked well
+    └── needs-improvement.md     # Prompts that needed clarification
+```
+
+### Learning & Adaptation
+
+During `/update-basepoints-and-redeploy`, the system learns from session feedback:
+
+**Phase 7: Review Session Learnings**
+- Extracts patterns from session data (successful/failed)
+- Analyzes prompt effectiveness
+- Generates adaptation suggestions
+- **Human review required** - presents options:
+  - [a] Apply all adaptations
+  - [s] Select which to apply
+  - [n] Skip (save for later)
+
+**Phase 8: Adapt Commands**
+- Applies user-approved adaptations to command templates
+- Creates backup before changes
+- Updates successful patterns to command context
+- Adds anti-pattern warnings to constraints
+- Logs all changes to `applied.md`
+
+### Safety & Rollback
+
+All adaptations include safety measures:
+
+- ✅ **Human Review**: Always asks user before applying changes
+- ✅ **Backup**: Creates timestamped backup before any changes
+- ✅ **Rollback**: Restore from backup if issues occur
+- ✅ **Change Tracking**: All changes logged in `applied.md`
+
+### Learning Configuration
+
+Configure learning behavior in `workflow-config.yml`:
+
+```yaml
+learning:
+  enabled: true
+  capture:
+    implementation_outcomes: true
+    validation_results: true
+    patterns_used: true
+    prompt_effectiveness: true
+  review:
+    always_ask: true              # Never skip review
+    allow_selective: true         # Let user choose
+    save_rejected: true           # Keep for later
+  patterns:
+    min_uses_for_recommendation: 3
+    success_rate_threshold: 1.0   # 100% for recommendations
+  safety:
+    backup_before_changes: true
+    require_explicit_approval: true
+```
+
+---
+
 ## Best Practices
 
 ### 1. Run Commands in Order
@@ -876,6 +1078,28 @@ Before deployment, review:
 ### 5. Use Validation Reports
 
 Check `implementation/cache/validation-report.md` after each command.
+
+### 6. Review Session Learnings (NEW)
+
+Periodically run `/update-basepoints-and-redeploy` to:
+- Review successful patterns discovered
+- Apply adaptations to improve commands
+- Learn from implementation feedback
+
+The system will:
+- Extract patterns from all `/implement-tasks` runs
+- Analyze prompt effectiveness
+- Suggest improvements (requires your approval)
+
+### 7. Trust the Prompting Specialist
+
+The Prompting Specialist automatically:
+- Loads relevant context for each command
+- Injects successful patterns from session learnings
+- Warns against anti-patterns that caused failures
+- Prepares handoff context for next command
+
+No manual prompt construction needed.
 
 ---
 

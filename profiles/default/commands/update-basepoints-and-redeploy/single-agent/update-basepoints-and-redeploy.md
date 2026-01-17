@@ -24,3 +24,7 @@ Instructions to follow in sequence:
 {{PHASE 5: @agent-os/commands/update-basepoints-and-redeploy/5-selective-respecialize.md}}
 
 {{PHASE 6: @agent-os/commands/update-basepoints-and-redeploy/6-validate-and-report.md}}
+
+{{PHASE 7: @agent-os/commands/update-basepoints-and-redeploy/7-review-session-learnings.md}}
+
+{{PHASE 8: @agent-os/commands/update-basepoints-and-redeploy/8-adapt-commands.md}}

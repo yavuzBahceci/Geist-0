@@ -79,6 +79,10 @@ Spec initialized successfully!
 👉 Run `/write-spec` to create the spec.md document.
 ```
 
+## Step 5: Save Handoff
+
+{{workflows/prompting/save-handoff}}
+
 {{UNLESS standards_as_claude_code_skills}}
 ## User Standards & Preferences Compliance
 

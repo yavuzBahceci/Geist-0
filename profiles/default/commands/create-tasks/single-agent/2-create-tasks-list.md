@@ -86,6 +86,10 @@ Review it closely to make sure it all looks good.
 👉 Run `/implement-tasks` (simple, effective) or `/orchestrate-tasks` (advanced, powerful) to start building!
 ```
 
+## Step 6: Save Handoff
+
+{{workflows/prompting/save-handoff}}
+
 {{UNLESS standards_as_claude_code_skills}}
 ## User Standards & Preferences Compliance
 

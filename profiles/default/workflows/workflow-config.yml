@@ -1,0 +1,35 @@
+# Workflow Configuration Template
+
+This file configures which workflows are active for the project based on complexity and needs.
+
+# Learning configuration
+learning:
+  enabled: true
+  
+  # What to capture
+  capture:
+    implementation_outcomes: true
+    validation_results: true
+    patterns_used: true
+    prompt_effectiveness: true
+  
+  # Human review settings
+  review:
+    always_ask: true              # Never skip review
+    allow_selective: true         # Let user choose which adaptations to apply
+    save_rejected: true           # Keep rejected learnings for later review
+  
+  # Pattern thresholds
+  patterns:
+    min_uses_for_recommendation: 3   # Minimum uses before recommending
+    success_rate_threshold: 1.0      # 100% success rate for recommendations
+  
+  # History management
+  history:
+    max_sessions: 10                 # Keep last 10 sessions
+    archive_older: true              # Archive older sessions, don't delete
+  
+  # Safety
+  safety:
+    backup_before_changes: true      # Always backup before applying changes
+    require_explicit_approval: true  # Require user approval for all adaptations

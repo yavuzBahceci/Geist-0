@@ -74,12 +74,19 @@ run_all_validators() {
     echo "📋 Running Core Validators..."
     echo ""
     
+    # Determine workflow base path (agent-os when installed, profiles/default for template)
+    if [ -d "agent-os/workflows" ]; then
+        WORKFLOWS_BASE="agent-os/workflows"
+    else
+        WORKFLOWS_BASE="profiles/default/workflows"
+    fi
+    
     for validator in "${CORE_VALIDATORS[@]}"; do
         echo "  Running: $validator"
         
         # Execute validator
         SPEC_PATH="$SPEC_PATH" COMMAND="$COMMAND" \
-            source "profiles/default/workflows/validation/$validator.md"
+            source "$WORKFLOWS_BASE/validation/$validator.md"
         
         VALIDATORS_RUN=$((VALIDATORS_RUN + 1))
         
@@ -106,7 +113,7 @@ run_all_validators() {
             
             # Execute validator
             SPEC_PATH="$SPEC_PATH" COMMAND="$COMMAND" \
-                source "profiles/default/workflows/validation/$validator.md" 2>/dev/null
+                source "$WORKFLOWS_BASE/validation/$validator.md" 2>/dev/null
             
             VALIDATORS_RUN=$((VALIDATORS_RUN + 1))
             
@@ -125,7 +132,7 @@ run_all_validators() {
     # Generate validation report
     echo "📊 Generating Validation Report..."
     SPEC_PATH="$SPEC_PATH" COMMAND="$COMMAND" \
-        source "profiles/default/workflows/validation/generate-validation-report.md"
+        source "$WORKFLOWS_BASE/validation/generate-validation-report.md"
     
     echo ""
     echo "═══════════════════════════════════════════════════════"
@@ -185,6 +192,13 @@ run_validators_for_context() {
     SPEC_PATH="$1"
     CONTEXT="$2"
     
+    # Determine workflow base path (agent-os when installed, profiles/default for template)
+    if [ -d "agent-os/workflows" ]; then
+        WORKFLOWS_BASE="agent-os/workflows"
+    else
+        WORKFLOWS_BASE="profiles/default/workflows"
+    fi
+    
     VALIDATORS_TO_RUN=$(compose_validators "$CONTEXT")
     
     echo "Running validators for $CONTEXT: $VALIDATORS_TO_RUN"
@@ -194,7 +208,7 @@ run_validators_for_context() {
         [ "$validator" = "{{PROJECT_VALIDATORS}}" ] && continue
         
         SPEC_PATH="$SPEC_PATH" COMMAND="$CONTEXT" \
-            source "profiles/default/workflows/validation/$validator.md"
+            source "$WORKFLOWS_BASE/validation/$validator.md"
     done
 }
 ```

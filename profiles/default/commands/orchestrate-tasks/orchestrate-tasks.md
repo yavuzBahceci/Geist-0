@@ -525,4 +525,8 @@ Generate a checklist of all resources consulted:
 {{workflows/basepoints/organize-and-cache-basepoints-knowledge}}
 ```
 
+### Step 7: Save Handoff
+
+{{workflows/prompting/save-handoff}}
+
 {{ENDUNLESS use_claude_code_subagents}}

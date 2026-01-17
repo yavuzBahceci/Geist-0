@@ -104,6 +104,10 @@ Include in the implementation summary:
 - ✅ Validation: [PASSED / WARNINGS]
 - ✅ Resources consulted: See `implementation/cache/resources-consulted.md`
 
+## Step 7: Save Handoff
+
+{{workflows/prompting/save-handoff}}
+
 {{UNLESS standards_as_claude_code_skills}}
 ## User Standards & Preferences Compliance
 
