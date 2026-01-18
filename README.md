@@ -1,6 +1,6 @@
 # Geist
 
-**Agent OS for any project type.**
+### Agent OS, for any project.
 
 Geist extends [Agent OS](https://buildermethods.com/agent-os) to work with any project—not just full-stack web apps. It detects your tech stack automatically, documents your codebase patterns, and specializes commands to match how you actually build.
 
