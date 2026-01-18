@@ -118,9 +118,16 @@ fi
 if [ "$NEED_EXTRACTION" = "true" ]; then
     echo "📖 Extracting fresh knowledge from basepoints..."
     
+    # Determine workflow base path (agent-os when installed, profiles/default for template)
+    if [ -d "agent-os/workflows" ]; then
+        WORKFLOWS_BASE="agent-os/workflows"
+    else
+        WORKFLOWS_BASE="profiles/default/workflows"
+    fi
+    
     # Call the automatic extraction workflow
     # This will populate the cache
-    source "profiles/default/workflows/basepoints/extract-basepoints-knowledge-automatic.md"
+    source "$WORKFLOWS_BASE/basepoints/extract-basepoints-knowledge-automatic.md"
     
     echo "✅ Fresh extraction complete"
 else

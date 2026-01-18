@@ -33,3 +33,7 @@ Instructions to follow in sequence:
 {{PHASE 10: @agent-os/commands/deploy-agents/10-specialize-workflows.md}}
 
 {{PHASE 11: @agent-os/commands/deploy-agents/11-adapt-structure-and-finalize.md}}
+
+{{PHASE 12: @agent-os/commands/deploy-agents/12-optimize-prompts.md}}
+
+{{PHASE 13: @agent-os/commands/deploy-agents/13-apply-prompt-optimizations.md}}

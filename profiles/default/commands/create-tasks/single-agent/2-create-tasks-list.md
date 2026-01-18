@@ -5,30 +5,10 @@ Now that you have the spec.md AND/OR requirements.md, proceed with creating the 
 Before creating the tasks list, extract relevant basepoints knowledge to inform task creation:
 
 ```bash
-# Check if basepoints exist
-if [ -d "agent-os/basepoints" ] && [ -f "agent-os/basepoints/headquarter.md" ]; then
-    # Determine spec path
-    SPEC_PATH="agent-os/specs/[current-spec]"
-    
-    # Extract basepoints knowledge using scope detection
-    {{workflows/basepoints/extract-basepoints-knowledge-automatic}}
-    {{workflows/scope-detection/detect-abstraction-layer}}
-    {{workflows/scope-detection/detect-scope-semantic-analysis}}
-    {{workflows/scope-detection/detect-scope-keyword-matching}}
-    
-    # Load extracted knowledge for use in task creation
-    if [ -f "$SPEC_PATH/implementation/cache/basepoints-knowledge.md" ]; then
-        EXTRACTED_KNOWLEDGE=$(cat "$SPEC_PATH/implementation/cache/basepoints-knowledge.md")
-    fi
-    
-    # Load detected layer
-    if [ -f "$SPEC_PATH/implementation/cache/detected-layer.txt" ]; then
-        DETECTED_LAYER=$(cat "$SPEC_PATH/implementation/cache/detected-layer.txt")
-    fi
-fi
+{{workflows/common/extract-basepoints-with-scope-detection}}
 ```
 
-If basepoints exist, the extracted knowledge will be used to:
+If basepoints exist, the extracted knowledge (`$EXTRACTED_KNOWLEDGE` and `$DETECTED_LAYER`) will be used to:
 - Inform task breakdown with existing patterns
 - Suggest existing patterns and checkpoints from basepoints
 - Reference project-specific implementation strategies
@@ -85,6 +65,10 @@ Review it closely to make sure it all looks good.
 
 👉 Run `/implement-tasks` (simple, effective) or `/orchestrate-tasks` (advanced, powerful) to start building!
 ```
+
+## Step 6: Save Handoff
+
+{{workflows/prompting/save-handoff}}
 
 {{UNLESS standards_as_claude_code_skills}}
 ## User Standards & Preferences Compliance

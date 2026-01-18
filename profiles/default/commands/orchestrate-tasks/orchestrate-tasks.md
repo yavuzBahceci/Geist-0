@@ -1,6 +1,8 @@
 # Process for Orchestrating a Spec's Implementation
 
-Now that we have a spec and tasks list ready for implementation, we will proceed with orchestrating implementation of each task group by a dedicated agent using the following MULTI-PHASE process.
+Now that we have a spec and tasks list ready for implementation, we will proceed with orchestrating the implementation by creating prompts for each task group.
+
+**Important:** This command generates implementation prompts - it does NOT execute implementation. Implementation happens separately when the generated prompt files are executed.
 
 Follow each of these phases and their individual workflows IN SEQUENCE:
 
@@ -11,30 +13,10 @@ Follow each of these phases and their individual workflows IN SEQUENCE:
 Before orchestrating tasks, extract basepoints knowledge to inform sub-agent context:
 
 ```bash
-# Check if basepoints exist
-if [ -d "agent-os/basepoints" ] && [ -f "agent-os/basepoints/headquarter.md" ]; then
-    # Determine spec path
-    SPEC_PATH="agent-os/specs/[current-spec]"
-    
-    # Extract basepoints knowledge for orchestration context
-    {{workflows/basepoints/extract-basepoints-knowledge-automatic}}
-    {{workflows/scope-detection/detect-abstraction-layer}}
-    {{workflows/scope-detection/detect-scope-semantic-analysis}}
-    {{workflows/scope-detection/detect-scope-keyword-matching}}
-    
-    # Load extracted knowledge for sub-agent context
-    if [ -f "$SPEC_PATH/implementation/cache/basepoints-knowledge.md" ]; then
-        EXTRACTED_KNOWLEDGE=$(cat "$SPEC_PATH/implementation/cache/basepoints-knowledge.md")
-    fi
-    
-    # Load detected layer for module matching
-    if [ -f "$SPEC_PATH/implementation/cache/detected-layer.txt" ]; then
-        DETECTED_LAYER=$(cat "$SPEC_PATH/implementation/cache/detected-layer.txt")
-    fi
-fi
+{{workflows/common/extract-basepoints-with-scope-detection}}
 ```
 
-If basepoints exist, the extracted knowledge will be used to:
+If basepoints exist, the extracted knowledge (`$EXTRACTED_KNOWLEDGE` and `$DETECTED_LAYER`) will be used to:
 - Match tasks to relevant module basepoints
 - Inject basepoint knowledge into sub-agent prompts
 - Provide coding patterns and standards context per task group
@@ -481,28 +463,32 @@ When generating prompts, include the relevant basepoints knowledge for that spec
 Output to user the following:
 
 ```
-Ready to begin implementation of [spec-title]!
+✅ Orchestration complete for [spec-title]!
 
 ✅ Basepoints knowledge extracted: [Yes / No basepoints found]
 ✅ Detected layer: [LAYER or unknown]
 ✅ Task groups matched to basepoints: [X of Y]
+✅ Implementation prompts generated: [X] prompt files created
 
-## Implementation Prompts
+## Implementation Prompts Generated
 
-[list prompt files in order, numbered]
+The following prompt files have been created in `agent-os/specs/[this-spec]/implementation/prompts/`:
 
-## How to Execute
+[list prompt files in order, numbered with full paths]
 
-Start by running prompt 1. Each prompt will:
-1. Implement its assigned task group
-2. Mark tasks complete in `tasks.md`
-3. Automatically proceed to the next prompt
+## Next Steps
 
-The agent will chain through all prompts until complete (or stop if human review is needed).
+**This orchestration command is now complete.** Implementation prompts have been generated and are ready for use.
+
+To execute implementation:
+1. Read the first prompt file: `agent-os/specs/[this-spec]/implementation/prompts/1-[first-task-group].md`
+2. Follow the instructions in that prompt to implement Task Group 1
+3. Each prompt will guide you through implementing its assigned task group
+4. After completing a prompt, manually proceed to the next prompt file
 
 Progress is tracked in: `agent-os/specs/[this-spec]/tasks.md`
 
-👉 Start with: "Run prompt 1" or paste the contents of the first prompt file.
+**Note:** Implementation happens separately by executing the prompt files. This orchestration command only generates the prompts - it does not perform implementation.
 ```
 
 ### Step 5: Run Validation
@@ -524,5 +510,9 @@ Generate a checklist of all resources consulted:
 ```bash
 {{workflows/basepoints/organize-and-cache-basepoints-knowledge}}
 ```
+
+### Step 7: Save Handoff
+
+{{workflows/prompting/save-handoff}}
 
 {{ENDUNLESS use_claude_code_subagents}}

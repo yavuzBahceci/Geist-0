@@ -5,30 +5,10 @@ Now that you have the task group(s) to be implemented, proceed with implementati
 Before implementing tasks, extract relevant basepoints knowledge to inform implementation:
 
 ```bash
-# Check if basepoints exist
-if [ -d "agent-os/basepoints" ] && [ -f "agent-os/basepoints/headquarter.md" ]; then
-    # Determine spec path
-    SPEC_PATH="agent-os/specs/[current-spec]"
-    
-    # Extract basepoints knowledge using scope detection
-    {{workflows/basepoints/extract-basepoints-knowledge-automatic}}
-    {{workflows/scope-detection/detect-abstraction-layer}}
-    {{workflows/scope-detection/detect-scope-semantic-analysis}}
-    {{workflows/scope-detection/detect-scope-keyword-matching}}
-    
-    # Load extracted knowledge for use in implementation
-    if [ -f "$SPEC_PATH/implementation/cache/basepoints-knowledge.md" ]; then
-        EXTRACTED_KNOWLEDGE=$(cat "$SPEC_PATH/implementation/cache/basepoints-knowledge.md")
-    fi
-    
-    # Load detected layer for module-specific patterns
-    if [ -f "$SPEC_PATH/implementation/cache/detected-layer.txt" ]; then
-        DETECTED_LAYER=$(cat "$SPEC_PATH/implementation/cache/detected-layer.txt")
-    fi
-fi
+{{workflows/common/extract-basepoints-with-scope-detection}}
 ```
 
-If basepoints exist, the extracted knowledge will be used to:
+If basepoints exist, the extracted knowledge (`$EXTRACTED_KNOWLEDGE` and `$DETECTED_LAYER`) will be used to:
 - Guide implementation with extracted patterns
 - Suggest reusable code and modules during implementation
 - Reference project-specific standards and coding patterns
@@ -103,6 +83,10 @@ Include in the implementation summary:
 - ✅ Standards referenced: [List from detected layer]
 - ✅ Validation: [PASSED / WARNINGS]
 - ✅ Resources consulted: See `implementation/cache/resources-consulted.md`
+
+## Step 7: Save Handoff
+
+{{workflows/prompting/save-handoff}}
 
 {{UNLESS standards_as_claude_code_skills}}
 ## User Standards & Preferences Compliance

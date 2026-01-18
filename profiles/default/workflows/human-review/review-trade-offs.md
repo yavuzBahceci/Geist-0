@@ -33,11 +33,18 @@ REVIEW_TRIGGERED="false"
 ### Step 2: Run Trade-off Detection
 
 ```bash
+# Determine workflow base path (agent-os when installed, profiles/default for template)
+if [ -d "agent-os/workflows" ]; then
+    WORKFLOWS_BASE="agent-os/workflows"
+else
+    WORKFLOWS_BASE="profiles/default/workflows"
+fi
+
 echo "📊 Running trade-off detection..."
 
 # Execute detect-trade-offs workflow
 # This workflow compares proposed approach against basepoints patterns
-source profiles/default/workflows/human-review/detect-trade-offs.md
+source "$WORKFLOWS_BASE/human-review/detect-trade-offs.md"
 
 # Check results
 if [ -f "$REVIEW_PATH/trade-offs.md" ]; then
@@ -59,7 +66,7 @@ echo "📏 Running contradiction detection..."
 
 # Execute detect-contradictions workflow
 # This workflow compares proposed approach against standards
-source profiles/default/workflows/human-review/detect-contradictions.md
+source "$WORKFLOWS_BASE/human-review/detect-contradictions.md"
 
 # Check results
 if [ -f "$REVIEW_PATH/contradictions.md" ]; then
@@ -112,7 +119,7 @@ if [ "$REVIEW_TRIGGERED" = "true" ]; then
     echo ""
     
     # Execute present-human-decision workflow
-    source profiles/default/workflows/human-review/present-human-decision.md
+    source "$WORKFLOWS_BASE/human-review/present-human-decision.md"
     
     # The presentation workflow will:
     # 1. Format all detected issues

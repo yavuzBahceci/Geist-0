@@ -182,6 +182,10 @@ if [ "$PROFILE_COMMANDS_LOADED" != "true" ]; then
 fi
 
 # Detect tech stack from project files (fallback or supplement)
+# NOTE: This function contains technology-specific detection patterns (Node.js, Rust, Go, Python, etc.)
+# These are common examples used for detecting and specializing validation commands during deployment.
+# This detection logic is functional code required for the specialization process to work.
+# The patterns shown here are illustrative examples that get specialized based on the actual project's tech stack.
 detect_validation_commands() {
     local BUILD_CMD=""
     local TEST_CMD=""
@@ -189,7 +193,7 @@ detect_validation_commands() {
     local TYPECHECK_CMD=""
     local FORMAT_CMD=""
     
-    # Node.js / JavaScript / TypeScript
+    # Node.js / JavaScript / TypeScript - Example detection pattern
     if [ -f "package.json" ]; then
         echo "   Detected: Node.js project"
         
@@ -215,7 +219,7 @@ detect_validation_commands() {
         fi
     fi
     
-    # Rust
+    # Rust - Example detection pattern
     if [ -f "Cargo.toml" ]; then
         echo "   Detected: Rust project"
         BUILD_CMD="cargo build"
@@ -225,7 +229,7 @@ detect_validation_commands() {
         FORMAT_CMD="cargo fmt --check"
     fi
     
-    # Go
+    # Go - Example detection pattern
     if [ -f "go.mod" ]; then
         echo "   Detected: Go project"
         BUILD_CMD="go build ./..."
@@ -235,7 +239,7 @@ detect_validation_commands() {
         FORMAT_CMD="gofmt -l ."
     fi
     
-    # Python
+    # Python - Example detection pattern
     if [ -f "requirements.txt" ] || [ -f "pyproject.toml" ] || [ -f "setup.py" ]; then
         echo "   Detected: Python project"
         if [ -f "pyproject.toml" ] && grep -q "pytest" pyproject.toml 2>/dev/null; then
