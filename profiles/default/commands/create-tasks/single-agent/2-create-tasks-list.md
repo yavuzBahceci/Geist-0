@@ -1,20 +1,97 @@
 Now that you have the spec.md AND/OR requirements.md, proceed with creating the tasks list.
 
-## Step 1: Extract Basepoints Knowledge (if basepoints exist)
+## Step 1: Load Accumulated Knowledge from write-spec
 
-Before creating the tasks list, extract relevant basepoints knowledge to inform task creation:
+First, load any accumulated knowledge from the previous write-spec command:
+
+```bash
+SPEC_PATH="agent-os/specs/[current-spec]"
+CACHE_PATH="$SPEC_PATH/implementation/cache"
+
+# Load accumulated knowledge from write-spec (which includes shape-spec knowledge)
+if [ -f "$CACHE_PATH/accumulated-knowledge.md" ]; then
+    PREVIOUS_KNOWLEDGE=$(cat "$CACHE_PATH/accumulated-knowledge.md")
+    echo "✅ Loaded accumulated knowledge from previous commands"
+else
+    PREVIOUS_KNOWLEDGE=""
+    echo "ℹ️ No accumulated knowledge found (shape-spec/write-spec may not have been run)"
+fi
+```
+
+## Step 2: Extract Basepoints Knowledge (if basepoints exist)
+
+Extract relevant basepoints knowledge to inform task creation:
 
 ```bash
 {{workflows/common/extract-basepoints-with-scope-detection}}
 ```
 
-If basepoints exist, the extracted knowledge (`$EXTRACTED_KNOWLEDGE` and `$DETECTED_LAYER`) will be used to:
+If basepoints exist, the extracted knowledge (`$EXTRACTED_KNOWLEDGE`, `$LIBRARY_KNOWLEDGE`, and `$DETECTED_LAYER`) will be used to:
 - Inform task breakdown with existing patterns
 - Suggest existing patterns and checkpoints from basepoints
 - Reference project-specific implementation strategies
 - Include relevant testing approaches in task creation
+- **Use library workflows and patterns to inform task structure**
+- **Include library-specific implementation guidance in tasks**
 
-## Step 2: Check for Trade-offs (if needed)
+## Step 2.5: Apply Narrow Focus + Expand Knowledge Strategy
+
+Apply the context enrichment strategy for create-tasks, building upon previous knowledge:
+
+```bash
+echo "🎯 Applying narrow focus + expand knowledge strategy..."
+
+# NARROW FOCUS: Scope to task breakdown
+# - Focus on breaking down spec into implementable tasks
+# - Filter knowledge to what's relevant for task structure
+
+# EXPAND KNOWLEDGE: Build upon previous knowledge
+# 1. Previous accumulated knowledge (from shape-spec + write-spec)
+# 2. Fresh basepoints knowledge extraction
+# 3. Fresh library basepoints knowledge
+# 4. Product documentation (tech stack for implementation context)
+
+# Load tech stack for implementation context
+TECH_STACK=""
+if [ -f "agent-os/product/tech-stack.md" ]; then
+    TECH_STACK=$(cat agent-os/product/tech-stack.md)
+fi
+
+# Combine all knowledge sources (building upon previous)
+ENRICHED_CONTEXT="
+# Enriched Context for Create-Tasks
+
+## Previous Knowledge (from shape-spec + write-spec)
+$PREVIOUS_KNOWLEDGE
+
+## Current Basepoints Knowledge
+$EXTRACTED_KNOWLEDGE
+
+## Library Workflows and Patterns
+$LIBRARY_KNOWLEDGE
+
+## Tech Stack (for implementation context)
+$TECH_STACK
+
+## Detected Abstraction Layer
+$DETECTED_LAYER
+"
+
+echo "✅ Context enriched (building upon shape-spec + write-spec):"
+echo "   - Previous accumulated knowledge"
+echo "   - Current basepoints patterns and standards"
+echo "   - Library workflows and implementation patterns"
+echo "   - Tech stack for implementation context"
+echo "   - Detected abstraction layer: $DETECTED_LAYER"
+```
+
+**Use the enriched context to:**
+- Structure tasks based on library workflows and patterns
+- Include library-specific implementation guidance in task descriptions
+- Reference existing patterns from basepoints in task hints
+- Ensure tasks align with tech stack capabilities
+
+## Step 3: Check for Trade-offs (if needed)
 
 Before creating tasks, check if trade-offs need to be reviewed:
 
@@ -22,13 +99,13 @@ Before creating tasks, check if trade-offs need to be reviewed:
 {{workflows/human-review/review-trade-offs}}
 ```
 
-## Step 3: Create Tasks List
+## Step 4: Create Tasks List
 
 Break down the spec and requirements into an actionable tasks list with strategic grouping and ordering, by following these instructions:
 
 {{workflows/implementation/create-tasks-list}}
 
-## Step 4: Run Validation
+## Step 5: Run Validation
 
 Before completing, run validation to ensure outputs are correct:
 
@@ -40,7 +117,7 @@ COMMAND="create-tasks"
 {{workflows/validation/generate-validation-report}}
 ```
 
-## Step 5: Generate Resource Checklist
+## Step 6: Generate Resource Checklist
 
 Generate a checklist of all resources consulted:
 
@@ -66,7 +143,25 @@ Review it closely to make sure it all looks good.
 👉 Run `/implement-tasks` (simple, effective) or `/orchestrate-tasks` (advanced, powerful) to start building!
 ```
 
-## Step 6: Save Handoff
+## Step 7: Accumulate Knowledge for Subsequent Commands
+
+Accumulate the enriched knowledge for subsequent commands (orchestrate-tasks, implement-tasks):
+
+```bash
+# Set variables for knowledge accumulation
+CURRENT_COMMAND="create-tasks"
+NEW_BASEPOINTS_KNOWLEDGE="$EXTRACTED_KNOWLEDGE"
+NEW_LIBRARY_KNOWLEDGE="$LIBRARY_KNOWLEDGE"
+NEW_PRODUCT_KNOWLEDGE="$TECH_STACK"
+
+# Accumulate knowledge (builds upon shape-spec + write-spec knowledge)
+{{workflows/common/accumulate-knowledge}}
+
+echo "✅ Knowledge accumulated for subsequent commands"
+echo "   Next command (orchestrate-tasks or implement-tasks) will build upon this enriched context"
+```
+
+## Step 8: Save Handoff
 
 {{workflows/prompting/save-handoff}}
 

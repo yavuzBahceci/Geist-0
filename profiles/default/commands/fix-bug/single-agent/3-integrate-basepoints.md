@@ -1,0 +1,228 @@
+# Phase 3: Basepoints Integration
+
+Extract relevant basepoints knowledge for the issue context.
+
+## Step 1: Load Previous Analysis
+
+Load the issue analysis and library research:
+
+```bash
+CACHE_PATH="agent-os/output/fix-bug/cache"
+
+# Load issue analysis
+if [ -f "$CACHE_PATH/issue-analysis.md" ]; then
+    ISSUE_ANALYSIS=$(cat "$CACHE_PATH/issue-analysis.md")
+    echo "✅ Loaded issue analysis"
+fi
+
+# Load library research
+if [ -f "$CACHE_PATH/library-research.md" ]; then
+    LIBRARY_RESEARCH=$(cat "$CACHE_PATH/library-research.md")
+    echo "✅ Loaded library research"
+fi
+
+# Extract affected modules
+AFFECTED_MODULES=$(grep -A 10 "### Modules" "$CACHE_PATH/issue-analysis.md" | grep -v "^#" | head -10)
+```
+
+## Step 2: Extract Basepoints Knowledge
+
+Extract knowledge from basepoints using scope detection:
+
+```bash
+echo "🔍 Extracting basepoints knowledge..."
+
+{{workflows/common/extract-basepoints-with-scope-detection}}
+
+if [ -n "$EXTRACTED_KNOWLEDGE" ]; then
+    echo "✅ Basepoints knowledge extracted"
+else
+    echo "⚠️ No basepoints found. Continuing without basepoints knowledge."
+fi
+
+if [ -n "$LIBRARY_KNOWLEDGE" ]; then
+    echo "✅ Library basepoints knowledge extracted"
+else
+    echo "⚠️ No library basepoints found."
+fi
+```
+
+## Step 3: Find Basepoints Describing Error Location
+
+Find basepoints that describe the modules/files where the error occurs:
+
+```bash
+echo "🔍 Finding basepoints for error location..."
+
+RELEVANT_BASEPOINTS=""
+
+for module in $AFFECTED_MODULES; do
+    if [ -z "$module" ]; then
+        continue
+    fi
+    
+    # Extract module name without extension
+    MODULE_NAME=$(basename "$module" | sed 's/\.[^.]*$//')
+    
+    # Search for basepoints mentioning this module
+    BASEPOINT_MATCHES=$(grep -rl "$MODULE_NAME" agent-os/basepoints/ 2>/dev/null)
+    
+    if [ -n "$BASEPOINT_MATCHES" ]; then
+        echo "   Found basepoints for: $MODULE_NAME"
+        RELEVANT_BASEPOINTS="${RELEVANT_BASEPOINTS}
+### $MODULE_NAME
+$BASEPOINT_MATCHES
+"
+    fi
+done
+
+echo "   Relevant basepoints found: $(echo "$RELEVANT_BASEPOINTS" | grep -c "###")"
+```
+
+## Step 4: Extract Patterns and Standards
+
+Extract patterns and standards related to the error context:
+
+```bash
+echo "🔍 Extracting patterns and standards..."
+
+RELEVANT_PATTERNS=""
+RELEVANT_STANDARDS=""
+
+# Extract patterns from basepoints knowledge
+if [ -n "$EXTRACTED_KNOWLEDGE" ]; then
+    # Look for patterns related to affected modules
+    for module in $AFFECTED_MODULES; do
+        MODULE_NAME=$(basename "$module" | sed 's/\.[^.]*$//')
+        
+        PATTERNS=$(echo "$EXTRACTED_KNOWLEDGE" | grep -A 10 -i "$MODULE_NAME" | grep -i "pattern")
+        if [ -n "$PATTERNS" ]; then
+            RELEVANT_PATTERNS="${RELEVANT_PATTERNS}
+### $MODULE_NAME Patterns
+$PATTERNS
+"
+        fi
+    done
+    
+    # Extract standards sections
+    RELEVANT_STANDARDS=$(echo "$EXTRACTED_KNOWLEDGE" | sed -n '/## Standards/,/^## /p' | head -50)
+fi
+
+echo "   Patterns extracted: $(echo "$RELEVANT_PATTERNS" | wc -l | tr -d ' ') lines"
+echo "   Standards extracted: $(echo "$RELEVANT_STANDARDS" | wc -l | tr -d ' ') lines"
+```
+
+## Step 5: Identify Similar Issues
+
+Search basepoints for similar issues or patterns:
+
+```bash
+echo "🔍 Searching for similar issues in basepoints..."
+
+SIMILAR_ISSUES=""
+
+# Extract error-related keywords from issue analysis
+ERROR_KEYWORDS=$(echo "$ISSUE_ANALYSIS" | grep -oE "[A-Za-z]+Error|[A-Za-z]+Exception|fail[a-z]*|crash[a-z]*" | sort -u)
+
+for keyword in $ERROR_KEYWORDS; do
+    if [ -z "$keyword" ]; then
+        continue
+    fi
+    
+    # Search basepoints for this keyword
+    MATCHES=$(grep -rl "$keyword" agent-os/basepoints/ 2>/dev/null | head -5)
+    
+    if [ -n "$MATCHES" ]; then
+        echo "   Found references for: $keyword"
+        SIMILAR_ISSUES="${SIMILAR_ISSUES}
+### $keyword
+$MATCHES
+"
+    fi
+done
+```
+
+## Step 6: Create Basepoints Integration Document
+
+Generate the basepoints integration document:
+
+```bash
+echo "📝 Creating basepoints integration document..."
+
+cat > "$CACHE_PATH/basepoints-integration.md" << 'INTEGRATION_EOF'
+# Basepoints Integration
+
+## Integration Summary
+- **Basepoints Available:** $BASEPOINTS_AVAILABLE
+- **Library Basepoints Available:** $([ -n "$LIBRARY_KNOWLEDGE" ] && echo "Yes" || echo "No")
+- **Detected Layer:** $DETECTED_LAYER
+
+---
+
+## Relevant Basepoints
+
+### For Error Location
+$RELEVANT_BASEPOINTS
+
+---
+
+## Extracted Patterns
+
+$RELEVANT_PATTERNS
+
+---
+
+## Relevant Standards
+
+$RELEVANT_STANDARDS
+
+---
+
+## Similar Issues Found
+
+$SIMILAR_ISSUES
+
+---
+
+## Library Basepoints Knowledge
+
+$LIBRARY_KNOWLEDGE
+
+---
+
+## Key Insights from Basepoints
+
+### Patterns to Apply
+[List patterns from basepoints that should be applied to fix this issue]
+
+### Standards to Follow
+[List standards that should guide the fix implementation]
+
+### Similar Solutions
+[Reference similar issues/solutions found in basepoints]
+
+---
+
+*Generated by fix-bug command - Phase 3*
+INTEGRATION_EOF
+
+echo "✅ Basepoints integration complete"
+echo "   Integration saved to: $CACHE_PATH/basepoints-integration.md"
+```
+
+## Display Progress and Next Step
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📦 PHASE 3: BASEPOINTS INTEGRATION COMPLETE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ Basepoints knowledge extracted
+✅ Relevant basepoints identified
+✅ Patterns and standards extracted
+✅ Similar issues found: [count]
+
+Integration saved to: agent-os/output/fix-bug/cache/basepoints-integration.md
+
+NEXT STEP 👉 Proceeding to Phase 4: Code Analysis
+```

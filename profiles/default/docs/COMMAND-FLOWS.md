@@ -8,6 +8,7 @@ This document provides detailed documentation of all commands in the Geist syste
 
 - [Specialization Commands](#specialization-commands)
   - [adapt-to-product](#1-adapt-to-product)
+  - [plan-product](#15-plan-product)
   - [create-basepoints](#2-create-basepoints)
   - [deploy-agents](#3-deploy-agents)
   - [cleanup-agent-os](#4-cleanup-agent-os)
@@ -18,6 +19,9 @@ This document provides detailed documentation of all commands in the Geist syste
   - [create-tasks](#8-create-tasks)
   - [implement-tasks](#9-implement-tasks)
   - [orchestrate-tasks](#10-orchestrate-tasks)
+  - [fix-bug](#11-fix-bug)
+- [Workflows](#workflows)
+  - [Product-Focused Cleanup](#product-focused-cleanup-workflow)
 - [Command Cycle Flow](#command-cycle-flow)
 - [Knowledge Integration](#knowledge-integration)
 
@@ -43,6 +47,9 @@ These commands are used during initial setup to create and specialize your Agent
 - `agent-os/product/tech-stack.md`
 - `agent-os/config/project-profile.yml`
 - `agent-os/config/enriched-knowledge/`
+- `agent-os/output/product-cleanup/detected-scope.yml` (NEW)
+- `agent-os/output/product-cleanup/search-queries.md` (NEW)
+- `agent-os/output/product-cleanup/cleanup-report.md` (NEW)
 
 #### Phases
 
@@ -99,7 +106,21 @@ Phase 5: Create Tech Stack
 Phase 6: Review & Combine Knowledge
 └── Verify consistency, combine into unified knowledge
 
-Phase 7: Navigate to Next Command
+Phase 7: Product-Focused Cleanup (NEW)
+├── Step 1: Load product scope detection sources
+│   └── Read: tech-stack.md, mission.md, roadmap.md
+├── Step 2: Parse and categorize detected scope
+│   └── Detect: language, framework, project type, architecture
+├── Step 3: Phase A - Simplify
+│   └── Remove: irrelevant tech examples, unused workflows
+├── Step 4: Phase B - Expand
+│   └── Add: tech-specific patterns, web-validated best practices
+├── Step 5: Web search for trusted information
+│   └── Validate: 2+ sources required
+└── Step 6: Generate cleanup report
+    └── Output: agent-os/output/product-cleanup/
+
+Phase 8: Navigate to Next Command
 └── Display: "NEXT STEP: Run /create-basepoints"
 ```
 
@@ -125,6 +146,64 @@ Phase 7: Navigate to Next Command
 | Compliance requirements | Regulatory, not in code | Code analysis |
 | Human review preference | Subjective user choice | Code analysis |
 | (Only if ambiguous) | Detection confidence < 80% | Varies |
+
+---
+
+### 1.5. plan-product
+
+**Purpose**: Plan and document the mission, roadmap, and tech stack for a new product (no existing codebase).
+
+**Location**: `commands/plan-product/`
+
+**Prerequisites**: None (for new projects without existing codebase)
+
+**Outputs**:
+- `agent-os/product/mission.md`
+- `agent-os/product/roadmap.md`
+- `agent-os/product/tech-stack.md`
+- `agent-os/output/product-cleanup/detected-scope.yml`
+- `agent-os/output/product-cleanup/search-queries.md`
+- `agent-os/output/product-cleanup/cleanup-report.md`
+
+#### Phases
+
+```
+Phase 1: Product Concept
+├── Gather product vision
+├── Define target users
+├── Identify problems to solve
+└── List key features
+
+Phase 2: Create Mission
+└── Generate: agent-os/product/mission.md
+
+Phase 3: Create Roadmap
+└── Generate: agent-os/product/roadmap.md
+
+Phase 4: Create Tech Stack
+└── Generate: agent-os/product/tech-stack.md
+
+Phase 5: Product-Focused Cleanup (NEW)
+├── Step 1: Load product scope detection sources
+│   └── Read: tech-stack.md, mission.md, roadmap.md
+├── Step 2: Parse and categorize detected scope
+│   └── Detect: language, framework, project type, architecture
+├── Step 3: Phase A - Simplify
+│   └── Remove: irrelevant tech examples, unused workflows
+├── Step 4: Phase B - Expand
+│   └── Add: tech-specific patterns, web-validated best practices
+├── Step 5: Web search for trusted information
+│   └── Validate: 2+ sources required
+└── Step 6: Generate cleanup report
+    └── Output: agent-os/output/product-cleanup/
+```
+
+#### When to Use
+
+| Scenario | Command |
+|----------|---------|
+| Starting new project from scratch | `/plan-product` |
+| Have existing codebase | `/adapt-to-product` |
 
 ---
 
@@ -182,6 +261,19 @@ Phase 6: Generate Parent Basepoints
 
 Phase 7: Generate Headquarter
 └── Create: headquarter.md (project overview)
+
+Phase 8: Generate Library Basepoints (NEW)
+├── Validate prerequisites (tech-stack.md, headquarter.md)
+└── {{workflows/codebase-analysis/generate-library-basepoints}}
+    ├── Load product knowledge (tech-stack.md)
+    ├── Extract library usage from module basepoints
+    ├── Analyze codebase for implementation patterns
+    ├── Research official documentation (depth by importance)
+    ├── Classify importance (critical, important, supporting)
+    ├── Categorize (data, domain, util, infrastructure, framework)
+    ├── Generate library basepoint files
+    ├── Detect solution-specific patterns
+    └── Create library index
 ```
 
 #### Knowledge Extracted
@@ -211,6 +303,8 @@ Phase 7: Generate Headquarter
 - Specialized workflows in `agent-os/workflows/`
 - Specialized standards in `agent-os/standards/`
 - Configured validation commands
+- Deployment report in `agent-os/output/deploy-agents/`
+- Navigation guidance to `/cleanup-agent-os`
 
 #### Phases
 
@@ -273,7 +367,26 @@ Phase 10: Specialize Workflows
 Phase 11: Adapt Structure & Finalize
 ├── Run: comprehensive validation
 └── Generate: deployment report
+
+Phase 12: Optimize Prompts
+└── Generate: context sections for commands
+
+Phase 13: Apply Prompt Optimizations
+└── Inject: approved context sections into templates
+
+Phase 14: Navigate to Cleanup
+├── Display: summary of accomplishments
+├── List: specialized directories
+└── Recommend: /cleanup-agent-os
 ```
+
+#### What's Next
+
+After `/deploy-agents` completes, run `/cleanup-agent-os` to:
+- Verify all placeholders are properly replaced
+- Check for broken file references
+- Ensure knowledge completeness
+- Generate a cleanup report
 
 #### Specialization Details
 
@@ -683,6 +796,170 @@ SPEC_PATH="agent-os/specs/[spec]"
 
 ---
 
+### 11. fix-bug
+
+**Purpose**: Analyze and fix bugs or implement feedback through systematic knowledge extraction and iterative fixing.
+
+**Location**: `commands/fix-bug/`
+
+**Prerequisites**: Deployed Agent OS (for basepoints integration)
+
+**Inputs**:
+- Bug reports (error logs, stack traces, error codes)
+- Feedback (feature requests, enhancement suggestions)
+
+**Outputs**:
+- `agent-os/output/fix-bug/cache/issue-analysis.md`
+- `agent-os/output/fix-bug/cache/library-research.md`
+- `agent-os/output/fix-bug/cache/basepoints-integration.md`
+- `agent-os/output/fix-bug/cache/code-analysis.md`
+- `agent-os/output/fix-bug/cache/knowledge-synthesis.md`
+- `agent-os/output/fix-bug/cache/fix-report.md` (on success)
+- `agent-os/output/fix-bug/cache/guidance-request.md` (on stop condition)
+
+#### Phases
+
+```
+Phase 1: Issue Analysis
+├── Identify input type (bug/feedback)
+├── Extract details from error logs, codes, descriptions
+├── Identify affected libraries and modules
+└── Create issue analysis document
+
+Phase 2: Library Research
+├── Research internal architecture of affected libraries
+├── Research known issues and bug patterns
+├── Research error scenarios and recovery strategies
+└── Create library research document
+
+Phase 3: Basepoints Integration
+├── Extract basepoints knowledge
+│   └── {{workflows/common/extract-basepoints-with-scope-detection}}
+├── Find basepoints describing error location
+├── Extract patterns and standards related to error context
+├── Identify similar issues in basepoints
+└── Create basepoints integration document
+
+Phase 4: Code Analysis
+├── Identify exact file/module locations from error logs
+├── Deep-dive into relevant code files
+├── Analyze code patterns and flows in error context
+├── Trace execution paths leading to error
+└── Create code analysis document
+
+Phase 5: Knowledge Synthesis
+├── Combine all knowledge sources
+├── Create unified view of issue context
+├── Prioritize fix approaches
+├── Prepare knowledge for fix implementation
+└── Create knowledge synthesis document
+
+Phase 6: Iterative Fix Implementation
+├── Implement initial fix using synthesized knowledge
+├── Apply library-specific patterns and best practices
+├── Follow basepoints patterns and standards
+├── Run validation after each fix attempt
+├── Iterative refinement loop:
+│   ├── If getting closer → continue iterating
+│   ├── If worsening → track counter
+│   └── Stop after 3 worsening results
+└── Output:
+    ├── On success → fix-report.md
+    └── On stop condition → guidance-request.md
+```
+
+#### Iterative Fix Behavior
+
+| Condition | Action |
+|-----------|--------|
+| Error count decreases | Continue iterating |
+| Error count same/increases | Increment worsening counter |
+| 3 worsening results | Stop and request guidance |
+| Error resolved | Generate success report |
+
+---
+
+## Workflows
+
+### Product-Focused Cleanup Workflow
+
+**Purpose**: Clean irrelevant content and enhance agent-os files based on detected product scope.
+
+**Location**: `workflows/cleanup/product-focused-cleanup.md`
+
+**Called By**:
+- `/adapt-to-product` (Phase 7)
+- `/plan-product` (Phase 5)
+
+**Inputs**:
+- `agent-os/product/tech-stack.md` - Language, framework detection
+- `agent-os/product/mission.md` - Project type detection
+- `agent-os/product/roadmap.md` - Architecture detection
+
+**Outputs**:
+- `agent-os/output/product-cleanup/detected-scope.yml`
+- `agent-os/output/product-cleanup/search-queries.md`
+- `agent-os/output/product-cleanup/cleanup-report.md`
+
+#### Workflow Steps
+
+```
+Step 1: Load Product Scope Detection Sources
+├── Read tech-stack.md for language/framework
+├── Read mission.md for project type
+└── Read roadmap.md for architecture
+
+Step 2: Parse and Categorize Detected Scope
+├── detect_language() → typescript, python, rust, go, etc.
+├── detect_frameworks() → react, express, fastapi, etc.
+├── detect_project_type() → cli, api, webapp, mobile, library, ai-service
+└── detect_architecture() → monolith, microservices, serverless
+
+Step 3: Phase A - Simplify
+├── Define removal rules based on scope
+├── Process agent-os/commands/
+├── Process agent-os/workflows/
+├── Process agent-os/standards/
+└── Process agent-os/agents/
+
+Step 4: Phase B - Expand
+├── Define enhancement rules based on scope
+├── Add technology-specific examples
+├── Generate patterns based on best practices
+└── Inject project-specific terminology
+
+Step 5: Web Search for Trusted Information
+├── Generate targeted queries for detected stack
+├── Validate: require 2+ independent sources
+├── Prioritize: Official docs > Blogs > Stack Overflow
+└── Include version-specific guidance
+
+Step 6: Generate Cleanup Report
+├── List files modified
+├── List content removed (with reasons)
+├── List content added (with sources)
+└── Save to agent-os/output/product-cleanup/
+```
+
+#### Scope Detection Criteria
+
+| Criterion | Detection Source | Example Values |
+|-----------|------------------|----------------|
+| Language | tech-stack.md | typescript, python, rust, go |
+| Framework | tech-stack.md | react, express, fastapi, rails |
+| Project Type | mission.md | cli, api, webapp, mobile, library |
+| Architecture | tech-stack.md, roadmap.md | monolith, microservices, serverless |
+
+#### Example Cleanup Scenarios
+
+| Project Type | Remove | Enhance |
+|--------------|--------|---------|
+| TypeScript CLI | UI workflows, frontend patterns | CLI patterns, Node.js best practices |
+| Python REST API | Frontend workflows, TypeScript examples | Python patterns, FastAPI examples |
+| Full-Stack React + Node | Mobile patterns | React + Node.js patterns |
+
+---
+
 ## Command Cycle Flow
 
 The complete development cycle from spec to implementation:
@@ -742,6 +1019,63 @@ The complete development cycle from spec to implementation:
 
 ## Knowledge Integration
 
+### Context Enrichment Strategy
+
+All spec/implementation commands follow a consistent "narrow focus + expand knowledge" strategy:
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    CONTEXT ENRICHMENT STRATEGY                               │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+For each command:
+1. NARROW FOCUS: Scope to specific task (spec, task group, feature)
+2. EXPAND KNOWLEDGE: Extract from multiple sources:
+   ├── Basepoints knowledge
+   ├── Library basepoints knowledge (NEW)
+   ├── Product documentation
+   └── Codebase navigation
+
+3. ACCUMULATE: Each command builds upon previous command's knowledge
+   shape-spec → write-spec → create-tasks → orchestrate-tasks → implement-tasks
+```
+
+### Library Basepoints Knowledge Extraction
+
+A new workflow extracts knowledge from library basepoints:
+
+```
+{{workflows/common/extract-library-basepoints-knowledge}}
+
+Extracts from: agent-os/basepoints/libraries/
+├── data/           - Data access, databases, ORM
+├── domain/         - Domain logic, business rules
+├── util/           - Utilities, helpers
+├── infrastructure/ - Networking, HTTP, threading
+└── framework/      - Framework components, UI
+
+Knowledge extracted:
+├── Library patterns and workflows
+├── Best practices from official documentation
+├── Troubleshooting guidance
+└── Library boundaries (what is/isn't used)
+```
+
+### Knowledge Accumulation
+
+Knowledge accumulates across commands using:
+
+```
+{{workflows/common/accumulate-knowledge}}
+
+Stored in: $SPEC_PATH/implementation/cache/accumulated-knowledge.md
+
+Each command:
+1. Loads previous accumulated knowledge
+2. Extracts fresh knowledge
+3. Combines and stores for next command
+```
+
 ### Knowledge Sources
 
 ```
@@ -782,16 +1116,17 @@ The complete development cycle from spec to implementation:
 
 ### Knowledge Usage by Command
 
-| Command | Detection | Research | Basepoints | Product |
-|---------|-----------|----------|------------|---------|
-| adapt-to-product | ✅ Creates | ✅ Creates | - | ✅ Creates |
-| create-basepoints | ✅ Loads | ✅ Adds | ✅ Creates | ✅ Uses |
-| deploy-agents | ✅ Uses | ✅ Uses | ✅ Uses | ✅ Uses |
-| shape-spec | - | - | ✅ Extracts | - |
-| write-spec | - | - | ✅ Uses | - |
-| create-tasks | - | - | ✅ Uses | - |
-| implement-tasks | - | - | ✅ Uses | - |
-| orchestrate-tasks | - | - | ✅ Injects | - |
+| Command | Detection | Research | Basepoints | Library Basepoints | Product | Accumulates |
+|---------|-----------|----------|------------|-------------------|---------|-------------|
+| adapt-to-product | ✅ Creates | ✅ Creates | - | - | ✅ Creates | - |
+| create-basepoints | ✅ Loads | ✅ Adds | ✅ Creates | ✅ Creates | ✅ Uses | - |
+| deploy-agents | ✅ Uses | ✅ Uses | ✅ Uses | ✅ Uses | ✅ Uses | - |
+| shape-spec | - | - | ✅ Extracts | ✅ Extracts | ✅ Uses | ✅ Yes |
+| write-spec | - | - | ✅ Uses | ✅ Uses | ✅ Uses | ✅ Yes |
+| create-tasks | - | - | ✅ Uses | ✅ Uses | ✅ Uses | ✅ Yes |
+| implement-tasks | - | - | ✅ Uses | ✅ Uses | ✅ Uses | ✅ Yes |
+| orchestrate-tasks | - | - | ✅ Injects | ✅ Injects | - | - |
+| fix-bug | - | ✅ Creates | ✅ Uses | ✅ Uses | - | - |
 
 ---
 

@@ -447,7 +447,7 @@ Breaking the chain = missing files = next command fails
 
 **Output Files**:
 - `agent-os/product/mission.md`
-- `agent-os/product/roadmap.md`  
+- `agent-os/product/roadmap.md`
 - `agent-os/product/tech-stack.md`
 - `agent-os/config/project-profile.yml`
 - `agent-os/config/enriched-knowledge/`
@@ -638,7 +638,7 @@ Commands don't execute code directly—they chain workflows together in sequence
        │ ═════════════════════════════════════════════════════
        │ Step 1: Extract Basepoints Knowledge
        ▼
-  ┌─────────────────────────────────────────────────────────────┐
+┌─────────────────────────────────────────────────────────────┐
   │  Workflow: extract-basepoints-with-scope-detection         │
   │                                                             │
   │  This workflow internally chains 4 sub-workflows:          │
@@ -677,13 +677,13 @@ Commands don't execute code directly—they chain workflows together in sequence
   │  │   ├─ basepoints-knowledge.md                  │         │
   │  │   └─ detected-layer.txt                       │         │
   │  └───────────────────────────────────────────────┘         │
-  └─────────────────────────────────────────────────────────────┘
+└─────────────────────────────────────────────────────────────┘
        │
        │ ═════════════════════════════════════════════════════
        │ Step 2: Research Requirements
        │        (Uses files from Step 1)
        ▼
-  ┌─────────────────────────────────────────────────────────────┐
+┌─────────────────────────────────────────────────────────────┐
   │  Workflow: research-spec                                    │
   │                                                             │
   │  INPUTS:                                                    │
@@ -711,7 +711,7 @@ Commands don't execute code directly—they chain workflows together in sequence
   │  ✅ basepoints-knowledge.md exists?                        │
   │                                                             │
   │  If all checks pass → Command succeeds                      │
-  └─────────────────────────────────────────────────────────────┘
+└─────────────────────────────────────────────────────────────┘
 ```
 
 ### Workflow Reuse: How Same Workflows Are Used Across Commands
@@ -724,7 +724,7 @@ The same workflows are reused across multiple commands for consistency:
 └─────────────────────────────────────────────────────────────────┘
 
   Shared Workflow: extract-basepoints-with-scope-detection
-  ┌─────────────────────────────────────────────────────────────┐
+┌─────────────────────────────────────────────────────────────┐
   │                                                             │
   │  (Defined once, used everywhere)                           │
   │                                                             │
@@ -954,34 +954,49 @@ During `/deploy-agents`, these get transformed:
 
 ```
 profiles/default/
-├── commands/              # Abstract commands (templates)
-│   ├── adapt-to-product/
-│   ├── create-basepoints/
-│   ├── deploy-agents/
-│   ├── shape-spec/
-│   ├── write-spec/
-│   ├── create-tasks/
-│   ├── implement-tasks/
-│   └── orchestrate-tasks/
+├── commands/                    # Abstract commands (templates)
+│   ├── adapt-to-product/        # Setup: Extract product info
+│   ├── plan-product/            # Setup: Plan new product
+│   ├── create-basepoints/       # Setup: Create codebase docs
+│   ├── deploy-agents/           # Setup: Specialize commands
+│   ├── cleanup-agent-os/        # Maintenance: Verify deployment
+│   ├── update-basepoints-and-redeploy/  # Maintenance: Sync changes
+│   ├── shape-spec/              # Development: Research requirements
+│   ├── write-spec/              # Development: Write specification
+│   ├── create-tasks/            # Development: Break into tasks
+│   ├── implement-tasks/         # Development: Single-agent impl
+│   ├── orchestrate-tasks/       # Development: Multi-agent impl
+│   └── fix-bug/                 # Utility: Analyze & fix bugs
 │
-├── workflows/             # Reusable workflow templates
-│   ├── basepoints/        # Knowledge extraction
-│   ├── detection/         # Auto-detection
-│   ├── research/          # Web research
-│   ├── validation/        # Validation utilities
-│   ├── specification/     # Spec writing
-│   └── common/            # Common patterns (NEW)
+├── workflows/                   # Reusable workflow templates
+│   ├── basepoints/              # Knowledge extraction
+│   ├── codebase-analysis/       # Codebase analysis & basepoints
+│   ├── common/                  # Shared workflows
+│   ├── detection/               # Auto-detection
+│   ├── research/                # Web research
+│   ├── validation/              # Validation utilities
+│   ├── specification/           # Spec writing
+│   ├── implementation/          # Task implementation
+│   ├── learning/                # Session learning
+│   └── cleanup/                 # Cleanup workflows
 │
-├── standards/             # Global standards (abstract)
-│   └── global/
+├── standards/                   # Global standards (abstract)
+│   ├── global/                  # Cross-cutting standards
+│   ├── documentation/           # Doc standards
+│   ├── process/                 # Process standards
+│   ├── quality/                 # Quality standards
+│   └── testing/                 # Testing standards
 │
-├── agents/                # Agent definitions
+├── agents/                      # Agent definitions
 │
-└── docs/                  # Documentation
-    ├── COMMAND-FLOWS.md
-    ├── INSTALLATION-GUIDE.md
+└── docs/                        # Documentation
+    ├── COMMAND-FLOWS.md         # Detailed command flows
+    ├── WORKFLOW-MAP.md          # Visual workflow map
+    ├── INSTALLATION-GUIDE.md    # Installation guide
+    ├── PATH-REFERENCE-GUIDE.md  # Path conventions
     ├── REFACTORING-GUIDELINES.md
-    └── TECHNOLOGY-AGNOSTIC-BEST-PRACTICES.md
+    ├── TECHNOLOGY-AGNOSTIC-BEST-PRACTICES.md
+    └── command-references/      # Per-command visual guides
 ```
 
 **After specialization** (in your project's `agent-os/` folder):
@@ -1054,6 +1069,8 @@ agent-os/
 **Detailed guides**:
 - [INSTALLATION-GUIDE.md](docs/INSTALLATION-GUIDE.md) - Step-by-step installation
 - [COMMAND-FLOWS.md](docs/COMMAND-FLOWS.md) - Detailed command documentation
+- [WORKFLOW-MAP.md](docs/WORKFLOW-MAP.md) - Visual workflow reference
+- [command-references/](docs/command-references/) - Per-command visual guides
 - [REFACTORING-GUIDELINES.md](docs/REFACTORING-GUIDELINES.md) - How to maintain templates
 
 ---

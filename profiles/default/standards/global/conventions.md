@@ -9,3 +9,18 @@
 - **Testing Requirements**: Define what level of testing is required before merging (unit tests, integration tests, etc.)
 - **Feature Flags**: Use feature flags for incomplete features rather than long-lived feature branches
 - **Changelog Maintenance**: Keep a changelog or release notes to track significant changes and improvements
+
+## Agent OS Output Conventions
+
+**CRITICAL: All outputs MUST go to `agent-os/` directory**
+
+- **All generated files** must be written under `agent-os/` - never to project root or other directories
+- **Specs**: `agent-os/specs/[date]-[name]/`
+- **Product docs**: `agent-os/product/`
+- **Basepoints**: `agent-os/basepoints/`
+- **Config**: `agent-os/config/`
+- **Reports/outputs**: `agent-os/output/`
+- **Plans**: `agent-os/output/plans/` (NOT `plans/` at root)
+- **Caches**: `agent-os/output/cache/` or `agent-os/specs/[spec]/implementation/cache/`
+
+This keeps the project root clean and all AI-generated content contained in one predictable location.

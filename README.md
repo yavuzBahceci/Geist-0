@@ -1,6 +1,42 @@
 # Geist
 
-### Agent OS, for any project.
+<p align="center">
+  <strong>Your AI assistant that actually knows your codebase.</strong>
+</p>
+
+<p align="center">
+  Stop explaining your patterns every prompt. Geist documents them once, injects them automatically.
+</p>
+
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
+  <a href="#quick-start"><img src="https://img.shields.io/badge/setup-~20min-green.svg" alt="Setup: ~20min"></a>
+  <a href="profiles/default/docs/COMMAND-FLOWS.md"><img src="https://img.shields.io/badge/commands-13-orange.svg" alt="Commands: 13"></a>
+  <a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome"></a>
+</p>
+
+---
+
+> **TL;DR**: Install AI commands that know YOUR codebase. Works with any project type—web, mobile, CLI, embedded, anything.
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                                                                             │
+│   WITHOUT GEIST                          WITH GEIST                         │
+│   ─────────────                          ──────────                         │
+│                                                                             │
+│   You: "Add auth. We use React,          You: "/shape-spec Add auth"        │
+│   TypeScript, Zustand for state,                                            │
+│   our auth patterns are in                AI already knows:                 │
+│   src/features/auth, we follow            • Your tech stack                 │
+│   this naming convention..."              • Your patterns                   │
+│                                           • Your conventions                │
+│   Every. Single. Time.                    • Your architecture               │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
 
 Geist extends [Agent OS](https://buildermethods.com/agent-os) to work with any project—not just full-stack web apps. It detects your tech stack automatically, documents your codebase patterns, and specializes commands to match how you actually build.
 
@@ -43,6 +79,19 @@ Geist extends [Agent OS](https://buildermethods.com/agent-os) to work with any p
 ```
 
 **Key idea**: Templates are project-agnostic. Specialization makes them project-specific. You get commands that understand YOUR codebase, not generic ones that assume web development.
+
+---
+
+## Why Geist?
+
+| Without Geist | With Geist |
+|---------------|------------|
+| Explain your patterns every prompt | Patterns documented once, used automatically |
+| AI generates generic code | AI generates code matching YOUR style |
+| Manual validation | Automatic validation with YOUR commands |
+| Context lost between sessions | Context persists in basepoints |
+| "Use our auth pattern in src/auth..." | Just run `/shape-spec "Add auth"` |
+| Works for one project type | Works for ANY project type |
 
 ---
 
@@ -95,13 +144,15 @@ You run three commands to specialize the templates for your project:
   ├─ Detects: Tech stack from config files (package.json, etc.)
   ├─ Researches: Best practices, CVEs, known issues
   ├─ Asks: Only 2-3 questions (compliance, review preference)
+  ├─ Cleans: Removes irrelevant tech, expands relevant patterns (NEW)
   │
   └─ Creates:
       ├─ product/mission.md
       ├─ product/roadmap.md
       ├─ product/tech-stack.md
       ├─ config/project-profile.yml
-      └─ config/enriched-knowledge/
+      ├─ config/enriched-knowledge/
+      └─ output/product-cleanup/ (cleanup report)
        │
        ▼
   /create-basepoints
@@ -125,6 +176,16 @@ You run three commands to specialize the templates for your project:
   │
   └─ Outputs:
       └─ Specialized commands/ (ready to use)
+       │
+       ▼
+  /cleanup-agent-os  (guided by deploy-agents)
+  │
+  ├─ Verifies: All placeholders replaced
+  ├─ Checks: No broken file references
+  ├─ Ensures: Knowledge completeness
+  │
+  └─ Outputs:
+      └─ Cleanup report
        │
        ▼
   ✅ READY - Commands now know your project
@@ -248,7 +309,7 @@ After specialization, you use commands to build features. **These must run in or
   │  • Your codebase            │
   └───────────┬─────────────────┘
               │
-              │ Creates:
+              │ Creates + Cleans:
               ▼
   ┌───────────────────────────────────────────┐
   │  OUTPUT FILES                             │
@@ -256,7 +317,11 @@ After specialization, you use commands to build features. **These must run in or
   │  ├─ product/roadmap.md                    │
   │  ├─ product/tech-stack.md                 │
   │  ├─ config/project-profile.yml            │
-  │  └─ config/enriched-knowledge/            │
+  │  ├─ config/enriched-knowledge/            │
+  │  └─ output/product-cleanup/               │
+  │     ├─ detected-scope.yml (NEW)           │
+  │     ├─ search-queries.md (NEW)            │
+  │     └─ cleanup-report.md (NEW)            │
   └───────────┬───────────────────────────────┘
               │
               │ Command 2 reads these files
@@ -835,7 +900,8 @@ cd /path/to/your/project
 # 3. Specialize (one-time setup)
 /adapt-to-product     # Detects everything, asks 2-3 questions
 /create-basepoints    # Documents your codebase (~10-20 min)
-/deploy-agents        # Specializes commands (~2-5 min)
+/deploy-agents        # Specializes commands → guides to cleanup
+/cleanup-agent-os     # Validates deployment
 
 # 4. Build a feature
 /shape-spec "Add user authentication"
@@ -869,7 +935,10 @@ cd /path/to/your/project
 - **[profiles/default/README.md](profiles/default/README.md)** - Detailed usage guide
 - **[profiles/default/docs/COMMAND-FLOWS.md](profiles/default/docs/COMMAND-FLOWS.md)** - Command documentation
 - **[profiles/default/docs/INSTALLATION-GUIDE.md](profiles/default/docs/INSTALLATION-GUIDE.md)** - Step-by-step setup
+- **[profiles/default/docs/TROUBLESHOOTING.md](profiles/default/docs/TROUBLESHOOTING.md)** - Common issues and solutions
+- **[profiles/default/docs/KNOWLEDGE-SYSTEMS.md](profiles/default/docs/KNOWLEDGE-SYSTEMS.md)** - How knowledge flows
 - **[MANIFEST.md](MANIFEST.md)** - Philosophy and motivation
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - How to contribute
 
 ---
 

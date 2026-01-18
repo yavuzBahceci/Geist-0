@@ -6,6 +6,7 @@ You are helping to adapt an existing codebase into product documentation by anal
 - **Roadmap**: Create a phased development plan with prioritized features
 - **Tech stack**: Establish the technical stack used for all aspects of this product's codebase
 - **Review and Combine**: Analyze all product documents together, verify consistency, and create summary
+- **Product-Focused Cleanup**: Simplify and enhance agent-os files based on detected product scope
 - **Navigate to Next**: Provide summary of accomplishments and guide to next command
 
 Carefully read and execute the instructions in the following files IN SEQUENCE, following their numbered file names.  Only proceed to the next numbered instruction file once the previous numbered instruction has been executed.
@@ -24,4 +25,6 @@ Instructions to follow in sequence:
 
 {{PHASE 6: @agent-os/commands/adapt-to-product/6-review-and-combine-knowledge.md}}
 
-{{PHASE 7: @agent-os/commands/adapt-to-product/7-navigate-to-next-command.md}}
+{{PHASE 7: @agent-os/commands/adapt-to-product/7-product-focused-cleanup.md}}
+
+{{PHASE 8: @agent-os/commands/adapt-to-product/8-navigate-to-next-command.md}}

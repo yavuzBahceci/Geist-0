@@ -78,32 +78,107 @@ for standard_file in $EXISTING_STANDARDS; do
 done
 ```
 
-### Step 3: Specialize Standards Based on Project
+### Step 3: Classify Standards as Project-Wide vs Module-Specific
 
-Update standards with project-specific patterns from basepoints:
+Before specializing standards, classify extracted patterns to include only project-wide patterns:
 
 ```bash
+echo "📊 Classifying standards patterns..."
+
 # Extract standards-related patterns from basepoints
 BASEPOINT_STANDARDS=$(extract_standards_from_basepoints "$BASEPOINTS_KNOWLEDGE")
+
+# Define cross-cutting concern keywords (always project-wide)
+CROSS_CUTTING_KEYWORDS="testing|test|lint|linting|naming|convention|error|handling|sdd|documentation|logging|security|authentication|validation|formatting|style"
+
+# Initialize classification collections
+PROJECT_WIDE_PATTERNS=""
+MODULE_SPECIFIC_PATTERNS=""
+
+# Classify each pattern
+classify_pattern() {
+    local pattern_name="$1"
+    local pattern_content="$2"
+    local pattern_sources="$3"  # Which modules this pattern appears in
+    
+    # Count how many modules this pattern appears in
+    local module_count=$(echo "$pattern_sources" | tr ',' '\n' | wc -l | tr -d ' ')
+    
+    # Check if pattern is a cross-cutting concern
+    local is_cross_cutting=$(echo "$pattern_name" | grep -iE "$CROSS_CUTTING_KEYWORDS" && echo "true" || echo "false")
+    
+    # Classification logic:
+    # 1. Cross-cutting concerns are always project-wide
+    # 2. Patterns appearing in 3+ modules are project-wide
+    # 3. Patterns appearing in 1-2 modules are module-specific
+    
+    if [ "$is_cross_cutting" = "true" ]; then
+        echo "project-wide:cross-cutting"
+    elif [ "$module_count" -ge 3 ]; then
+        echo "project-wide:multi-module"
+    else
+        echo "module-specific"
+    fi
+}
+
+# Process each pattern from basepoints
+echo "$BASEPOINT_STANDARDS" | while IFS='|' read -r pattern_name pattern_content pattern_sources; do
+    if [ -z "$pattern_name" ]; then
+        continue
+    fi
+    
+    CLASSIFICATION=$(classify_pattern "$pattern_name" "$pattern_content" "$pattern_sources")
+    
+    case "$CLASSIFICATION" in
+        project-wide:*)
+            echo "   ✅ Project-wide: $pattern_name (${CLASSIFICATION#project-wide:})"
+            PROJECT_WIDE_PATTERNS="${PROJECT_WIDE_PATTERNS}${pattern_name}|${pattern_content}\n"
+            ;;
+        module-specific)
+            echo "   📦 Module-specific (kept in basepoints): $pattern_name"
+            MODULE_SPECIFIC_PATTERNS="${MODULE_SPECIFIC_PATTERNS}${pattern_name}|${pattern_content}\n"
+            ;;
+    esac
+done
+
+echo ""
+echo "📋 Classification Summary:"
+echo "   Project-wide patterns: $(echo -e "$PROJECT_WIDE_PATTERNS" | grep -c '|')"
+echo "   Module-specific patterns (kept in basepoints): $(echo -e "$MODULE_SPECIFIC_PATTERNS" | grep -c '|')"
+```
+
+### Step 4: Specialize Standards with Project-Wide Patterns Only
+
+Update standards with ONLY project-wide patterns from basepoints:
+
+```bash
+echo "📝 Specializing standards with project-wide patterns only..."
 
 # For each existing standard
 for standard_file in $EXISTING_STANDARDS; do
     STANDARD_NAME=$(basename "$standard_file" .md)
     STANDARD_CONTENT=$(cat "$standard_file")
     
-    # Extract project-specific content for this standard type
-    PROJECT_PATTERNS=$(extract_patterns_for_standard "$BASEPOINT_STANDARDS" "$STANDARD_NAME")
+    # Extract ONLY project-wide patterns for this standard type
+    # Filter out module-specific patterns
+    PROJECT_PATTERNS=$(echo -e "$PROJECT_WIDE_PATTERNS" | grep -i "$STANDARD_NAME" | cut -d'|' -f2)
     
     if [ -n "$PROJECT_PATTERNS" ]; then
-        # Merge project patterns into standard
+        # Merge project-wide patterns into standard
         UPDATED_CONTENT=$(merge_patterns_into_standard "$STANDARD_CONTENT" "$PROJECT_PATTERNS")
         echo "$UPDATED_CONTENT" > "$standard_file"
-        echo "✅ Updated standard with project patterns: $STANDARD_NAME"
+        echo "✅ Updated standard with project-wide patterns: $STANDARD_NAME"
     fi
 done
+
+# Add note about module-specific patterns
+echo ""
+echo "ℹ️  Module-specific patterns were NOT added to standards files."
+echo "   These patterns remain accessible in basepoints for when needed."
+echo "   Reference: agent-os/basepoints/ for module-specific patterns."
 ```
 
-### Step 4: Simplify Standards for Simple Projects
+### Step 5: Simplify Standards for Simple Projects
 
 For simple projects, remove or combine unnecessary standards:
 
@@ -129,7 +204,7 @@ if [ "$PROJECT_NATURE" = "simple" ]; then
 fi
 ```
 
-### Step 5: Specialize Validation Commands
+### Step 6: Specialize Validation Commands
 
 Load from project profile (if available) or detect tech stack and specialize validation commands:
 
@@ -332,13 +407,14 @@ if [ -f "$IMPL_VALIDATION_FILE" ]; then
 fi
 ```
 
-### Step 7: Create Project-Specific Standards
+### Step 7: Create Project-Specific Standards (Project-Wide Only)
 
 Create new standards based on unique project patterns:
 
 ```bash
 # Extract project-specific patterns that don't fit existing standards
-PROJECT_SPECIFIC=$(extract_unique_patterns "$BASEPOINTS_KNOWLEDGE")
+# IMPORTANT: Only include patterns that are project-wide (appear in multiple modules or are cross-cutting)
+PROJECT_SPECIFIC=$(extract_unique_patterns "$BASEPOINTS_KNOWLEDGE" | filter_project_wide_only)
 
 if [ -n "$PROJECT_SPECIFIC" ]; then
     # Create project-specific standards directory if needed
@@ -400,10 +476,21 @@ done)
 - **Format Check:** ${FORMAT_CMD:-Not configured}
 
 ## Actions Taken
-- Updated standards with project patterns from basepoints
+- Classified patterns as project-wide vs module-specific
+- Updated standards with project-wide patterns ONLY from basepoints
+- Excluded module-specific patterns (kept in basepoints for reference)
 - Specialized validation commands based on detected tech stack
 - Simplified standards for project complexity level
-- Created project-specific standards where needed
+- Created project-specific standards where needed (project-wide only)
+
+## Standards Filtering Applied
+- Cross-cutting concerns (testing, lint, naming, error handling, SDD) → Project-wide
+- Patterns appearing in 3+ modules → Project-wide
+- Patterns appearing in 1-2 modules → Module-specific (kept in basepoints only)
+
+## Module-Specific Patterns Location
+Module-specific patterns are NOT included in standards files.
+They remain accessible in basepoints: \`agent-os/basepoints/\`
 
 ## Next Steps
 Proceed to specialize agents in phase 9.

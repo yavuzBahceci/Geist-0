@@ -343,6 +343,21 @@ The following patterns and standards from basepoints are relevant to this task g
 
 Use these patterns to guide your implementation and ensure consistency with existing codebase conventions.
 
+## Library Basepoints Knowledge
+
+[IF library-basepoints-knowledge.md exists for this spec, include relevant library knowledge for this task group:]
+
+The following library patterns, workflows, and best practices are relevant to this task group:
+
+[Extract and include relevant sections from $SPEC_PATH/implementation/cache/library-basepoints-knowledge.md that match this task group's domain]
+
+**Library Capabilities:** [List relevant library capabilities for this task group]
+**Library Constraints:** [List relevant library constraints to consider]
+**Best Practices:** [Include library-specific best practices]
+**Troubleshooting:** [Include relevant troubleshooting guidance]
+
+Use this library knowledge to leverage library capabilities and avoid common pitfalls.
+
 ---
 
 ## Implementation Instructions
@@ -463,9 +478,10 @@ When generating prompts, include the relevant basepoints knowledge for that spec
 Output to user the following:
 
 ```
-✅ Orchestration complete for [spec-title]!
+✅ Prompts generated for [spec-title]!
 
 ✅ Basepoints knowledge extracted: [Yes / No basepoints found]
+✅ Library basepoints knowledge extracted: [Yes / No library basepoints found]
 ✅ Detected layer: [LAYER or unknown]
 ✅ Task groups matched to basepoints: [X of Y]
 ✅ Implementation prompts generated: [X] prompt files created
@@ -475,23 +491,102 @@ Output to user the following:
 The following prompt files have been created in `agent-os/specs/[this-spec]/implementation/prompts/`:
 
 [list prompt files in order, numbered with full paths]
-
-## Next Steps
-
-**This orchestration command is now complete.** Implementation prompts have been generated and are ready for use.
-
-To execute implementation:
-1. Read the first prompt file: `agent-os/specs/[this-spec]/implementation/prompts/1-[first-task-group].md`
-2. Follow the instructions in that prompt to implement Task Group 1
-3. Each prompt will guide you through implementing its assigned task group
-4. After completing a prompt, manually proceed to the next prompt file
-
-Progress is tracked in: `agent-os/specs/[this-spec]/tasks.md`
-
-**Note:** Implementation happens separately by executing the prompt files. This orchestration command only generates the prompts - it does not perform implementation.
 ```
 
-### Step 5: Run Validation
+### Step 5: Execute Prompts Iteratively
+
+Now execute each prompt one by one, implementing task groups in sequence:
+
+```bash
+echo "🚀 Starting iterative prompt execution..."
+
+SPEC_PATH="agent-os/specs/[this-spec]"
+PROMPTS_DIR="$SPEC_PATH/implementation/prompts"
+TOTAL_PROMPTS=$(ls -1 "$PROMPTS_DIR"/*.md 2>/dev/null | wc -l | tr -d ' ')
+CURRENT_PROMPT=1
+
+# Track completion status
+COMPLETION_STATUS_FILE="$SPEC_PATH/implementation/cache/orchestration-status.md"
+
+echo "📋 Total prompts to execute: $TOTAL_PROMPTS"
+
+# Iterate through each prompt in order
+for prompt_file in $(ls -1 "$PROMPTS_DIR"/*.md | sort -V); do
+    PROMPT_NAME=$(basename "$prompt_file" .md)
+    
+    echo ""
+    echo "═══════════════════════════════════════════════════════"
+    echo "  EXECUTING PROMPT $CURRENT_PROMPT of $TOTAL_PROMPTS"
+    echo "  Prompt: $PROMPT_NAME"
+    echo "═══════════════════════════════════════════════════════"
+    
+    # ⚠️ CRITICAL: Always use the specifically created prompt
+    # DO NOT implement directly - MUST read and follow the prompt
+    echo "📖 Reading prompt: $prompt_file"
+    PROMPT_CONTENT=$(cat "$prompt_file")
+    
+    # Execute the prompt (follow its instructions)
+    echo "🔧 Implementing task group using prompt..."
+    # [The AI agent reads and follows the prompt instructions here]
+    # This includes:
+    # - Reading the task group requirements
+    # - Using the basepoints knowledge context
+    # - Using the library basepoints knowledge
+    # - Following implementation instructions
+    # - Running validation
+    # - Marking tasks complete
+    
+    # Update completion status
+    echo "- [x] Prompt $CURRENT_PROMPT: $PROMPT_NAME - Completed $(date)" >> "$COMPLETION_STATUS_FILE"
+    
+    echo "✅ Prompt $CURRENT_PROMPT complete: $PROMPT_NAME"
+    
+    CURRENT_PROMPT=$((CURRENT_PROMPT + 1))
+done
+
+echo ""
+echo "═══════════════════════════════════════════════════════"
+echo "  ALL PROMPTS EXECUTED"
+echo "═══════════════════════════════════════════════════════"
+```
+
+**⚠️ CRITICAL: Prompt Usage Enforcement**
+
+- **NEVER** implement a task group without reading its specific prompt first
+- **ALWAYS** use the prompt file created for that task group
+- **VALIDATE** that implementation follows the prompt's instructions
+- **TRACK** completion status in `orchestration-status.md`
+
+### Step 6: Output Final Completion Status
+
+Output to user the following:
+
+```
+🎉 Orchestration and Implementation Complete for [spec-title]!
+
+✅ All [X] task groups implemented using their specific prompts
+✅ Basepoints knowledge integrated
+✅ Library basepoints knowledge integrated
+✅ Validation passed
+
+## Completion Summary
+
+[List each task group with completion status]
+
+## Files Modified
+
+[List all files that were modified during implementation]
+
+## Validation Report
+
+See: `agent-os/specs/[this-spec]/implementation/cache/validation-report.md`
+
+## Orchestration Status
+
+See: `agent-os/specs/[this-spec]/implementation/cache/orchestration-status.md`
+```
+
+### Step 7: Run Validation
 
 After orchestration setup is complete, run validation:
 
@@ -503,7 +598,7 @@ COMMAND="orchestrate-tasks"
 {{workflows/validation/generate-validation-report}}
 ```
 
-### Step 6: Generate Resource Checklist
+### Step 8: Generate Resource Checklist
 
 Generate a checklist of all resources consulted:
 
@@ -511,7 +606,7 @@ Generate a checklist of all resources consulted:
 {{workflows/basepoints/organize-and-cache-basepoints-knowledge}}
 ```
 
-### Step 7: Save Handoff
+### Step 9: Save Handoff
 
 {{workflows/prompting/save-handoff}}
 

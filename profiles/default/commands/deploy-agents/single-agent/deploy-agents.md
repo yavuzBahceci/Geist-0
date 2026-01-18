@@ -37,3 +37,5 @@ Instructions to follow in sequence:
 {{PHASE 12: @agent-os/commands/deploy-agents/12-optimize-prompts.md}}
 
 {{PHASE 13: @agent-os/commands/deploy-agents/13-apply-prompt-optimizations.md}}
+
+{{PHASE 14: @agent-os/commands/deploy-agents/14-navigate-to-cleanup.md}}

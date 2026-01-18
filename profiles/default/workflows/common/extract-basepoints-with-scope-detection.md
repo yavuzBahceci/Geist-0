@@ -5,10 +5,12 @@
 1. **Check Basepoints Availability**: Verify that basepoints exist before attempting extraction
 2. **Determine Spec Context**: Establish the spec path for caching extracted knowledge
 3. **Extract Basepoints Knowledge**: Automatically extract knowledge from all basepoint files
-4. **Detect Abstraction Layer**: Identify which abstraction layer the spec targets
-5. **Perform Scope Detection**: Run semantic analysis and keyword matching to narrow scope
-6. **Load Extracted Knowledge**: Load cached knowledge files for use in command execution
-7. **Load Detected Layer**: Load detected abstraction layer information
+4. **Extract Library Basepoints Knowledge**: Extract knowledge from library basepoints (if available)
+5. **Detect Abstraction Layer**: Identify which abstraction layer the spec targets
+6. **Perform Scope Detection**: Run semantic analysis and keyword matching to narrow scope
+7. **Load Extracted Knowledge**: Load cached knowledge files for use in command execution
+8. **Load Library Knowledge**: Load cached library basepoints knowledge for use in command execution
+9. **Load Detected Layer**: Load detected abstraction layer information
 
 ## Workflow
 
@@ -46,7 +48,16 @@ Extract knowledge from all basepoint files using the automatic extraction workfl
 {{workflows/basepoints/extract-basepoints-knowledge-automatic}}
 ```
 
-### Step 4: Detect Abstraction Layer
+### Step 4: Extract Library Basepoints Knowledge
+
+Extract knowledge from library basepoints (if available):
+
+```bash
+# Extract library basepoints knowledge
+{{workflows/common/extract-library-basepoints-knowledge}}
+```
+
+### Step 5: Detect Abstraction Layer
 
 Identify which abstraction layer this spec targets:
 
@@ -55,7 +66,7 @@ Identify which abstraction layer this spec targets:
 {{workflows/scope-detection/detect-abstraction-layer}}
 ```
 
-### Step 5: Perform Scope Detection
+### Step 6: Perform Scope Detection
 
 Run scope detection workflows to narrow the context:
 
@@ -67,7 +78,7 @@ Run scope detection workflows to narrow the context:
 {{workflows/scope-detection/detect-scope-keyword-matching}}
 ```
 
-### Step 6: Load Extracted Knowledge
+### Step 7: Load Extracted Knowledge
 
 Load the cached knowledge file for use in command execution:
 
@@ -82,7 +93,22 @@ else
 fi
 ```
 
-### Step 7: Load Detected Layer
+### Step 8: Load Library Knowledge
+
+Load the cached library basepoints knowledge for use in command execution:
+
+```bash
+# Load library basepoints knowledge for use in command
+if [ -f "$SPEC_PATH/implementation/cache/library-basepoints-knowledge.md" ]; then
+    LIBRARY_KNOWLEDGE=$(cat "$SPEC_PATH/implementation/cache/library-basepoints-knowledge.md")
+    echo "✅ Loaded library basepoints knowledge"
+else
+    LIBRARY_KNOWLEDGE=""
+    echo "⚠️ Library basepoints knowledge file not found (library basepoints may not exist)"
+fi
+```
+
+### Step 9: Load Detected Layer
 
 Load the detected abstraction layer information:
 
@@ -101,7 +127,7 @@ fi
 
 This workflow is designed to be used in commands that need to extract and load basepoints knowledge with scope detection. It wraps the common pattern of:
 1. Checking basepoints availability
-2. Extracting knowledge
+2. Extracting knowledge (including library basepoints)
 3. Running scope detection
 4. Loading cached results
 
@@ -115,8 +141,16 @@ Commands can replace their inline basepoints extraction + scope detection blocks
 
 This eliminates redundancy and provides a single source of truth for this common pattern.
 
+**Available Variables After Execution:**
+
+- `$BASEPOINTS_AVAILABLE` - Whether basepoints exist ("true" or "false")
+- `$EXTRACTED_KNOWLEDGE` - Content of basepoints-knowledge.md
+- `$LIBRARY_KNOWLEDGE` - Content of library-basepoints-knowledge.md (empty if no library basepoints)
+- `$DETECTED_LAYER` - The detected abstraction layer
+
 ## Important Constraints
 
 - **Requires Basepoints**: This workflow requires basepoints to exist. If they don't exist, it will exit gracefully.
+- **Library Basepoints Optional**: Library basepoints are optional. If they don't exist, the workflow continues without them.
 - **Spec Path Required**: The `[current-spec]` placeholder must be replaced with the actual spec name.
 - **Cache Dependencies**: This workflow depends on the cache directory structure created by the referenced workflows.

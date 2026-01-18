@@ -153,8 +153,11 @@ A single AI has no self. But a well-documented codebase—regardless of what kin
 
 ```bash
 /adapt-to-product    # Scans YOUR project, asks 2-3 questions max
+                     # + Cleans irrelevant tech, expands relevant patterns
 /create-basepoints   # Documents YOUR patterns and architecture
 /deploy-agents       # Configures for YOUR specific project
+                     # → Navigates to /cleanup-agent-os when done
+/cleanup-agent-os    # Validates deployment, ensures completeness
 
 # Then just build
 /shape-spec "Add payment processing"
@@ -206,7 +209,8 @@ cd your-project
 
 /adapt-to-product
 /create-basepoints  
-/deploy-agents
+/deploy-agents       # → guides you to cleanup
+/cleanup-agent-os    # validates deployment
 
 # You're ready
 ```
@@ -235,4 +239,47 @@ That's Geist.
 
 *Built because Agent OS was exactly what I needed, just not for my project.*
 
-**January 2026**
+---
+
+## Directory Overview
+
+| Directory | Files | Purpose |
+|-----------|-------|---------|
+| `profiles/default/commands/` | ~50 | Command templates (13 commands) |
+| `profiles/default/workflows/` | ~100 | Reusable workflow templates |
+| `profiles/default/standards/` | ~15 | Quality and coding standards |
+| `profiles/default/docs/` | ~15 | Documentation and guides |
+| `profiles/default/agents/` | ~5 | Agent definitions |
+| `scripts/` | 4 | Installation and update scripts |
+
+---
+
+## Navigation Guide
+
+### New to Geist?
+
+Start here:
+1. **[README.md](README.md)** - Overview and quick start
+2. **[profiles/default/docs/INSTALLATION-GUIDE.md](profiles/default/docs/INSTALLATION-GUIDE.md)** - Setup instructions
+3. **[profiles/default/docs/COMMAND-FLOWS.md](profiles/default/docs/COMMAND-FLOWS.md)** - Command reference
+
+### Building Features?
+
+See these:
+1. **[profiles/default/docs/WORKFLOW-MAP.md](profiles/default/docs/WORKFLOW-MAP.md)** - Visual workflow reference
+2. **[profiles/default/docs/KNOWLEDGE-SYSTEMS.md](profiles/default/docs/KNOWLEDGE-SYSTEMS.md)** - How knowledge flows
+
+### Contributing?
+
+Read:
+1. **[CONTRIBUTING.md](CONTRIBUTING.md)** - How to contribute
+2. **[profiles/default/docs/REFACTORING-GUIDELINES.md](profiles/default/docs/REFACTORING-GUIDELINES.md)** - Maintenance guide
+
+### Troubleshooting?
+
+Check:
+1. **[profiles/default/docs/TROUBLESHOOTING.md](profiles/default/docs/TROUBLESHOOTING.md)** - Common issues and solutions
+
+---
+
+**Last Updated: 2026-01-18**
