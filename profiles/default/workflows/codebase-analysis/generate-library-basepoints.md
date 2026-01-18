@@ -376,8 +376,6 @@ for library in $LIBRARIES_LIST; do
     # Load gathered knowledge
     USAGE_PATTERNS=$(cat "/tmp/library-usage-$LIBRARY_NAME.txt" 2>/dev/null)
     IMPL_PATTERNS=$(cat "/tmp/library-impl-$LIBRARY_NAME.txt" 2>/dev/null)
-    SECURITY_NOTES=$(cat "/tmp/library-security-$LIBRARY_NAME.txt" 2>/dev/null)
-    VERSION_STATUS=$(cat "/tmp/library-version-$LIBRARY_NAME.txt" 2>/dev/null)
     
     # Determine output path
     LIBRARY_SLUG=$(echo "$LIBRARY_NAME" | tr '[:upper:]' '[:lower:]' | tr ' ' '-')
@@ -469,22 +467,6 @@ $IMPL_PATTERNS
 ### Project-Specific Practices
 
 [Best practices specific to how we use this library in our project]
-
----
-
-## Security Notes
-
-[Security vulnerabilities, CVEs, and security considerations for this library]
-
-$SECURITY_NOTES
-
----
-
-## Version Status
-
-[Current version, latest available, upgrade recommendations]
-
-$VERSION_STATUS
 
 ---
 
