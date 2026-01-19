@@ -15,7 +15,7 @@
 
 ### Step 1: Determine Context and Paths
 
-Determine whether we're validating profiles/default (template) or installed agent-os (specialized):
+Determine whether we're validating profiles/default (template) or installed geist (specialized):
 
 ```bash
 # Determine spec path
@@ -27,8 +27,8 @@ if [ -d "profiles/default" ] && [ "$(pwd)" = *"/profiles/default"* ]; then
     SCAN_PATH="profiles/default"
     CACHE_PATH="$SPEC_PATH/implementation/cache/validation"
 else
-    VALIDATION_CONTEXT="installed-agent-os"
-    SCAN_PATH="agent-os"
+    VALIDATION_CONTEXT="installed-geist"
+    SCAN_PATH="geist"
     CACHE_PATH="$SPEC_PATH/implementation/cache/validation"
 fi
 
@@ -100,7 +100,7 @@ echo "$FILES_TO_SCAN" | while read file_path; do
 done
 ```
 
-### Step 3a: Detect Resolved {{IF}}/{{UNLESS}} Conditionals (if validating installed agent-os)
+### Step 3a: Detect Resolved {{IF}}/{{UNLESS}} Conditionals (if validating installed geist)
 
 Find {{IF}}/{{UNLESS}} blocks that can be resolved after specialization:
 
@@ -108,10 +108,10 @@ Find {{IF}}/{{UNLESS}} blocks that can be resolved after specialization:
 # Initialize results
 RESOLVED_CONDITIONALS=""
 
-# Only check if validating installed agent-os (specialized commands)
-if [ "$VALIDATION_CONTEXT" = "installed-agent-os" ]; then
+# Only check if validating installed geist (specialized commands)
+if [ "$VALIDATION_CONTEXT" = "installed-geist" ]; then
     # Load project profile to determine resolved flags
-    PROJECT_PROFILE=$(cat agent-os/config/project-profile.yml 2>/dev/null || echo "")
+    PROJECT_PROFILE=$(cat geist/config/project-profile.yml 2>/dev/null || echo "")
     
     echo "$FILES_TO_SCAN" | while read file_path; do
         if [ -z "$file_path" ] || [ ! -f "$file_path" ]; then
@@ -189,8 +189,8 @@ Find references to "profiles/default" in specialized commands (should only exist
 # Initialize results
 PROFILES_SELF_REFERENCES=""
 
-# Only check if validating installed agent-os (specialized commands shouldn't reference profiles/default)
-if [ "$VALIDATION_CONTEXT" = "installed-agent-os" ]; then
+# Only check if validating installed geist (specialized commands shouldn't reference profiles/default)
+if [ "$VALIDATION_CONTEXT" = "installed-geist" ]; then
     echo "$FILES_TO_SCAN" | while read file_path; do
         if [ -z "$file_path" ] || [ ! -f "$file_path" ]; then
             continue
@@ -395,8 +395,8 @@ echo "✅ Unnecessary logic detection complete. Report stored in $CACHE_PATH/"
 ## Important Constraints
 
 - Must detect all types of unnecessary logic (conditionals, examples, patterns, references)
-- Must only check for profiles/default references when validating installed agent-os (not in template)
+- Must only check for profiles/default references when validating installed geist (not in template)
 - Must generate comprehensive reports with recommendations for removal
 - Must categorize findings by type for easy analysis
-- **CRITICAL**: All reports must be stored in `agent-os/specs/[current-spec]/implementation/cache/validation/` when running within a spec command, not scattered around the codebase
+- **CRITICAL**: All reports must be stored in `geist/specs/[current-spec]/implementation/cache/validation/` when running within a spec command, not scattered around the codebase
 - Must use placeholder syntax ({{PLACEHOLDER}}) for project-specific parts that will be replaced during deploy-agents

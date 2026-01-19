@@ -21,7 +21,7 @@
 │   └────────────────────────────────┘                                         │
 │                    │                                                         │
 │                    ▼                                                         │
-│   Output: agent-os/basepoints/ (complete codebase knowledge)                 │
+│   Output: geist/basepoints/ (complete codebase knowledge)                 │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -169,10 +169,10 @@
 │  │ ─────────────────────────────────                                   │     │
 │  │                                                                     │     │
 │  │  Checks for:                                                        │     │
-│  │  ✓ agent-os/product/mission.md exists                               │     │
-│  │  ✓ agent-os/product/roadmap.md exists                               │     │
-│  │  ✓ agent-os/product/tech-stack.md exists                            │     │
-│  │  ✓ agent-os/config/project-profile.yml exists (optional)            │     │
+│  │  ✓ geist/product/mission.md exists                               │     │
+│  │  ✓ geist/product/roadmap.md exists                               │     │
+│  │  ✓ geist/product/tech-stack.md exists                            │     │
+│  │  ✓ geist/config/project-profile.yml exists (optional)            │     │
 │  │                                                                     │     │
 │  │  If missing → Run /adapt-to-product first                           │     │
 │  └─────────────────────────────────────────────────────────────────────┘     │
@@ -201,7 +201,7 @@
 │  │  Creates basepoints directory structure:                            │     │
 │  │                                                                     │     │
 │  │  ┌────────────────────────────────────────────────────────────┐     │     │
-│  │  │ agent-os/basepoints/                                       │     │     │
+│  │  │ geist/basepoints/                                       │     │     │
 │  │  │ ├── headquarter.md           (project overview)            │     │     │
 │  │  │ ├── frontend/                                              │     │     │
 │  │  │ │   ├── agent-base-frontend.md                             │     │     │
@@ -337,7 +337,7 @@
 │  ──────                              ───────                                 │
 │                                                                              │
 │  ┌──────────────────────┐            ┌──────────────────────────────────┐    │
-│  │ agent-os/product/    │            │ agent-os/basepoints/             │    │
+│  │ geist/product/    │            │ geist/basepoints/             │    │
 │  │                      │───────────▶│                                  │    │
 │  │ ├── mission.md       │            │ ├── headquarter.md               │    │
 │  │ ├── roadmap.md       │            │ │                                │    │

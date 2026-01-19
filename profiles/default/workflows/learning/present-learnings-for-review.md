@@ -12,21 +12,21 @@ Display session learnings summary with clear options for user approval:
 
 ## Inputs
 
-- Session file: `agent-os/output/session-feedback/current-session.md`
-- Successful patterns: `agent-os/output/session-feedback/patterns/successful.md`
-- Failed patterns: `agent-os/output/session-feedback/patterns/failed.md`
-- Prompt analysis: `agent-os/output/session-feedback/prompts/effective.md` and `needs-improvement.md`
+- Session file: `geist/output/session-feedback/current-session.md`
+- Successful patterns: `geist/output/session-feedback/patterns/successful.md`
+- Failed patterns: `geist/output/session-feedback/patterns/failed.md`
+- Prompt analysis: `geist/output/session-feedback/prompts/effective.md` and `needs-improvement.md`
 
 ## Process
 
 ### Step 1: Load Session Learnings
 
 ```bash
-SESSION_FILE="agent-os/output/session-feedback/current-session.md"
-PATTERNS_SUCCESS="agent-os/output/session-feedback/patterns/successful.md"
-PATTERNS_FAILED="agent-os/output/session-feedback/patterns/failed.md"
-PROMPTS_EFFECTIVE="agent-os/output/session-feedback/prompts/effective.md"
-PROMPTS_IMPROVEMENT="agent-os/output/session-feedback/prompts/needs-improvement.md"
+SESSION_FILE="geist/output/session-feedback/current-session.md"
+PATTERNS_SUCCESS="geist/output/session-feedback/patterns/successful.md"
+PATTERNS_FAILED="geist/output/session-feedback/patterns/failed.md"
+PROMPTS_EFFECTIVE="geist/output/session-feedback/prompts/effective.md"
+PROMPTS_IMPROVEMENT="geist/output/session-feedback/prompts/needs-improvement.md"
 
 if [ ! -f "$SESSION_FILE" ]; then
     echo "ℹ️ No session feedback found. Skipping learning phase."
@@ -224,7 +224,7 @@ echo "User choice: $APPROVAL_TYPE"
 ### Step 8: Save Adaptations to Pending
 
 ```bash
-ADAPTATIONS_DIR="agent-os/output/session-feedback/adaptations"
+ADAPTATIONS_DIR="geist/output/session-feedback/adaptations"
 PENDING_FILE="$ADAPTATIONS_DIR/pending.md"
 
 mkdir -p "$ADAPTATIONS_DIR"
@@ -265,7 +265,7 @@ echo "✅ Adaptations saved to: $PENDING_FILE"
 ## Output
 
 - User approval choice (all/select/skip)
-- Pending adaptations file: `agent-os/output/session-feedback/adaptations/pending.md`
+- Pending adaptations file: `geist/output/session-feedback/adaptations/pending.md`
 
 ## Critical Safety
 

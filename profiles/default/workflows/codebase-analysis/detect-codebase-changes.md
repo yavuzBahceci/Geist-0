@@ -5,7 +5,7 @@
 1. **Detect Changes Using Git**: Use git diff to identify files that changed since last update
 2. **Fallback to Timestamps**: If git is unavailable, use file modification timestamps
 3. **Categorize Changes**: Group changes as added, modified, or deleted
-4. **Filter Relevant Files**: Exclude irrelevant paths (node_modules, .git, agent-os/output, etc.)
+4. **Filter Relevant Files**: Exclude irrelevant paths (node_modules, .git, geist/output, etc.)
 5. **Generate Change Summary**: Create comprehensive summary with counts and file lists
 
 ## Workflow
@@ -16,11 +16,11 @@ Set up the detection environment and determine detection method:
 
 ```bash
 # Create output directories
-mkdir -p agent-os/output/update-basepoints-and-redeploy/cache
-mkdir -p agent-os/output/update-basepoints-and-redeploy/reports
+mkdir -p geist/output/update-basepoints-and-redeploy/cache
+mkdir -p geist/output/update-basepoints-and-redeploy/reports
 
 # Initialize change detection output files
-CACHE_DIR="agent-os/output/update-basepoints-and-redeploy/cache"
+CACHE_DIR="geist/output/update-basepoints-and-redeploy/cache"
 CHANGED_FILES="$CACHE_DIR/changed-files.txt"
 CHANGE_SUMMARY="$CACHE_DIR/change-summary.md"
 
@@ -88,7 +88,7 @@ if [ "$DETECTION_METHOD" = "timestamp" ]; then
         find . -type f -newer "$LAST_UPDATE_TIMESTAMP_FILE" \
             ! -path "./.git/*" \
             ! -path "./node_modules/*" \
-            ! -path "./agent-os/output/*" \
+            ! -path "./geist/output/*" \
             ! -path "./**/dist/*" \
             ! -path "./**/build/*" \
             ! -path "./**/.cache/*" \
@@ -108,7 +108,7 @@ if [ "$DETECTION_METHOD" = "timestamp" ]; then
         find . -type f \
             ! -path "./.git/*" \
             ! -path "./node_modules/*" \
-            ! -path "./agent-os/output/*" \
+            ! -path "./geist/output/*" \
             ! -path "./**/dist/*" \
             ! -path "./**/build/*" \
             ! -path "./**/.cache/*" \
@@ -130,8 +130,8 @@ Filter out files that should not trigger basepoint updates:
 EXCLUDE_PATTERNS=(
     "^\.git/"
     "^node_modules/"
-    "^agent-os/output/"
-    "^agent-os/specs/"
+    "^geist/output/"
+    "^geist/specs/"
     "^\.env"
     "^\.DS_Store"
     "^.*\.log$"
@@ -178,9 +178,9 @@ Specifically check if product files changed (for knowledge re-extraction):
 PRODUCT_FILES_CHANGED=false
 PRODUCT_CHANGES=""
 
-if grep -q "^agent-os/product/" "$CHANGED_FILES" 2>/dev/null; then
+if grep -q "^geist/product/" "$CHANGED_FILES" 2>/dev/null; then
     PRODUCT_FILES_CHANGED=true
-    PRODUCT_CHANGES=$(grep "^agent-os/product/" "$CHANGED_FILES")
+    PRODUCT_CHANGES=$(grep "^geist/product/" "$CHANGED_FILES")
     echo "📦 Product file changes detected:"
     echo "$PRODUCT_CHANGES" | sed 's/^/   /'
 fi
@@ -288,7 +288,7 @@ Detection Method: [git/timestamp]
 
 📦 Product Files Changed: [Yes/No]
 
-📋 Full report: agent-os/output/update-basepoints-and-redeploy/cache/change-summary.md
+📋 Full report: geist/output/update-basepoints-and-redeploy/cache/change-summary.md
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

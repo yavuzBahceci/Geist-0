@@ -42,10 +42,10 @@ Improve prompts based on effectiveness:
 
 Load:
 ```
-├─ @agent-os/basepoints/headquarter.md
-├─ @agent-os/output/session-feedback/patterns/successful.md
-├─ @agent-os/output/session-feedback/patterns/failed.md
-└─ @agent-os/config/project-profile.yml
+├─ @geist/basepoints/headquarter.md
+├─ @geist/output/session-feedback/patterns/successful.md
+├─ @geist/output/session-feedback/patterns/failed.md
+└─ @geist/config/project-profile.yml
 ```
 
 ### Step 2: Build Context Block
@@ -98,10 +98,10 @@ Context to pass: [key information]
 
 ## Integration Workflow
 
-**File**: `agent-os/workflows/prompting/construct-prompt.md` (when installed)  
+**File**: `geist/workflows/prompting/construct-prompt.md` (when installed)  
 **Template**: `profiles/default/workflows/prompting/construct-prompt.md`
 
-This workflow is called at the START of every command to construct the optimal prompt. When installed in a project, it will be located at `agent-os/workflows/prompting/construct-prompt.md`.
+This workflow is called at the START of every command to construct the optimal prompt. When installed in a project, it will be located at `geist/workflows/prompting/construct-prompt.md`.
 
 ## Handoff Templates
 

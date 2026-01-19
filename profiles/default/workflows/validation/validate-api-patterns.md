@@ -21,8 +21,8 @@ ISSUES=()
 
 # Load API patterns from basepoints
 API_BASEPOINTS=""
-if [ -d "agent-os/basepoints/modules" ]; then
-    API_BASEPOINTS=$(find agent-os/basepoints/modules -name "*.md" -exec grep -l -i "api\|endpoint\|route\|controller\|handler" {} \; 2>/dev/null)
+if [ -d "geist/basepoints/modules" ]; then
+    API_BASEPOINTS=$(find geist/basepoints/modules -name "*.md" -exec grep -l -i "api\|endpoint\|route\|controller\|handler" {} \; 2>/dev/null)
 fi
 ```
 
@@ -177,9 +177,9 @@ validate_response_format() {
 ```bash
 run_api_validation() {
     local target_dir="${1:-.}"
-    local results_file="agent-os/output/validation/api-validation-results.md"
+    local results_file="geist/output/validation/api-validation-results.md"
     
-    mkdir -p agent-os/output/validation
+    mkdir -p geist/output/validation
     
     echo "# API Pattern Validation Results" > "$results_file"
     echo "" >> "$results_file"
@@ -256,6 +256,6 @@ run_api_validation "$TARGET_DIR"
 ## Integration with Layer Specialists
 
 When `api-specialist` completes implementation, this validation runs automatically. The validation loads patterns from:
-- `agent-os/basepoints/modules/` (API-related modules)
-- `agent-os/product/tech-stack.md` (framework-specific rules)
-- `agent-os/standards/global/error-handling.md`
+- `geist/basepoints/modules/` (API-related modules)
+- `geist/product/tech-stack.md` (framework-specific rules)
+- `geist/standards/global/error-handling.md`

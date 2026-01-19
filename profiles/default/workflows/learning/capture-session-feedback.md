@@ -26,7 +26,7 @@ Capture implementation outcome data for session learning:
 ### Step 1: Load or Create Current Session File
 
 ```bash
-SESSION_DIR="agent-os/output/session-feedback"
+SESSION_DIR="geist/output/session-feedback"
 SESSION_FILE="$SESSION_DIR/current-session.md"
 
 # Create directory structure if it doesn't exist
@@ -154,7 +154,7 @@ fi
 
 ## Output
 
-Updates: `agent-os/output/session-feedback/current-session.md`
+Updates: `geist/output/session-feedback/current-session.md`
 
 The session file is updated with:
 - New implementation record in table

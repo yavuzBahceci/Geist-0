@@ -43,14 +43,14 @@ echo "   Merge with cache: $MERGE_WITH_CACHE"
 
 ```bash
 # Define paths
-BASEPOINTS_PATH="agent-os/basepoints"
+BASEPOINTS_PATH="geist/basepoints"
 BASEPOINT_FILE_PATTERN="agent-base-*.md"
 
 # Determine cache path from context
 if [ -n "$SPEC_PATH" ]; then
     CACHE_PATH="$SPEC_PATH/implementation/cache"
 else
-    CACHE_PATH="agent-os/output/basepoints-extraction"
+    CACHE_PATH="geist/output/basepoints-extraction"
 fi
 
 # Create cache directory if needed

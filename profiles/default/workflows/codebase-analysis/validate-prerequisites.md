@@ -15,12 +15,12 @@ Check if the required product files exist before proceeding:
 
 ```bash
 # Check if product files exist
-if [ ! -f "agent-os/product/mission.md" ] || [ ! -f "agent-os/product/roadmap.md" ] || [ ! -f "agent-os/product/tech-stack.md" ]; then
+if [ ! -f "geist/product/mission.md" ] || [ ! -f "geist/product/roadmap.md" ] || [ ! -f "geist/product/tech-stack.md" ]; then
     echo "ERROR: Required product files are missing."
     echo "Missing files:"
-    [ ! -f "agent-os/product/mission.md" ] && echo "  - agent-os/product/mission.md"
-    [ ! -f "agent-os/product/roadmap.md" ] && echo "  - agent-os/product/roadmap.md"
-    [ ! -f "agent-os/product/tech-stack.md" ] && echo "  - agent-os/product/tech-stack.md"
+    [ ! -f "geist/product/mission.md" ] && echo "  - geist/product/mission.md"
+    [ ! -f "geist/product/roadmap.md" ] && echo "  - geist/product/roadmap.md"
+    [ ! -f "geist/product/tech-stack.md" ] && echo "  - geist/product/tech-stack.md"
     exit 1
 else
     echo "✅ All required product files found."
@@ -40,9 +40,9 @@ Missing product files detected. Please create them first using one of these comm
 👉 Run `/adapt-to-product` to generate product documentation from existing codebase
 
 Required files:
-- agent-os/product/mission.md
-- agent-os/product/roadmap.md
-- agent-os/product/tech-stack.md
+- geist/product/mission.md
+- geist/product/roadmap.md
+- geist/product/tech-stack.md
 
 Once these files exist, you can run `/create-basepoints` again.
 ```
@@ -55,8 +55,8 @@ Check if basepoints folder already exists:
 
 ```bash
 # Check if basepoints folder already exists
-if [ -d "agent-os/basepoints" ]; then
-    if [ "$(ls -A agent-os/basepoints 2>/dev/null)" ]; then
+if [ -d "geist/basepoints" ]; then
+    if [ "$(ls -A geist/basepoints 2>/dev/null)" ]; then
         echo "⚠️  Basepoints folder already exists and contains files."
         echo "Options:"
         echo "1. Use existing basepoints folder (will overwrite existing files)"
@@ -79,13 +79,13 @@ IF proceeding, prepare the structure:
 ```bash
 # If user chose backup, create backup first
 if [ "$USER_CHOICE" = "2" ]; then
-    BACKUP_NAME="agent-os/basepoints-backup-$(date +%Y%m%d-%H%M%S)"
-    mv agent-os/basepoints "$BACKUP_NAME"
+    BACKUP_NAME="geist/basepoints-backup-$(date +%Y%m%d-%H%M%S)"
+    mv geist/basepoints "$BACKUP_NAME"
     echo "✅ Backed up existing basepoints to: $BACKUP_NAME"
 fi
 
 # Create basepoints folder if it doesn't exist
-mkdir -p agent-os/basepoints
+mkdir -p geist/basepoints
 
 echo "✅ Basepoints folder structure ready."
 ```

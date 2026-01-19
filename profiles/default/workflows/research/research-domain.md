@@ -12,7 +12,7 @@ Research domain-specific patterns, compliance requirements, and industry best pr
 
 ## Outputs
 
-- `agent-os/config/enriched-knowledge/domain-knowledge.md`
+- `geist/config/enriched-knowledge/domain-knowledge.md`
 
 ---
 
@@ -36,7 +36,7 @@ Research domain-specific patterns, compliance requirements, and industry best pr
 
 ```bash
 CURRENT_YEAR=$(date +%Y)
-OUTPUT_FILE="agent-os/config/enriched-knowledge/domain-knowledge.md"
+OUTPUT_FILE="geist/config/enriched-knowledge/domain-knowledge.md"
 
 cat > "$OUTPUT_FILE" << HEADER_EOF
 # Domain Knowledge

@@ -34,14 +34,14 @@ echo "🎯 Applying narrow focus + expand knowledge strategy..."
 
 # Load product knowledge
 PRODUCT_KNOWLEDGE=""
-if [ -f "agent-os/product/mission.md" ]; then
-    PRODUCT_KNOWLEDGE="${PRODUCT_KNOWLEDGE}\n## Mission\n$(cat agent-os/product/mission.md)"
+if [ -f "geist/product/mission.md" ]; then
+    PRODUCT_KNOWLEDGE="${PRODUCT_KNOWLEDGE}\n## Mission\n$(cat geist/product/mission.md)"
 fi
-if [ -f "agent-os/product/roadmap.md" ]; then
-    PRODUCT_KNOWLEDGE="${PRODUCT_KNOWLEDGE}\n## Roadmap\n$(cat agent-os/product/roadmap.md)"
+if [ -f "geist/product/roadmap.md" ]; then
+    PRODUCT_KNOWLEDGE="${PRODUCT_KNOWLEDGE}\n## Roadmap\n$(cat geist/product/roadmap.md)"
 fi
-if [ -f "agent-os/product/tech-stack.md" ]; then
-    PRODUCT_KNOWLEDGE="${PRODUCT_KNOWLEDGE}\n## Tech Stack\n$(cat agent-os/product/tech-stack.md)"
+if [ -f "geist/product/tech-stack.md" ]; then
+    PRODUCT_KNOWLEDGE="${PRODUCT_KNOWLEDGE}\n## Tech Stack\n$(cat geist/product/tech-stack.md)"
 fi
 
 # Combine all knowledge sources for context enrichment
@@ -89,7 +89,7 @@ Once you've completed your research and documented it, proceed to validation:
 Before completing, run validation to ensure outputs are correct:
 
 ```bash
-SPEC_PATH="agent-os/specs/[current-spec]"
+SPEC_PATH="geist/specs/[current-spec]"
 COMMAND="shape-spec"
 {{workflows/validation/validate-output-exists}}
 {{workflows/validation/validate-knowledge-integration}}

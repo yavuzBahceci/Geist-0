@@ -22,7 +22,7 @@ if [ -n "$SPEC_PATH" ]; then
     echo "📁 Per-spec cache location: $CACHE_PATH"
 else
     # Fallback for non-spec contexts
-    CACHE_PATH="agent-os/output/basepoints-extraction"
+    CACHE_PATH="geist/output/basepoints-extraction"
     echo "⚠️ No SPEC_PATH set. Using fallback cache: $CACHE_PATH"
 fi
 
@@ -66,7 +66,7 @@ Cache should be invalidated if:
 ```bash
 should_invalidate_cache() {
     CACHE_FILE="$CACHE_PATH/basepoints-knowledge.md"
-    BASEPOINTS_PATH="agent-os/basepoints"
+    BASEPOINTS_PATH="geist/basepoints"
     
     # Condition 1: No cache exists
     if [ ! -f "$CACHE_FILE" ]; then
@@ -118,9 +118,9 @@ fi
 if [ "$NEED_EXTRACTION" = "true" ]; then
     echo "📖 Extracting fresh knowledge from basepoints..."
     
-    # Determine workflow base path (agent-os when installed, profiles/default for template)
-    if [ -d "agent-os/workflows" ]; then
-        WORKFLOWS_BASE="agent-os/workflows"
+    # Determine workflow base path (geist when installed, profiles/default for template)
+    if [ -d "geist/workflows" ]; then
+        WORKFLOWS_BASE="geist/workflows"
     else
         WORKFLOWS_BASE="profiles/default/workflows"
     fi

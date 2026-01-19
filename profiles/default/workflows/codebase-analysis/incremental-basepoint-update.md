@@ -15,7 +15,7 @@
 Load the list of basepoints that need updating from Phase 2:
 
 ```bash
-CACHE_DIR="agent-os/output/update-basepoints-and-redeploy/cache"
+CACHE_DIR="geist/output/update-basepoints-and-redeploy/cache"
 AFFECTED_BASEPOINTS_FILE="$CACHE_DIR/affected-basepoints.txt"
 
 if [ ! -f "$AFFECTED_BASEPOINTS_FILE" ]; then
@@ -82,7 +82,7 @@ while read basepoint_path; do
     
     # Extract module path from basepoint path
     # basepoints/profiles/default/agent-base-default.md -> profiles/default
-    MODULE_PATH=$(echo "$basepoint_path" | sed 's|^agent-os/basepoints/||' | sed 's|/agent-base-.*\.md$||')
+    MODULE_PATH=$(echo "$basepoint_path" | sed 's|^geist/basepoints/||' | sed 's|/agent-base-.*\.md$||')
     
     if [ -z "$MODULE_PATH" ] || [ "$MODULE_PATH" = "agent-base-"* ]; then
         # Root-level basepoint
@@ -183,7 +183,7 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 
 # Find parent basepoints that need updating
 # A parent needs updating if any of its children were updated
-find agent-os/basepoints -name "agent-base-*.md" -type f | while read parent_basepoint; do
+find geist/basepoints -name "agent-base-*.md" -type f | while read parent_basepoint; do
     PARENT_DIR=$(dirname "$parent_basepoint")
     
     # Check if any child basepoints were updated
@@ -221,7 +221,7 @@ if [ -s "$CACHE_DIR/headquarter-to-update.txt" ]; then
     echo "🏢 UPDATING HEADQUARTER"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     
-    HEADQUARTER_PATH="agent-os/basepoints/headquarter.md"
+    HEADQUARTER_PATH="geist/basepoints/headquarter.md"
     
     if [ -f "$HEADQUARTER_PATH" ]; then
         echo "   📂 Loading existing headquarter content..."
@@ -264,7 +264,7 @@ $(cat "$CACHE_DIR/update-progress.md" 2>/dev/null || echo "_No updates logged_")
 ## Backup Files
 
 Backup files created with \`.backup\` extension:
-$(find agent-os/basepoints -name "*.backup" -type f 2>/dev/null | sed 's/^/- /' || echo "_No backups created_")
+$(find geist/basepoints -name "*.backup" -type f 2>/dev/null | sed 's/^/- /' || echo "_No backups created_")
 
 ## Merge Decisions
 
@@ -289,7 +289,7 @@ Display update results for user:
    Parent basepoints: [N] updated
    Headquarter: [Yes/No]
 
-📋 Update log: agent-os/output/update-basepoints-and-redeploy/cache/update-log.md
+📋 Update log: geist/output/update-basepoints-and-redeploy/cache/update-log.md
 💾 Backups: *.backup files created for rollback if needed
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

@@ -21,7 +21,7 @@
 │   └────────────────────────────────┘                                         │
 │                    │                                                         │
 │                    ▼                                                         │
-│   Output: agent-os/product/ (mission, roadmap, tech-stack)                   │
+│   Output: geist/product/ (mission, roadmap, tech-stack)                   │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -165,8 +165,8 @@
 │  │ ─────────────────────────────────                                   │     │
 │  │                                                                     │     │
 │  │  Saves to:                                                          │     │
-│  │  • agent-os/config/project-profile.yml                              │     │
-│  │  • agent-os/config/enriched-knowledge/                              │     │
+│  │  • geist/config/project-profile.yml                              │     │
+│  │  • geist/config/enriched-knowledge/                              │     │
 │  └─────────────────────────────────────────────────────────────────────┘     │
 │                                                                              │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -195,7 +195,7 @@
 │  │ Phase 3: Create Mission                                             │     │
 │  │ ─────────────────────────────────                                   │     │
 │  │                                                                     │     │
-│  │  Output: agent-os/product/mission.md                                │     │
+│  │  Output: geist/product/mission.md                                │     │
 │  │                                                                     │     │
 │  │  ┌────────────────────────────────────────────────────────────┐     │     │
 │  │  │ # Product Mission                                          │     │     │
@@ -216,7 +216,7 @@
 │  │ Phase 4: Create Roadmap                                             │     │
 │  │ ─────────────────────────────────                                   │     │
 │  │                                                                     │     │
-│  │  Output: agent-os/product/roadmap.md                                │     │
+│  │  Output: geist/product/roadmap.md                                │     │
 │  │                                                                     │     │
 │  │  ┌────────────────────────────────────────────────────────────┐     │     │
 │  │  │ # Product Roadmap                                          │     │     │
@@ -237,7 +237,7 @@
 │  │ Phase 5: Create Tech Stack                                          │     │
 │  │ ─────────────────────────────────                                   │     │
 │  │                                                                     │     │
-│  │  Output: agent-os/product/tech-stack.md                             │     │
+│  │  Output: geist/product/tech-stack.md                             │     │
 │  │                                                                     │     │
 │  │  ┌────────────────────────────────────────────────────────────┐     │     │
 │  │  │ # Tech Stack                                               │     │     │
@@ -266,7 +266,7 @@
 │  │                                                                     │     │
 │  │  • Verify consistency across documents                              │     │
 │  │  • Combine into unified knowledge base                              │     │
-│  │  • Store in agent-os/config/enriched-knowledge/                     │     │
+│  │  • Store in geist/config/enriched-knowledge/                     │     │
 │  └─────────────────────────────────────────────────────────────────────┘     │
 │                                      │                                       │
 │                                      ▼                                       │
@@ -291,7 +291,7 @@
 │  │  │ • Inject project-specific terminology                      │     │     │
 │  │  └────────────────────────────────────────────────────────────┘     │     │
 │  │                                                                     │     │
-│  │  Output: agent-os/output/product-cleanup/                           │     │
+│  │  Output: geist/output/product-cleanup/                           │     │
 │  │  ├── detected-scope.yml                                             │     │
 │  │  ├── search-queries.md                                              │     │
 │  │  └── cleanup-report.md                                              │     │
@@ -337,7 +337,7 @@
 │  ──────                              ───────                                 │
 │                                                                              │
 │  ┌──────────────────────┐            ┌──────────────────────────────────┐    │
-│  │ Your Codebase        │            │ agent-os/product/                │    │
+│  │ Your Codebase        │            │ geist/product/                │    │
 │  │                      │───────────▶│                                  │    │
 │  │ • package.json       │            │ ├── mission.md                   │    │
 │  │ • README.md          │            │ ├── roadmap.md                   │    │
@@ -345,7 +345,7 @@
 │  │ • Config files       │            └──────────────────────────────────┘    │
 │  └──────────────────────┘                                                    │
 │                                      ┌──────────────────────────────────┐    │
-│  ┌──────────────────────┐            │ agent-os/config/                 │    │
+│  ┌──────────────────────┐            │ geist/config/                 │    │
 │  │ User Answers         │───────────▶│                                  │    │
 │  │ (minimal)            │            │ ├── project-profile.yml          │    │
 │  │                      │            │ └── enriched-knowledge/          │    │
@@ -354,7 +354,7 @@
 │  └──────────────────────┘            └──────────────────────────────────┘    │
 │                                                                              │
 │                                      ┌──────────────────────────────────┐    │
-│                                      │ agent-os/output/product-cleanup/ │    │
+│                                      │ geist/output/product-cleanup/ │    │
 │                                      │ (NEW - from Phase 7)             │    │
 │                                      │                                  │    │
 │                                      │ ├── detected-scope.yml           │    │

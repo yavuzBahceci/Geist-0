@@ -12,7 +12,7 @@
 └─────────────────────────────────────────────────────────────────────────────┘
 
                            SETUP COMMANDS
-                    (Run once to set up Agent OS)
+                    (Run once to set up Geist)
                                  │
     ┌────────────────────────────┼────────────────────────────┐
     │                            │                            │
@@ -56,14 +56,14 @@
 
 
                         MAINTENANCE & UTILITY COMMANDS
-                    (Run to keep Agent OS updated or fix issues)
+                    (Run to keep Geist updated or fix issues)
                                  │
               ┌──────────────────┼──────────────────┐
               │                  │                  │
               ▼                  ▼                  ▼
        ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
        │ /update-    │    │ /cleanup-   │    │ /fix-bug    │
-       │ basepoints  │    │ agent-os    │    │             │
+       │ basepoints  │    │ geist    │    │             │
        │ -and-redeploy    │             │    │             │
        └─────────────┘    └─────────────┘    └─────────────┘
             │                  │                  │
@@ -76,7 +76,7 @@
 
 ## Setup Commands
 
-These commands are run once (or occasionally) to set up and configure Agent OS for your project.
+These commands are run once (or occasionally) to set up and configure Geist for your project.
 
 | Command | Purpose | When to Run |
 |---------|---------|-------------|
@@ -103,12 +103,12 @@ These commands are run for each feature you develop.
 
 ## Maintenance & Utility Commands
 
-These commands keep your Agent OS synchronized with your codebase and help fix issues.
+These commands keep your Geist synchronized with your codebase and help fix issues.
 
 | Command | Purpose | When to Run |
 |---------|---------|-------------|
 | [/update-basepoints-and-redeploy](./update-basepoints-and-redeploy.md) | Sync after code changes | After significant changes |
-| [/cleanup-agent-os](./cleanup-agent-os.md) | Verify and clean deployment | After deploy or periodically |
+| [/cleanup-geist](./cleanup-geist.md) | Verify and clean deployment | After deploy or periodically |
 | [/fix-bug](./fix-bug.md) | Analyze and fix bugs/feedback | When encountering bugs or implementing feedback |
 
 ---
@@ -142,10 +142,10 @@ These commands keep your Agent OS synchronized with your codebase and help fix i
 │  3. /deploy-agents                                                           │
 │     └── Specializes: all commands for your project                           │
 │                                                                              │
-│  4. /cleanup-agent-os (optional)                                             │
+│  4. /cleanup-geist (optional)                                             │
 │     └── Verifies: deployment completeness                                    │
 │                                                                              │
-│  ✅ Agent OS is now ready for development!                                   │
+│  ✅ Geist is now ready for development!                                   │
 │                                                                              │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -196,7 +196,7 @@ These commands keep your Agent OS synchronized with your codebase and help fix i
 ### Setup Sequence
 
 ```
-/adapt-to-product → /create-basepoints → /deploy-agents → /cleanup-agent-os
+/adapt-to-product → /create-basepoints → /deploy-agents → /cleanup-geist
 ```
 
 ### Development Sequence
@@ -209,7 +209,7 @@ These commands keep your Agent OS synchronized with your codebase and help fix i
 
 ```
 After code changes: /update-basepoints-and-redeploy
-Periodic cleanup:   /cleanup-agent-os
+Periodic cleanup:   /cleanup-geist
 Bug fixing:         /fix-bug "error description or feedback"
 ```
 

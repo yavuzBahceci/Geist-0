@@ -39,7 +39,7 @@ If you don't have one yet, then run any of these commands first:
 
 ### NEXT: Create orchestration.yml to serve as a roadmap for orchestration of task groups
 
-In this spec's folder, create this file: `agent-os/specs/[this-spec]/orchestration.yml`.
+In this spec's folder, create this file: `geist/specs/[this-spec]/orchestration.yml`.
 
 Populate this file with with the names of each task group found in this spec's `tasks.md` and use this EXACT structure for the content of `orchestration.yml`:
 
@@ -58,7 +58,7 @@ First, load the specialist registry and analyze each task group to suggest appro
 
 ```bash
 # Load specialist registry if it exists
-SPECIALIST_REGISTRY="agent-os/agents/specialists/registry.yml"
+SPECIALIST_REGISTRY="geist/agents/specialists/registry.yml"
 SPECIALISTS_AVAILABLE="false"
 
 if [ -f "$SPECIALIST_REGISTRY" ]; then
@@ -72,7 +72,7 @@ if [ -f "$SPECIALIST_REGISTRY" ]; then
 fi
 
 # Also check for standard agents
-STANDARD_AGENTS=$(find agent-os/agents -maxdepth 1 -name "*.md" -type f | xargs -I{} basename {} .md)
+STANDARD_AGENTS=$(find geist/agents -maxdepth 1 -name "*.md" -type f | xargs -I{} basename {} .md)
 echo "Standard agents: $STANDARD_AGENTS"
 ```
 
@@ -123,7 +123,7 @@ while read -r task_group; do
     SUGGESTED_AGENT=$(detect_task_layer "$task_group")
     SUGGESTIONS="${SUGGESTIONS}${TASK_NUM}. ${task_group} → ${SUGGESTED_AGENT}\n"
     ((TASK_NUM++))
-done < <(grep -E "^## Task Group|^### " agent-os/specs/[this-spec]/tasks.md | head -20)
+done < <(grep -E "^## Task Group|^### " geist/specs/[this-spec]/tasks.md | head -20)
 ```
 
 Present auto-detected suggestions to user for confirmation:
@@ -141,12 +141,17 @@ Available specialists:
 - test-specialist (Testing layer)
 - implementer (Generic, cross-layer tasks)
 
+**Note:** For cross-layer tasks, you can assign MULTIPLE specialists (e.g., "ui-specialist, api-specialist").
+The implementing agent will receive combined context from all assigned specialists.
+
 Would you like to:
 1. Accept these suggestions
 2. Modify some assignments (specify which)
 3. Assign manually for all task groups
 
-Reply with your choice (1/2/3) or specify modifications like "2: change api-specialist, 4: change ui-specialist"
+Reply with your choice (1/2/3) or specify modifications like:
+- "2: add api-specialist" (adds to existing)
+- "4: ui-specialist, data-specialist" (replaces with multiple)
 ```
 
 Using the user's responses, update `orchestration.yml` to specify the agent names. The file should look like:
@@ -154,11 +159,11 @@ Using the user's responses, update `orchestration.yml` to specify the agent name
 ```yaml
 task_groups:
   - name: [task-group-name]
-    claude_code_subagent: [specialist-name]
-    detected_layer: [layer]  # For reference
+    specialists: [specialist-name]  # Single specialist
+    detected_layers: [layer]
   - name: [task-group-name]
-    claude_code_subagent: [specialist-name]
-    detected_layer: [layer]
+    specialists: [specialist-1, specialist-2]  # Multiple specialists for cross-layer tasks
+    detected_layers: [layer1, layer2]
   # Repeat for each task group
 ```
 
@@ -167,18 +172,23 @@ For example, after this step with layer detection:
 ```yaml
 task_groups:
   - name: user-profile-ui
-    claude_code_subagent: ui-specialist
-    detected_layer: ui
+    specialists: [ui-specialist]
+    detected_layers: [ui]
   - name: profile-api-endpoints
-    claude_code_subagent: api-specialist
-    detected_layer: api
+    specialists: [api-specialist]
+    detected_layers: [api]
   - name: user-data-model
-    claude_code_subagent: data-specialist
-    detected_layer: data
+    specialists: [data-specialist]
+    detected_layers: [data]
+  - name: user-dashboard-feature
+    specialists: [ui-specialist, api-specialist]  # Cross-layer: needs both
+    detected_layers: [ui, api]
   - name: cross-layer-integration
-    claude_code_subagent: implementer
-    detected_layer: mixed
+    specialists: [implementer]  # Fallback for complex cross-layer
+    detected_layers: [mixed]
 ```
+
+**Multiple Specialists:** When a task group spans multiple layers, assign multiple specialists. The implementing agent will receive context from ALL assigned specialists to ensure comprehensive knowledge.
 
 ### FALLBACK: Manual assignment if no specialists
 
@@ -193,7 +203,7 @@ Please specify the name of each subagent to be assigned to each task group:
 [repeat for each task-group you've added to orchestration.yml]
 
 Available agents:
-[list agents from agent-os/agents/]
+[list agents from geist/agents/]
 
 Simply respond with the subagent names and corresponding task group number.
 ```
@@ -262,14 +272,14 @@ Note: If the `use_claude_code_subagents` flag is enabled, the final `orchestrati
 {{IF use_claude_code_subagents}}
 ### NEXT: Delegate task groups implementations to assigned subagents
 
-Loop through each task group in `agent-os/specs/[this-spec]/tasks.md` and delegate its implementation to the assigned subagent specified in `orchestration.yml`.
+Loop through each task group in `geist/specs/[this-spec]/tasks.md` and delegate its implementation to the assigned subagent specified in `orchestration.yml`.
 
 For each delegation, provide the subagent with:
 - The task group (including the parent task and all sub-tasks)
-- The spec file: `agent-os/specs/[this-spec]/spec.md`
+- The spec file: `geist/specs/[this-spec]/spec.md`
 - Instruct subagent to:
   - Perform their implementation
-  - Check off the task and sub-task(s) in `agent-os/specs/[this-spec]/tasks.md`
+  - Check off the task and sub-task(s) in `geist/specs/[this-spec]/tasks.md`
 {{UNLESS standards_as_claude_code_skills}}
 
 In addition to the above items, also instruct the subagent to closely adhere to the user's standards & preferences as specified in the following files.  To build the list of file references to give to the subagent, follow these instructions:
@@ -285,14 +295,14 @@ Provide all of the above to the subagent when delegating tasks for it to impleme
 
 Now we must generate an ordered series of prompt texts, which will be used to direct the implementation of each task group listed in `orchestration.yml`.
 
-Follow these steps to generate this spec's ordered series of prompts texts, each in its own .md file located in `agent-os/specs/[this-spec]/implementation/prompts/`.
+Follow these steps to generate this spec's ordered series of prompts texts, each in its own .md file located in `geist/specs/[this-spec]/implementation/prompts/`.
 
-LOOP through EACH task group in `agent-os/specs/[this-spec]/tasks.md` and for each, use the following workflow to generate a markdown file with prompt text for each task group:
+LOOP through EACH task group in `geist/specs/[this-spec]/tasks.md` and for each, use the following workflow to generate a markdown file with prompt text for each task group:
 
 #### Step 1. Create the prompt markdown file
 
 Create the prompt markdown file using this naming convention:
-`agent-os/specs/[this-spec]/implementation/prompts/[task-group-number]-[task-group-title].md`.
+`geist/specs/[this-spec]/implementation/prompts/[task-group-number]-[task-group-title].md`.
 
 For example, if the 3rd task group in tasks.md is named "Comment System" then create `3-comment-system.md`.
 
@@ -329,9 +339,9 @@ To replace "[orchestrated-standards]", use the following workflow:
 ## Context
 
 Read these files to understand the context:
-- @agent-os/specs/[this-spec]/spec.md
-- @agent-os/specs/[this-spec]/planning/requirements.md
-- @agent-os/specs/[this-spec]/planning/visuals (if exists)
+- @geist/specs/[this-spec]/spec.md
+- @geist/specs/[this-spec]/planning/requirements.md
+- @geist/specs/[this-spec]/planning/visuals (if exists)
 
 ## Basepoints Knowledge Context
 
@@ -385,7 +395,7 @@ When you have completed ALL tasks in Task Group [task-group-number]:
 Before marking tasks complete, run deterministic validation:
 
 ```bash
-SPEC_PATH="agent-os/specs/[this-spec]"
+SPEC_PATH="geist/specs/[this-spec]"
 {{workflows/validation/validate-implementation}}
 ```
 
@@ -409,7 +419,7 @@ This runs project-specific validators (build, test, lint, type-check) that were 
 Run the review check workflow:
 
 ```bash
-SPEC_PATH="agent-os/specs/[this-spec]"
+SPEC_PATH="geist/specs/[this-spec]"
 {{workflows/human-review/review-trade-offs}}
 ```
 
@@ -431,7 +441,7 @@ This will automatically:
 ### Step 6: Proceed to Next Prompt
 
 👉 Read and execute the next prompt: `[next-prompt-number]-[next-prompt-name].md`
-   (Located in: `agent-os/specs/[this-spec]/implementation/prompts/`)
+   (Located in: `geist/specs/[this-spec]/implementation/prompts/`)
 
 **Output format:**
 
@@ -454,7 +464,7 @@ Files modified: [list files]
 🎉 ALL TASK GROUPS COMPLETE!
 
 The implementation is finished. See validation report at:
-`agent-os/specs/[this-spec]/implementation/cache/validation-report.md`
+`geist/specs/[this-spec]/implementation/cache/validation-report.md`
 ```
 ```
 
@@ -488,7 +498,7 @@ Output to user the following:
 
 ## Implementation Prompts Generated
 
-The following prompt files have been created in `agent-os/specs/[this-spec]/implementation/prompts/`:
+The following prompt files have been created in `geist/specs/[this-spec]/implementation/prompts/`:
 
 [list prompt files in order, numbered with full paths]
 ```
@@ -500,7 +510,7 @@ Now execute each prompt one by one, implementing task groups in sequence:
 ```bash
 echo "🚀 Starting iterative prompt execution..."
 
-SPEC_PATH="agent-os/specs/[this-spec]"
+SPEC_PATH="geist/specs/[this-spec]"
 PROMPTS_DIR="$SPEC_PATH/implementation/prompts"
 TOTAL_PROMPTS=$(ls -1 "$PROMPTS_DIR"/*.md 2>/dev/null | wc -l | tr -d ' ')
 CURRENT_PROMPT=1
@@ -579,11 +589,11 @@ Output to user the following:
 
 ## Validation Report
 
-See: `agent-os/specs/[this-spec]/implementation/cache/validation-report.md`
+See: `geist/specs/[this-spec]/implementation/cache/validation-report.md`
 
 ## Orchestration Status
 
-See: `agent-os/specs/[this-spec]/implementation/cache/orchestration-status.md`
+See: `geist/specs/[this-spec]/implementation/cache/orchestration-status.md`
 ```
 
 ### Step 7: Run Validation
@@ -591,7 +601,7 @@ See: `agent-os/specs/[this-spec]/implementation/cache/orchestration-status.md`
 After orchestration setup is complete, run validation:
 
 ```bash
-SPEC_PATH="agent-os/specs/[current-spec]"
+SPEC_PATH="geist/specs/[current-spec]"
 COMMAND="orchestrate-tasks"
 {{workflows/validation/validate-output-exists}}
 {{workflows/validation/validate-knowledge-integration}}

@@ -2,7 +2,7 @@ The FIRST STEP is to validate prerequisites and run comprehensive validation to 
 
 ## Core Responsibilities
 
-1. **Check Prerequisites**: Verify that agent-os is deployed and basepoints/product files exist
+1. **Check Prerequisites**: Verify that geist is deployed and basepoints/product files exist
 2. **Run Comprehensive Validation**: Run all validation utilities to identify issues
 3. **Determine Cleanup Scope**: Identify which issues need to be fixed
 4. **Support Dry-Run Mode**: Allow user to preview changes before applying
@@ -11,19 +11,19 @@ The FIRST STEP is to validate prerequisites and run comprehensive validation to 
 
 ### Step 1: Validate Prerequisites
 
-Check if agent-os is deployed and prerequisites exist:
+Check if geist is deployed and prerequisites exist:
 
 ```bash
-# Check if agent-os directory exists
-if [ ! -d "agent-os" ]; then
-    echo "❌ agent-os directory not found. Please run deploy-agents first."
+# Check if geist directory exists
+if [ ! -d "geist" ]; then
+    echo "❌ geist directory not found. Please run deploy-agents first."
     exit 1
 fi
 
-echo "✅ agent-os directory found"
+echo "✅ geist directory found"
 
 # Check if basepoints exist (needed for placeholder replacement)
-if [ ! -d "agent-os/basepoints" ] || [ ! -f "agent-os/basepoints/headquarter.md" ]; then
+if [ ! -d "geist/basepoints" ] || [ ! -f "geist/basepoints/headquarter.md" ]; then
     echo "⚠️  Warning: Basepoints not found. Placeholder cleaning may be limited."
     BASEPOINTS_AVAILABLE=false
 else
@@ -32,7 +32,7 @@ else
 fi
 
 # Check if product files exist (needed for some replacements)
-if [ ! -d "agent-os/product" ]; then
+if [ ! -d "geist/product" ]; then
     echo "⚠️  Warning: Product files not found. Some replacements may be limited."
     PRODUCT_AVAILABLE=false
 else
@@ -62,10 +62,10 @@ Run all validation utilities to identify issues:
 
 ```bash
 # Create cleanup cache directory
-mkdir -p agent-os/.cleanup-cache
+mkdir -p geist/.cleanup-cache
 
 # Set spec path for validation workflows
-SPEC_PATH="agent-os/.cleanup-cache"
+SPEC_PATH="geist/.cleanup-cache"
 VALIDATION_CACHE="$SPEC_PATH/validation"
 mkdir -p "$VALIDATION_CACHE"
 
@@ -114,7 +114,7 @@ STRUCTURE_COUNT=$(cat "$VALIDATION_CACHE/structure-count.txt" 2>/dev/null || ech
 TOTAL_ISSUES=$((PLACEHOLDER_COUNT + UNNECESSARY_LOGIC_COUNT + CYCLE_COUNT + STRUCTURE_COUNT))
 
 if [ "$TOTAL_ISSUES" -eq 0 ]; then
-    echo "✅ No issues found! agent-os is already clean."
+    echo "✅ No issues found! geist is already clean."
     echo "You can exit the cleanup command now."
     exit 0
 fi
@@ -130,9 +130,9 @@ echo "Total issues to fix: $TOTAL_ISSUES"
 
 ## Important Constraints
 
-- Must verify agent-os is deployed before proceeding
+- Must verify geist is deployed before proceeding
 - Must run comprehensive validation to identify all issues
 - Must support dry-run mode for previewing changes
 - Must determine cleanup scope based on validation results
-- **CRITICAL**: All validation reports must be stored in `agent-os/.cleanup-cache/validation/` (temporary, cleaned up after cleanup completes)
+- **CRITICAL**: All validation reports must be stored in `geist/.cleanup-cache/validation/` (temporary, cleaned up after cleanup completes)
 - Must use placeholder syntax ({{PLACEHOLDER}}) for project-specific parts that will be replaced during deploy-agents

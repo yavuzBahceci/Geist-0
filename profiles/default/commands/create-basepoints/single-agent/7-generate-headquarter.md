@@ -9,7 +9,7 @@ Once headquarter is generated, output:
 ```
 ✅ Basepoints generation complete!
 
-**Headquarter file**: agent-os/basepoints/headquarter.md
+**Headquarter file**: geist/basepoints/headquarter.md
 **Total basepoints**: [number] files (modules + parents)
 **Structure**: Complete hierarchy documented
 **Abstraction layers**: [number] layers identified
@@ -17,8 +17,8 @@ Once headquarter is generated, output:
 All basepoint documentation is now complete and ready for use!
 
 **Navigation**:
-- Start here: agent-os/basepoints/headquarter.md
-- Browse by module: agent-os/basepoints/
+- Start here: geist/basepoints/headquarter.md
+- Browse by module: geist/basepoints/
 - Browse by layer: [links organized by abstraction layer]
 ```
 

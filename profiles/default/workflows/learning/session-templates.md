@@ -1,10 +1,10 @@
 # Session Feedback Templates
 
-Templates for session feedback data structures created at runtime in `agent-os/output/session-feedback/`.
+Templates for session feedback data structures created at runtime in `geist/output/session-feedback/`.
 
 ## Current Session Template
 
-**File**: `agent-os/output/session-feedback/current-session.md`
+**File**: `geist/output/session-feedback/current-session.md`
 
 ```markdown
 # Session: YYYY-MM-DD
@@ -39,7 +39,7 @@ Templates for session feedback data structures created at runtime in `agent-os/o
 
 ## Successful Patterns Template
 
-**File**: `agent-os/output/session-feedback/patterns/successful.md`
+**File**: `geist/output/session-feedback/patterns/successful.md`
 
 ```markdown
 # Successful Patterns
@@ -66,7 +66,7 @@ Templates for session feedback data structures created at runtime in `agent-os/o
 
 ## Failed Patterns Template
 
-**File**: `agent-os/output/session-feedback/patterns/failed.md`
+**File**: `geist/output/session-feedback/patterns/failed.md`
 
 ```markdown
 # Failed Patterns (Anti-patterns)
@@ -109,4 +109,4 @@ These templates are used by workflows to create session feedback files at runtim
 2. **patterns/successful.md**: Populated by `extract-session-patterns` workflow
 3. **patterns/failed.md**: Populated by `extract-session-patterns` workflow
 
-These files are created dynamically in target projects' `agent-os/output/session-feedback/` directory when commands run.
+These files are created dynamically in target projects' `geist/output/session-feedback/` directory when commands run.

@@ -16,8 +16,8 @@
 Load the list of module folders identified in previous phase:
 
 ```bash
-if [ -f "agent-os/output/create-basepoints/cache/module-folders.txt" ]; then
-    MODULE_FOLDERS=$(cat agent-os/output/create-basepoints/cache/module-folders.txt | grep -v "^#")
+if [ -f "geist/output/create-basepoints/cache/module-folders.txt" ]; then
+    MODULE_FOLDERS=$(cat geist/output/create-basepoints/cache/module-folders.txt | grep -v "^#")
 fi
 ```
 
@@ -26,7 +26,7 @@ fi
 Process each module folder and analyze code files:
 
 ```bash
-mkdir -p agent-os/output/create-basepoints/analysis
+mkdir -p geist/output/create-basepoints/analysis
 
 echo "$MODULE_FOLDERS" | while read module_dir; do
     if [ -z "$module_dir" ]; then
@@ -75,7 +75,7 @@ done
 Review documentation files:
 
 ```bash
-find . -type f \( -name "README.md" -o -name "ARCHITECTURE.md" -o -name "DESIGN.md" \) ! -path "*/node_modules/*" ! -path "*/agent-os/*" | while read doc_file; do
+find . -type f \( -name "README.md" -o -name "ARCHITECTURE.md" -o -name "DESIGN.md" \) ! -path "*/node_modules/*" ! -path "*/geist/*" | while read doc_file; do
     # Extract architectural insights and patterns
 done
 ```

@@ -15,8 +15,8 @@
 Set up validation environment and load update context:
 
 ```bash
-CACHE_DIR="agent-os/output/update-basepoints-and-redeploy/cache"
-REPORTS_DIR="agent-os/output/update-basepoints-and-redeploy/reports"
+CACHE_DIR="geist/output/update-basepoints-and-redeploy/cache"
+REPORTS_DIR="geist/output/update-basepoints-and-redeploy/reports"
 
 mkdir -p "$REPORTS_DIR"
 
@@ -62,7 +62,7 @@ REQUIRED_SECTIONS=(
 if [ "$VALIDATION_SCOPE" = "incremental" ]; then
     FILES_TO_VALIDATE="$UPDATED_BASEPOINTS"
 else
-    FILES_TO_VALIDATE=$(find agent-os/basepoints -name "agent-base-*.md" -type f)
+    FILES_TO_VALIDATE=$(find geist/basepoints -name "agent-base-*.md" -type f)
 fi
 
 echo "$FILES_TO_VALIDATE" | while read basepoint_file; do
@@ -129,11 +129,11 @@ echo "📜 VALIDATING COMMAND FILES"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 # Find all command files
-COMMAND_FILES=$(find agent-os/commands -name "*.md" -type f 2>/dev/null)
+COMMAND_FILES=$(find geist/commands -name "*.md" -type f 2>/dev/null)
 
 if [ -z "$COMMAND_FILES" ]; then
-    echo "   ⚠️  No command files found in agent-os/commands/"
-    VALIDATION_WARNINGS+=("NO_COMMANDS:agent-os/commands/:No command files found")
+    echo "   ⚠️  No command files found in geist/commands/"
+    VALIDATION_WARNINGS+=("NO_COMMANDS:geist/commands/:No command files found")
 else
     echo "$COMMAND_FILES" | while read command_file; do
         if [ -z "$command_file" ]; then
@@ -153,13 +153,13 @@ else
         FILE_CONTENT=$(cat "$command_file")
         
         # Check for broken phase references
-        PHASE_REFS=$(echo "$FILE_CONTENT" | grep -oE '\{\{PHASE [0-9]+: @agent-os/commands/[^}]+\}\}' || true)
+        PHASE_REFS=$(echo "$FILE_CONTENT" | grep -oE '\{\{PHASE [0-9]+: @geist/commands/[^}]+\}\}' || true)
         
         if [ -n "$PHASE_REFS" ]; then
             echo "$PHASE_REFS" | while read phase_ref; do
                 # Extract the referenced file path
-                REF_PATH=$(echo "$phase_ref" | sed 's/.*@agent-os\/commands\/\([^}]*\)\.md.*/\1.md/')
-                FULL_PATH="agent-os/commands/$REF_PATH"
+                REF_PATH=$(echo "$phase_ref" | sed 's/.*@geist\/commands\/\([^}]*\)\.md.*/\1.md/')
+                FULL_PATH="geist/commands/$REF_PATH"
                 
                 if [ ! -f "$FULL_PATH" ]; then
                     VALIDATION_ISSUES+=("BROKEN_PHASE_REF:$command_file:Broken phase reference: $REF_PATH")
@@ -183,8 +183,8 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo "🔗 CHECKING REFERENCES"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-# Find all markdown files in agent-os
-ALL_FILES=$(find agent-os -name "*.md" -type f ! -path "*/output/*" ! -path "*/specs/*")
+# Find all markdown files in geist
+ALL_FILES=$(find geist -name "*.md" -type f ! -path "*/output/*" ! -path "*/specs/*")
 
 echo "$ALL_FILES" | while read file; do
     if [ -z "$file" ] || [ ! -f "$file" ]; then
@@ -200,7 +200,7 @@ echo "$ALL_FILES" | while read file; do
         echo "$WORKFLOW_REFS" | while read ref; do
             # Extract workflow path
             WORKFLOW_PATH=$(echo "$ref" | sed 's/{{workflows\/\([^}]*\)}}/\1/')
-            FULL_PATH="agent-os/workflows/${WORKFLOW_PATH}.md"
+            FULL_PATH="geist/workflows/${WORKFLOW_PATH}.md"
             
             if [ ! -f "$FULL_PATH" ]; then
                 VALIDATION_ISSUES+=("BROKEN_WORKFLOW_REF:$file:Broken workflow reference: $WORKFLOW_PATH")
@@ -216,7 +216,7 @@ echo "$ALL_FILES" | while read file; do
         echo "$STANDARD_REFS" | while read ref; do
             # Extract standard path
             STANDARD_PATH=$(echo "$ref" | sed 's/{{standards\/\([^}]*\)}}/\1/')
-            FULL_PATH="agent-os/standards/${STANDARD_PATH}.md"
+            FULL_PATH="geist/standards/${STANDARD_PATH}.md"
             
             if [ ! -f "$FULL_PATH" ]; then
                 VALIDATION_ISSUES+=("BROKEN_STANDARD_REF:$file:Broken standard reference: $STANDARD_PATH")
@@ -239,7 +239,7 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo "💾 VERIFYING KNOWLEDGE CACHE"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-KNOWLEDGE_CACHE="agent-os/output/deploy-agents/cache/merged-knowledge.md"
+KNOWLEDGE_CACHE="geist/output/deploy-agents/cache/merged-knowledge.md"
 
 if [ -f "$KNOWLEDGE_CACHE" ]; then
     echo "   📂 Knowledge cache found: $KNOWLEDGE_CACHE"
@@ -253,7 +253,7 @@ if [ -f "$KNOWLEDGE_CACHE" ]; then
         CACHE_MTIME=$(stat -f %m "$KNOWLEDGE_CACHE" 2>/dev/null || stat -c %Y "$KNOWLEDGE_CACHE" 2>/dev/null)
         
         # Find newest basepoint
-        NEWEST_BASEPOINT=$(find agent-os/basepoints -name "*.md" -type f -exec stat -f '%m %N' {} \; 2>/dev/null | sort -rn | head -1 | cut -d' ' -f2)
+        NEWEST_BASEPOINT=$(find geist/basepoints -name "*.md" -type f -exec stat -f '%m %N' {} \; 2>/dev/null | sort -rn | head -1 | cut -d' ' -f2)
         NEWEST_MTIME=$(stat -f %m "$NEWEST_BASEPOINT" 2>/dev/null || stat -c %Y "$NEWEST_BASEPOINT" 2>/dev/null)
         
         if [ "$CACHE_MTIME" -lt "$NEWEST_MTIME" ]; then
@@ -343,11 +343,11 @@ fi)
 $(if [ "$VALIDATION_SCOPE" = "incremental" ]; then
     echo "$UPDATED_BASEPOINTS" | sed 's/^/- /'
 else
-    find agent-os/basepoints -name "agent-base-*.md" -type f | sed 's/^/- /'
+    find geist/basepoints -name "agent-base-*.md" -type f | sed 's/^/- /'
 fi)
 
 ### Command Files Checked
-$(find agent-os/commands -name "*.md" -type f 2>/dev/null | sed 's/^/- /' || echo "_None found_")
+$(find geist/commands -name "*.md" -type f 2>/dev/null | sed 's/^/- /' || echo "_None found_")
 
 ### Reference Checks
 - Workflow references: Checked
@@ -397,7 +397,7 @@ Display validation results for user:
    - [Warning type]: [file] - [description]
    ...
 
-📋 Full report: agent-os/output/update-basepoints-and-redeploy/reports/validation-report.md
+📋 Full report: geist/output/update-basepoints-and-redeploy/reports/validation-report.md
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

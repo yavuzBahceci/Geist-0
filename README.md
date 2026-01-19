@@ -157,7 +157,7 @@ cd /path/to/your/project
        ↓
 /deploy-agents        # Specializes commands for YOUR project
        ↓
-/cleanup-agent-os     # Validates everything is ready
+/cleanup-geist        # Validates everything is ready
 ```
 
 ### Step 3: Build Features (Per Feature)
@@ -287,7 +287,7 @@ AI: *already knows*
 |----------|----------|---------|
 | **Setup** | `adapt-to-product`, `plan-product`, `create-basepoints`, `deploy-agents` | One-time project specialization |
 | **Development** | `shape-spec`, `write-spec`, `create-tasks`, `implement-tasks`, `orchestrate-tasks` | Feature development workflow |
-| **Maintenance** | `cleanup-agent-os`, `update-basepoints-and-redeploy` | Keep knowledge in sync |
+| **Maintenance** | `cleanup-geist`, `update-basepoints-and-redeploy` | Keep knowledge in sync |
 | **Utility** | `fix-bug` | Systematic bug analysis and fixing |
 
 ---
@@ -306,7 +306,7 @@ cd /path/to/your/project
 /adapt-to-product
 /create-basepoints
 /deploy-agents
-/cleanup-agent-os
+/cleanup-geist
 
 # 4. Build a feature
 /shape-spec "Add user authentication"
@@ -322,7 +322,7 @@ cd /path/to/your/project
 ## File Structure
 
 ```
-your-project/agent-os/           (after specialization)
+your-project/geist/              (after specialization)
 ├── basepoints/                  # Your codebase documentation
 │   ├── headquarter.md           # Project overview
 │   ├── [layers]/[modules]/      # Per-module patterns

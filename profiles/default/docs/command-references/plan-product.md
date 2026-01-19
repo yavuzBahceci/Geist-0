@@ -22,7 +22,7 @@
 │   └────────────────────────────────┘                                         │
 │                    │                                                         │
 │                    ▼                                                         │
-│   Output: agent-os/product/ (mission, roadmap, tech-stack)                   │
+│   Output: geist/product/ (mission, roadmap, tech-stack)                   │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -88,7 +88,7 @@
 │  │ Phase 2: Create Mission                                             │     │
 │  │ ─────────────────────────────────                                   │     │
 │  │                                                                     │     │
-│  │  Output: agent-os/product/mission.md                                │     │
+│  │  Output: geist/product/mission.md                                │     │
 │  │  • Product vision and goals                                         │     │
 │  │  • Target users and personas                                        │     │
 │  │  • Core value proposition                                           │     │
@@ -99,7 +99,7 @@
 │  │ Phase 3: Create Roadmap                                             │     │
 │  │ ─────────────────────────────────                                   │     │
 │  │                                                                     │     │
-│  │  Output: agent-os/product/roadmap.md                                │     │
+│  │  Output: geist/product/roadmap.md                                │     │
 │  │  • Phased development plan                                          │     │
 │  │  • Prioritized features                                             │     │
 │  │  • Milestones and deliverables                                      │     │
@@ -110,7 +110,7 @@
 │  │ Phase 4: Create Tech Stack                                          │     │
 │  │ ─────────────────────────────────                                   │     │
 │  │                                                                     │     │
-│  │  Output: agent-os/product/tech-stack.md                             │     │
+│  │  Output: geist/product/tech-stack.md                             │     │
 │  │  • Languages and frameworks                                         │     │
 │  │  • Infrastructure and tools                                         │     │
 │  │  • Key dependencies                                                 │     │
@@ -126,16 +126,16 @@
 │ PHASE 5: PRODUCT-FOCUSED CLEANUP                                             │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│  After product files are created, cleanup agent-os files based on scope:    │
+│  After product files are created, cleanup geist files based on scope:    │
 │                                                                              │
 │  ┌─────────────────────────────────────────────────────────────────────┐     │
 │  │ Scope Detection                                                     │     │
 │  │ ─────────────────────────────────                                   │     │
 │  │                                                                     │     │
 │  │  Reads:                                                             │     │
-│  │  • agent-os/product/tech-stack.md → Language, Framework             │     │
-│  │  • agent-os/product/mission.md → Project Type                       │     │
-│  │  • agent-os/product/roadmap.md → Architecture                       │     │
+│  │  • geist/product/tech-stack.md → Language, Framework             │     │
+│  │  • geist/product/mission.md → Project Type                       │     │
+│  │  • geist/product/roadmap.md → Architecture                       │     │
 │  └─────────────────────────────────────────────────────────────────────┘     │
 │                                                                              │
 │  ┌─────────────────────────────────────────────────────────────────────┐     │
@@ -160,9 +160,9 @@
 │  └─────────────────────────────────────────────────────────────────────┘     │
 │                                                                              │
 │  Output:                                                                     │
-│  • agent-os/output/product-cleanup/detected-scope.yml                        │
-│  • agent-os/output/product-cleanup/search-queries.md                         │
-│  • agent-os/output/product-cleanup/cleanup-report.md                         │
+│  • geist/output/product-cleanup/detected-scope.yml                        │
+│  • geist/output/product-cleanup/search-queries.md                         │
+│  • geist/output/product-cleanup/cleanup-report.md                         │
 │                                                                              │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -180,7 +180,7 @@
 │  ──────                              ───────                                 │
 │                                                                              │
 │  ┌──────────────────────┐            ┌──────────────────────────────────┐    │
-│  │ Your Product Idea    │            │ agent-os/product/                │    │
+│  │ Your Product Idea    │            │ geist/product/                │    │
 │  │                      │───────────▶│                                  │    │
 │  │ • Vision             │            │ ├── mission.md                   │    │
 │  │ • Target users       │            │ ├── roadmap.md                   │    │
@@ -188,7 +188,7 @@
 │  │ • Key features       │            └──────────────────────────────────┘    │
 │  │ • Tech preferences   │                                                    │
 │  └──────────────────────┘            ┌──────────────────────────────────┐    │
-│                                      │ agent-os/output/product-cleanup/ │    │
+│                                      │ geist/output/product-cleanup/ │    │
 │                                      │                                  │    │
 │                                      │ ├── detected-scope.yml           │    │
 │                                      │ ├── search-queries.md            │    │

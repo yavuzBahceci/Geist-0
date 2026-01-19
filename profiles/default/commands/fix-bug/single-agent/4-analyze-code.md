@@ -7,7 +7,7 @@ Deep-dive into specific files and modules where the issue occurs.
 Load all previous analysis:
 
 ```bash
-CACHE_PATH="agent-os/output/fix-bug/cache"
+CACHE_PATH="geist/output/fix-bug/cache"
 
 # Load issue analysis
 ISSUE_ANALYSIS=$(cat "$CACHE_PATH/issue-analysis.md" 2>/dev/null)
@@ -280,7 +280,7 @@ echo "   Analysis saved to: $CACHE_PATH/code-analysis.md"
 ✅ Execution paths traced
 ✅ Root cause hypothesis formed
 
-Analysis saved to: agent-os/output/fix-bug/cache/code-analysis.md
+Analysis saved to: geist/output/fix-bug/cache/code-analysis.md
 
 NEXT STEP 👉 Proceeding to Phase 5: Knowledge Synthesis
 ```

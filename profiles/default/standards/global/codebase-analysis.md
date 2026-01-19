@@ -3,7 +3,7 @@
 ### Basepoint File Structure
 
 - **Naming Convention**: Basepoint files must follow the pattern `agent-base-[module-name].md` where `[module-name]` is the actual name of the module folder
-- **Location**: Basepoint files must be placed in the mirrored structure within `agent-os/basepoints/`, maintaining the same relative path as the module in the project
+- **Location**: Basepoint files must be placed in the mirrored structure within `geist/basepoints/`, maintaining the same relative path as the module in the project
 - **Content Structure**: Each basepoint file must include:
   - Module Overview
   - Patterns (Design, Coding, Architectural)

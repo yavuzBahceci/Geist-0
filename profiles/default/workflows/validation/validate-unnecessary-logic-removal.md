@@ -5,7 +5,7 @@
 1. **Comprehensive Unnecessary Logic Detection**: Detect all types of unnecessary logic that should be removed from specialized commands
 2. **Categorize by Type**: Group findings by category (conditionals, examples, patterns, references)
 3. **Generate Removal Report**: Create detailed report with file locations and recommendations for removal
-4. **Support Validation Context**: Support validation of both profiles/default (template) and installed agent-os (specialized)
+4. **Support Validation Context**: Support validation of both profiles/default (template) and installed geist (specialized)
 
 ## Workflow
 
@@ -23,8 +23,8 @@ if [ -d "profiles/default" ] && [ "$(pwd)" = *"/profiles/default"* ]; then
     SCAN_PATH="profiles/default"
     CACHE_PATH="$SPEC_PATH/implementation/cache/validation"
 else
-    VALIDATION_CONTEXT="installed-agent-os"
-    SCAN_PATH="agent-os"
+    VALIDATION_CONTEXT="installed-geist"
+    SCAN_PATH="geist"
     CACHE_PATH="$SPEC_PATH/implementation/cache/validation"
 fi
 
@@ -154,8 +154,8 @@ Find any references to "profiles/default" in specialized commands (should only e
 # Initialize results
 PROFILES_SELF_REFERENCES=""
 
-# Only check if validating installed agent-os (specialized commands shouldn't reference profiles/default)
-if [ "$VALIDATION_CONTEXT" = "installed-agent-os" ]; then
+# Only check if validating installed geist (specialized commands shouldn't reference profiles/default)
+if [ "$VALIDATION_CONTEXT" = "installed-geist" ]; then
     echo "$FILES_TO_SCAN" | while read file_path; do
         if [ -z "$file_path" ] || [ ! -f "$file_path" ]; then
             continue
@@ -314,7 +314,7 @@ $(if [ "$REFERENCES_COUNT" -gt 0 ]; then
         echo ""
     done
 else
-    if [ "$VALIDATION_CONTEXT" = "installed-agent-os" ]; then
+    if [ "$VALIDATION_CONTEXT" = "installed-geist" ]; then
         echo "✅ No profiles/default references found in specialized commands"
     else
         echo "ℹ️  profiles/default references are expected in template (profiles/default context)"
@@ -332,7 +332,7 @@ $(if [ "$TOTAL_ISSUES" -gt 0 ]; then
     echo "2. **Replace Generic Examples**: Replace generic examples with project-specific ones from basepoints"
     echo "3. **Replace Abstract Patterns**: Replace abstract pattern references with concrete project patterns"
     echo "4. **Remove profiles/default References**: Remove all references to 'profiles/default' from specialized commands"
-    echo "5. **Run cleanup command** (if available) to automatically fix these issues in already-deployed agent-os"
+    echo "5. **Run cleanup command** (if available) to automatically fix these issues in already-deployed geist"
     echo "6. **Manually review** files listed above and remove unnecessary logic"
 else
     echo "✅ **No Action Required** - All unnecessary logic has been removed!"
@@ -349,8 +349,8 @@ echo "📁 Report stored in: $CACHE_PATH/unnecessary-logic-removal-validation-su
 - Must detect all types of unnecessary logic (conditionals, examples, patterns, references)
 - Must categorize findings by type for easy analysis
 - Must generate comprehensive reports with file locations and recommendations
-- Must only check for profiles/default references when validating installed agent-os (not in template)
+- Must only check for profiles/default references when validating installed geist (not in template)
 - Must provide specific recommendations for removal of each type
-- Must support validation of both profiles/default (template) and installed agent-os (specialized)
-- **CRITICAL**: All reports must be stored in `agent-os/specs/[current-spec]/implementation/cache/validation/` when running within a spec command, not scattered around the codebase
+- Must support validation of both profiles/default (template) and installed geist (specialized)
+- **CRITICAL**: All reports must be stored in `geist/specs/[current-spec]/implementation/cache/validation/` when running within a spec command, not scattered around the codebase
 - Must use placeholder syntax ({{PLACEHOLDER}}) for project-specific parts that will be replaced during deploy-agents

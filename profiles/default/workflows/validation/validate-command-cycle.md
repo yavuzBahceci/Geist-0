@@ -11,7 +11,7 @@
 
 ### Step 1: Determine Context and Paths
 
-Determine whether we're validating profiles/default (template) or installed agent-os (specialized):
+Determine whether we're validating profiles/default (template) or installed geist (specialized):
 
 ```bash
 # Determine spec path
@@ -23,8 +23,8 @@ if [ -d "profiles/default" ] && [ "$(pwd)" = *"/profiles/default"* ]; then
     SCAN_PATH="profiles/default"
     CACHE_PATH="$SPEC_PATH/implementation/cache/validation"
 else
-    VALIDATION_CONTEXT="installed-agent-os"
-    SCAN_PATH="agent-os"
+    VALIDATION_CONTEXT="installed-geist"
+    SCAN_PATH="geist"
     CACHE_PATH="$SPEC_PATH/implementation/cache/validation"
 fi
 
@@ -156,8 +156,8 @@ echo "$COMMAND_FILES" | while read file_path; do
     FILE_CONTENT=$(cat "$file_path")
     
     # Check for references to non-existent files
-    if echo "$FILE_CONTENT" | grep -qE "@agent-os/commands/[^/]+/[^/]+\.md|@agent-os/workflows/[^/]+/[^/]+\.md"; then
-        REFERENCED_FILES=$(grep -oE "@agent-os/commands/[^/]+/[^/]+\.md|@agent-os/workflows/[^/]+/[^/]+\.md" "$file_path" | sed 's|@agent-os/||')
+    if echo "$FILE_CONTENT" | grep -qE "@geist/commands/[^/]+/[^/]+\.md|@geist/workflows/[^/]+/[^/]+\.md"; then
+        REFERENCED_FILES=$(grep -oE "@geist/commands/[^/]+/[^/]+\.md|@geist/workflows/[^/]+/[^/]+\.md" "$file_path" | sed 's|@geist/||')
         
         for ref_file in $REFERENCED_FILES; do
             if [ ! -f "$SCAN_PATH/$ref_file" ]; then
@@ -287,5 +287,5 @@ echo "✅ Command cycle validation complete. Report stored in $CACHE_PATH/"
 - Must verify implement-tasks and orchestrate-tasks are independent (both depend on create-tasks, not each other)
 - Must check for missing connections or broken references
 - Must verify specialized commands maintain same cycle structure as profiles/default versions
-- **CRITICAL**: All reports must be stored in `agent-os/specs/[current-spec]/implementation/cache/validation/` when running within a spec command, not scattered around the codebase
+- **CRITICAL**: All reports must be stored in `geist/specs/[current-spec]/implementation/cache/validation/` when running within a spec command, not scattered around the codebase
 - Must use placeholder syntax ({{PLACEHOLDER}}) for project-specific parts that will be replaced during deploy-agents

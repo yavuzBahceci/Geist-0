@@ -9,7 +9,7 @@ The THIRD STEP is to update only the affected basepoints by following these inst
 Load the list of basepoints that need updating from Phase 2:
 
 ```bash
-CACHE_DIR="agent-os/output/update-basepoints-and-redeploy/cache"
+CACHE_DIR="geist/output/update-basepoints-and-redeploy/cache"
 
 if [ ! -f "$CACHE_DIR/affected-basepoints.txt" ]; then
     echo "❌ ERROR: Affected basepoints list not found."
@@ -34,7 +34,7 @@ Sort basepoints so children are processed before parents (deepest first):
 
 ```bash
 # Separate headquarter from other basepoints
-HEADQUARTER_PATH="agent-os/basepoints/headquarter.md"
+HEADQUARTER_PATH="geist/basepoints/headquarter.md"
 MODULE_BASEPOINTS=$(echo "$AFFECTED_BASEPOINTS" | grep -v "headquarter.md")
 
 # Sort by depth (more slashes = deeper = process first)
@@ -75,7 +75,7 @@ echo "$SORTED_BASEPOINTS" | while read basepoint_path; do
     fi
     
     # Extract module path from basepoint path
-    MODULE_PATH=$(echo "$basepoint_path" | sed 's|^agent-os/basepoints/||' | sed 's|/agent-base-.*\.md$||')
+    MODULE_PATH=$(echo "$basepoint_path" | sed 's|^geist/basepoints/||' | sed 's|/agent-base-.*\.md$||')
     
     # Get changed files for this module
     CHANGED_IN_MODULE=$(grep "^$MODULE_PATH" "$CACHE_DIR/changed-files.txt" 2>/dev/null | wc -l | tr -d ' ')
@@ -126,7 +126,7 @@ if echo "$AFFECTED_BASEPOINTS" | grep -q "headquarter.md"; then
     echo "🏢 UPDATING HEADQUARTER"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     
-    HEADQUARTER_PATH="agent-os/basepoints/headquarter.md"
+    HEADQUARTER_PATH="geist/basepoints/headquarter.md"
     
     if [ -f "$HEADQUARTER_PATH" ]; then
         cp "$HEADQUARTER_PATH" "${HEADQUARTER_PATH}.backup"
@@ -165,7 +165,7 @@ $(cat "$CACHE_DIR/updated-basepoints.txt" 2>/dev/null | sed 's/^/- /')
 ## Backup Files
 
 Backup files created (for rollback if needed):
-$(find agent-os/basepoints -name "*.backup" -type f 2>/dev/null | sed 's/^/- /' || echo "_None_")
+$(find geist/basepoints -name "*.backup" -type f 2>/dev/null | sed 's/^/- /' || echo "_None_")
 
 ## Update Order
 
@@ -202,7 +202,7 @@ Once basepoint updates are complete, output the following message:
 
 💾 Backups created for rollback if needed
 
-📋 Summary: agent-os/output/update-basepoints-and-redeploy/cache/basepoint-update-summary.md
+📋 Summary: geist/output/update-basepoints-and-redeploy/cache/basepoint-update-summary.md
 
 NEXT STEP 👉 Run Phase 4: `4-re-extract-knowledge.md`
 ```

@@ -22,8 +22,8 @@ fi
 echo "🔍 Detecting contradictions..."
 
 CACHE_PATH="$SPEC_PATH/implementation/cache"
-STANDARDS_PATH="agent-os/standards"
-BASEPOINTS_PATH="agent-os/basepoints"
+STANDARDS_PATH="geist/standards"
+BASEPOINTS_PATH="geist/basepoints"
 
 # Initialize standards collection
 ALL_STANDARDS=""
@@ -228,7 +228,7 @@ $CONTRADICTIONS
 ## Standards Sources Checked
 
 - Basepoints knowledge cache
-- Standards directory (agent-os/standards/)
+- Standards directory (geist/standards/)
 - Headquarter.md
 
 ## Resolution Actions

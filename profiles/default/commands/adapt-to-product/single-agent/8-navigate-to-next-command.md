@@ -10,10 +10,10 @@ The following product documentation files have been created:
 
 | File | Location | Purpose |
 |------|----------|---------|
-| Mission | `agent-os/product/mission.md` | Product vision, goals, and strategic direction |
-| Roadmap | `agent-os/product/roadmap.md` | Phased development plan with prioritized features |
-| Tech Stack | `agent-os/product/tech-stack.md` | Technical stack and architecture decisions |
-| Summary | `agent-os/output/adapt-to-product/reports/product-summary.md` | Combined knowledge and consistency analysis |
+| Mission | `geist/product/mission.md` | Product vision, goals, and strategic direction |
+| Roadmap | `geist/product/roadmap.md` | Phased development plan with prioritized features |
+| Tech Stack | `geist/product/tech-stack.md` | Technical stack and architecture decisions |
+| Summary | `geist/output/adapt-to-product/reports/product-summary.md` | Combined knowledge and consistency analysis |
 
 ### Process Completed
 
@@ -45,16 +45,16 @@ Display the following completion message:
 🎉 adapt-to-product Complete!
 
 **Product Documentation Created:**
-├── agent-os/product/
+├── geist/product/
 │   ├── mission.md       - Product vision and goals
 │   ├── roadmap.md       - Development roadmap
 │   └── tech-stack.md    - Technical stack
-└── agent-os/output/adapt-to-product/reports/
+└── geist/output/adapt-to-product/reports/
     └── product-summary.md - Knowledge summary
 
 **What's Next?**
 
-Your product documentation is ready. To continue setting up your Agent OS:
+Your product documentation is ready. To continue setting up your Geist:
 
 👉 Run `/create-basepoints` to analyze your codebase and generate pattern documentation.
 

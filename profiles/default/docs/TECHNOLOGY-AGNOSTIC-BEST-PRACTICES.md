@@ -19,7 +19,7 @@ This document outlines best practices for maintaining technology-agnostic templa
 
 **`profiles/default/` templates must be abstract and technology-agnostic.**
 
-Technology-specific patterns should only exist in specialized agent-os instances (created during deployment), not in the base templates.
+Technology-specific patterns should only exist in specialized geist instances (created during deployment), not in the base templates.
 
 ---
 
@@ -101,8 +101,8 @@ npm run lint
 
 **❌ Bad:**
 ```bash
-agent-os/basepoints
-agent-os/product
+geist/basepoints
+geist/product
 ```
 
 **✅ Good (when values vary):**
@@ -111,7 +111,7 @@ agent-os/product
 {{PRODUCT_PATH}}
 ```
 
-**Note:** Hardcoded paths like `agent-os/basepoints` are acceptable when they're the standard Agent OS structure (not project-specific).
+**Note:** Hardcoded paths like `geist/basepoints` are acceptable when they're the standard Geist structure (not project-specific).
 
 ---
 
@@ -271,7 +271,7 @@ src/components/Button.tsx
 
 **✅ Abstract (Standard Structure):**
 ```bash
-agent-os/basepoints  # Standard Agent OS structure (acceptable)
+geist/basepoints  # Standard Geist structure (acceptable)
 ```
 
 ---

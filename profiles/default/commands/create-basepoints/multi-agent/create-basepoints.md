@@ -20,7 +20,7 @@ Follow each of these phases and their individual workflows IN SEQUENCE:
 ### PHASE 1: Validate Prerequisites
 
 Use the **codebase-analyzer** subagent to validate prerequisites:
-- Check for product files existence (`agent-os/product/mission.md`, `roadmap.md`, `tech-stack.md`)
+- Check for product files existence (`geist/product/mission.md`, `roadmap.md`, `tech-stack.md`)
 - Prompt user to create product files if missing (direct to `plan-product` or `adapt-to-product`)
 - Validate basepoints folder doesn't already exist or handle existing folder scenario
 - Set up initial structure for basepoints folder
@@ -38,9 +38,9 @@ Use the **abstraction-detector** subagent to detect abstraction layers:
 ### PHASE 3: Mirror Project Structure
 
 Use the **codebase-analyzer** subagent to mirror project structure:
-- Create `agent-os/basepoints/` folder
+- Create `geist/basepoints/` folder
 - Mirror project directory structure within basepoints folder
-- Exclude generated/irrelevant folders (`node_modules/`, `.git/`, `build/`, `dist/`, `.next/`, `vendor/`, `agent-os/`, `basepoints/`)
+- Exclude generated/irrelevant folders (`node_modules/`, `.git/`, `build/`, `dist/`, `.next/`, `vendor/`, `geist/`, `basepoints/`)
 - Identify folders containing actual modules (exclude configuration/build folders)
 - Include software project's current path layer in structure
 
@@ -57,7 +57,7 @@ Use the **codebase-analyzer** subagent to analyze codebase comprehensively:
 
 Use the **basepoint-generator** subagent to generate module basepoint files:
 - Generate `agent-base-[module-name].md` files for each folder containing modules
-- Place files in mirrored structure (e.g., `agent-os/basepoints/src/data/models/agent-base-models.md`)
+- Place files in mirrored structure (e.g., `geist/basepoints/src/data/models/agent-base-models.md`)
 - Name files based on actual module names found in folder structure
 - Document patterns, standards, flows, strategies, and testing for each module
 - Use extracted patterns from codebase analysis
@@ -74,7 +74,7 @@ Use the **basepoint-generator** subagent to generate parent folder basepoint fil
 ### PHASE 7: Generate Headquarter
 
 Use the **headquarter-writer** subagent to generate headquarter.md:
-- Create `agent-os/basepoints/headquarter.md` at root of basepoints folder
+- Create `geist/basepoints/headquarter.md` at root of basepoints folder
 - Generate content from product files (`mission.md`, `roadmap.md`, `tech-stack.md`)
 - Bridge product-level abstraction with software project-level abstraction
 - Document overall architecture, abstraction layers, and module relationships
@@ -87,8 +87,8 @@ After all steps complete, inform the user:
 ```
 Basepoints generation complete!
 
-✅ Basepoints folder structure created: `agent-os/basepoints/`
-✅ Headquarter file generated: `agent-os/basepoints/headquarter.md`
+✅ Basepoints folder structure created: `geist/basepoints/`
+✅ Headquarter file generated: `geist/basepoints/headquarter.md`
 ✅ Module basepoint files generated for all modules
 ✅ Parent folder basepoint files generated
 

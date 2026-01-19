@@ -14,7 +14,7 @@ Establish the spec path for the current operation:
 
 ```bash
 # Determine spec path
-SPEC_PATH="agent-os/specs/[current-spec]"
+SPEC_PATH="geist/specs/[current-spec]"
 ```
 
 **Note:** Replace `[current-spec]` with the actual spec name (e.g., "2026-01-18-refactor-reduce-redundancy").
@@ -54,7 +54,7 @@ Commands should use this workflow at the beginning when they need to establish s
 {{workflows/common/determine-spec-context}}
 ```
 
-This replaces repeated instances of `SPEC_PATH="agent-os/specs/[current-spec]"` throughout command files.
+This replaces repeated instances of `SPEC_PATH="geist/specs/[current-spec]"` throughout command files.
 
 ## Important Constraints
 

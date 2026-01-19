@@ -11,13 +11,13 @@ echo "════════════════════════�
 echo ""
 
 # Check for existing project profile
-if [ -f "agent-os/config/project-profile.yml" ]; then
-    echo "✅ Found existing project profile: agent-os/config/project-profile.yml"
+if [ -f "geist/config/project-profile.yml" ]; then
+    echo "✅ Found existing project profile: geist/config/project-profile.yml"
     
     # Load key values
-    DETECTED_LANGUAGE=$(grep "language:" agent-os/config/project-profile.yml | head -1 | awk '{print $2}')
-    DETECTED_FRAMEWORK=$(grep "framework:" agent-os/config/project-profile.yml | head -1 | awk '{print $2}')
-    PROJECT_TYPE=$(grep "project_type:" agent-os/config/project-profile.yml | head -1 | awk '{print $2}')
+    DETECTED_LANGUAGE=$(grep "language:" geist/config/project-profile.yml | head -1 | awk '{print $2}')
+    DETECTED_FRAMEWORK=$(grep "framework:" geist/config/project-profile.yml | head -1 | awk '{print $2}')
+    PROJECT_TYPE=$(grep "project_type:" geist/config/project-profile.yml | head -1 | awk '{print $2}')
     
     echo "   Language: $DETECTED_LANGUAGE"
     echo "   Framework: ${DETECTED_FRAMEWORK:-(none)}"
@@ -43,11 +43,11 @@ If profile exists, run additional architecture-focused research:
 ```bash
 if [ "$PROFILE_EXISTS" = "true" ]; then
     # Check if enriched knowledge already exists
-    if [ -d "agent-os/config/enriched-knowledge" ]; then
+    if [ -d "geist/config/enriched-knowledge" ]; then
         echo "✅ Enriched knowledge found"
         
         # Run additional architecture research for basepoints context
-        if [ ! -f "agent-os/config/enriched-knowledge/stack-best-practices.md" ]; then
+        if [ ! -f "geist/config/enriched-knowledge/stack-best-practices.md" ]; then
             echo "   Adding architecture patterns research..."
             RESEARCH_DEPTH="standard"
             DO_STACK_PATTERNS=true

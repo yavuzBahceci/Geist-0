@@ -2,7 +2,7 @@
 
 ## Core Responsibilities
 
-1. **Create Basepoints Folder**: Ensure `agent-os/basepoints/` folder exists
+1. **Create Basepoints Folder**: Ensure `geist/basepoints/` folder exists
 2. **Mirror Directory Structure**: Replicate project directory structure within basepoints folder
 3. **Exclude Irrelevant Folders**: Skip generated and irrelevant folders during mirroring
 4. **Identify Module Folders**: Determine which folders contain actual modules (not config/build)
@@ -15,7 +15,7 @@
 Ensure the basepoints folder exists:
 
 ```bash
-mkdir -p agent-os/basepoints
+mkdir -p geist/basepoints
 ```
 
 ### Step 2: Define Exclusion Patterns
@@ -25,7 +25,7 @@ Set up exclusion patterns for folders that should not be mirrored:
 ```bash
 EXCLUDED_DIRS=(
     "node_modules" ".git" "build" "dist" ".next" "vendor"
-    "agent-os" "basepoints" ".cache" "coverage" ".vscode" ".idea"
+    "geist" "basepoints" ".cache" "coverage" ".vscode" ".idea"
 )
 ```
 
@@ -35,15 +35,15 @@ Before creating new structure, clean up any existing duplicate folders:
 
 ```bash
 # Remove duplicate basepoints. folder if it exists
-if [ -d "agent-os/basepoints." ]; then
+if [ -d "geist/basepoints." ]; then
     echo "⚠️  Removing duplicate basepoints. folder..."
-    rm -rf "agent-os/basepoints."
+    rm -rf "geist/basepoints."
 fi
 
 # Remove any incorrect workflows/basepoints/ folders
-if [ -d "agent-os/workflows/basepoints" ]; then
+if [ -d "geist/workflows/basepoints" ]; then
     echo "⚠️  Removing incorrect workflows/basepoints/ folder..."
-    rm -rf "agent-os/workflows/basepoints"
+    rm -rf "geist/workflows/basepoints"
 fi
 ```
 
@@ -73,10 +73,10 @@ find . -type d ! -path "*/\.*" | while read dir; do
             continue
         else
             # Normal path - create mirrored structure
-            basepoints_dir="agent-os/basepoints/$NORMALIZED_DIR"
+            basepoints_dir="geist/basepoints/$NORMALIZED_DIR"
             
             # Validate no duplicate (shouldn't happen with normalized paths, but check anyway)
-            if [ -d "$basepoints_dir" ] && [ "$basepoints_dir" != "agent-os/basepoints" ]; then
+            if [ -d "$basepoints_dir" ] && [ "$basepoints_dir" != "geist/basepoints" ]; then
                 echo "⚠️  Warning: Directory already exists: $basepoints_dir"
             fi
             
@@ -93,10 +93,10 @@ Identify ALL folders that contain actual content files using a deterministic tra
 **IMPORTANT**: This traversal MUST be comprehensive and include ALL content-containing folders. Do not miss any modules.
 
 ```bash
-mkdir -p agent-os/output/create-basepoints/cache
+mkdir -p geist/output/create-basepoints/cache
 
 # Clear previous module folders list
-> agent-os/output/create-basepoints/cache/module-folders.txt
+> geist/output/create-basepoints/cache/module-folders.txt
 
 # Define content file patterns (comprehensive list)
 CONTENT_PATTERNS=(
@@ -154,16 +154,16 @@ find . -type d ! -path "*/\.*" 2>/dev/null | sort | while read dir; do
         
         if [ "$HAS_CONTENT" = true ]; then
             if [ -z "$NORMALIZED_DIR" ] || [ "$NORMALIZED_DIR" = "." ]; then
-                echo "." >> agent-os/output/create-basepoints/cache/module-folders.txt
+                echo "." >> geist/output/create-basepoints/cache/module-folders.txt
             else
-                echo "$NORMALIZED_DIR" >> agent-os/output/create-basepoints/cache/module-folders.txt
+                echo "$NORMALIZED_DIR" >> geist/output/create-basepoints/cache/module-folders.txt
             fi
         fi
     fi
 done
 
 # Sort and deduplicate for determinism
-sort -u agent-os/output/create-basepoints/cache/module-folders.txt -o agent-os/output/create-basepoints/cache/module-folders.txt
+sort -u geist/output/create-basepoints/cache/module-folders.txt -o geist/output/create-basepoints/cache/module-folders.txt
 ```
 
 ### Step 6: Create Basepoints Task List
@@ -172,12 +172,12 @@ Create a comprehensive task list of all basepoints that will be generated:
 
 ```bash
 # Create task list from module folders
-echo "# Basepoints Generation Task List" > agent-os/output/create-basepoints/cache/basepoints-task-list.md
-echo "" >> agent-os/output/create-basepoints/cache/basepoints-task-list.md
-echo "Generated: $(date)" >> agent-os/output/create-basepoints/cache/basepoints-task-list.md
-echo "" >> agent-os/output/create-basepoints/cache/basepoints-task-list.md
-echo "## Modules to Process" >> agent-os/output/create-basepoints/cache/basepoints-task-list.md
-echo "" >> agent-os/output/create-basepoints/cache/basepoints-task-list.md
+echo "# Basepoints Generation Task List" > geist/output/create-basepoints/cache/basepoints-task-list.md
+echo "" >> geist/output/create-basepoints/cache/basepoints-task-list.md
+echo "Generated: $(date)" >> geist/output/create-basepoints/cache/basepoints-task-list.md
+echo "" >> geist/output/create-basepoints/cache/basepoints-task-list.md
+echo "## Modules to Process" >> geist/output/create-basepoints/cache/basepoints-task-list.md
+echo "" >> geist/output/create-basepoints/cache/basepoints-task-list.md
 
 TASK_COUNT=0
 while read module_dir; do
@@ -187,27 +187,27 @@ while read module_dir; do
         # Determine basepoint path
         NORMALIZED_DIR=$(echo "$module_dir" | sed 's|^\./||' | sed 's|^\.$||')
         if [ -z "$NORMALIZED_DIR" ] || [ "$NORMALIZED_DIR" = "." ]; then
-            BASEPOINT_PATH="agent-os/basepoints/agent-base-[project-root].md"
+            BASEPOINT_PATH="geist/basepoints/agent-base-[project-root].md"
             MODULE_NAME="[project-root]"
         else
             MODULE_NAME=$(basename "$NORMALIZED_DIR")
-            BASEPOINT_PATH="agent-os/basepoints/$NORMALIZED_DIR/agent-base-$MODULE_NAME.md"
+            BASEPOINT_PATH="geist/basepoints/$NORMALIZED_DIR/agent-base-$MODULE_NAME.md"
         fi
         
-        echo "- [ ] **Task $TASK_COUNT**: \`$module_dir\` → \`$BASEPOINT_PATH\`" >> agent-os/output/create-basepoints/cache/basepoints-task-list.md
+        echo "- [ ] **Task $TASK_COUNT**: \`$module_dir\` → \`$BASEPOINT_PATH\`" >> geist/output/create-basepoints/cache/basepoints-task-list.md
     fi
-done < agent-os/output/create-basepoints/cache/module-folders.txt
+done < geist/output/create-basepoints/cache/module-folders.txt
 
-echo "" >> agent-os/output/create-basepoints/cache/basepoints-task-list.md
-echo "## Summary" >> agent-os/output/create-basepoints/cache/basepoints-task-list.md
-echo "" >> agent-os/output/create-basepoints/cache/basepoints-task-list.md
-echo "**Total modules to process**: $TASK_COUNT" >> agent-os/output/create-basepoints/cache/basepoints-task-list.md
-echo "" >> agent-os/output/create-basepoints/cache/basepoints-task-list.md
-echo "## Parent Basepoints (will be generated after modules)" >> agent-os/output/create-basepoints/cache/basepoints-task-list.md
-echo "" >> agent-os/output/create-basepoints/cache/basepoints-task-list.md
-echo "Parent basepoints will be auto-generated for all intermediate directories." >> agent-os/output/create-basepoints/cache/basepoints-task-list.md
+echo "" >> geist/output/create-basepoints/cache/basepoints-task-list.md
+echo "## Summary" >> geist/output/create-basepoints/cache/basepoints-task-list.md
+echo "" >> geist/output/create-basepoints/cache/basepoints-task-list.md
+echo "**Total modules to process**: $TASK_COUNT" >> geist/output/create-basepoints/cache/basepoints-task-list.md
+echo "" >> geist/output/create-basepoints/cache/basepoints-task-list.md
+echo "## Parent Basepoints (will be generated after modules)" >> geist/output/create-basepoints/cache/basepoints-task-list.md
+echo "" >> geist/output/create-basepoints/cache/basepoints-task-list.md
+echo "Parent basepoints will be auto-generated for all intermediate directories." >> geist/output/create-basepoints/cache/basepoints-task-list.md
 
-echo "✅ Task list created: agent-os/output/create-basepoints/cache/basepoints-task-list.md"
+echo "✅ Task list created: geist/output/create-basepoints/cache/basepoints-task-list.md"
 echo "📋 Total modules to process: $TASK_COUNT"
 ```
 

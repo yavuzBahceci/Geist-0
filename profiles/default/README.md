@@ -193,7 +193,7 @@ This is the default template that gets installed into your project. It provides 
              │ Optional
              ▼
   ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-  ┃  Step 4: /cleanup-agent-os (Optional)                      ┃
+  ┃  Step 4: /cleanup-geist (Optional)                      ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
   
   • Cleans remaining placeholders
@@ -429,11 +429,11 @@ All spec/implementation commands use "narrow focus + expand knowledge":
 4. Creates product documentation
 
 **Output Files**:
-- `agent-os/product/mission.md`
-- `agent-os/product/roadmap.md`
-- `agent-os/product/tech-stack.md`
-- `agent-os/config/project-profile.yml`
-- `agent-os/config/enriched-knowledge/`
+- `geist/product/mission.md`
+- `geist/product/roadmap.md`
+- `geist/product/tech-stack.md`
+- `geist/config/project-profile.yml`
+- `geist/config/enriched-knowledge/`
 
 ---
 
@@ -447,9 +447,9 @@ All spec/implementation commands use "narrow focus + expand knowledge":
 5. Creates comprehensive basepoints files
 
 **Output Files**:
-- `agent-os/basepoints/headquarter.md` (project overview)
-- `agent-os/basepoints/[layer]/[module]/agent-base-*.md` (one per module)
-- `agent-os/basepoints/libraries/[category]/[library]-basepoint.md`
+- `geist/basepoints/headquarter.md` (project overview)
+- `geist/basepoints/[layer]/[module]/agent-base-*.md` (one per module)
+- `geist/basepoints/libraries/[category]/[library]-basepoint.md`
 
 ---
 
@@ -462,7 +462,7 @@ All spec/implementation commands use "narrow focus + expand knowledge":
 4. Injects your patterns into commands
 5. Configures validation commands
 
-**Output**: Specialized `agent-os/commands/` and `agent-os/workflows/`
+**Output**: Specialized `geist/commands/` and `geist/workflows/`
 
 ---
 
@@ -479,10 +479,10 @@ All spec/implementation commands use "narrow focus + expand knowledge":
 6. Accumulates knowledge
 
 **Output Files**:
-- `agent-os/specs/[name]/planning/requirements.md`
-- `agent-os/specs/[name]/implementation/cache/basepoints-knowledge.md`
-- `agent-os/specs/[name]/implementation/cache/library-basepoints-knowledge.md`
-- `agent-os/specs/[name]/implementation/cache/accumulated-knowledge.md`
+- `geist/specs/[name]/planning/requirements.md`
+- `geist/specs/[name]/implementation/cache/basepoints-knowledge.md`
+- `geist/specs/[name]/implementation/cache/library-basepoints-knowledge.md`
+- `geist/specs/[name]/implementation/cache/accumulated-knowledge.md`
 
 ---
 
@@ -497,7 +497,7 @@ All spec/implementation commands use "narrow focus + expand knowledge":
 6. Accumulates more knowledge
 
 **Output Files**:
-- `agent-os/specs/[name]/spec.md`
+- `geist/specs/[name]/spec.md`
 - `accumulated-knowledge.md` (updated)
 
 ---
@@ -513,7 +513,7 @@ All spec/implementation commands use "narrow focus + expand knowledge":
 6. Accumulates more knowledge
 
 **Output Files**:
-- `agent-os/specs/[name]/tasks.md`
+- `geist/specs/[name]/tasks.md`
 - `accumulated-knowledge.md` (updated)
 
 ---
@@ -555,7 +555,7 @@ profiles/default/
 │   ├── plan-product/            # Setup: Plan new product
 │   ├── create-basepoints/       # Setup: Create codebase docs
 │   ├── deploy-agents/           # Setup: Specialize commands
-│   ├── cleanup-agent-os/        # Maintenance: Verify deployment
+│   ├── cleanup-geist/        # Maintenance: Verify deployment
 │   ├── update-basepoints-and-redeploy/  # Maintenance: Sync changes
 │   ├── shape-spec/              # Development: Research requirements
 │   ├── write-spec/              # Development: Write specification
@@ -596,10 +596,10 @@ profiles/default/
     └── command-references/      # Per-command visual guides
 ```
 
-**After specialization** (in your project's `agent-os/` folder):
+**After specialization** (in your project's `geist/` folder):
 
 ```
-agent-os/
+geist/
 ├── commands/              # Specialized commands (project-specific)
 ├── workflows/             # Specialized workflows
 ├── basepoints/            # Your codebase documentation

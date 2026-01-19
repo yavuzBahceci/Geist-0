@@ -1,417 +1,390 @@
 # Contributing to Geist
 
-Thank you for your interest in contributing to Geist! This guide will help you understand how to add new commands, workflows, and improve the project.
+Thank you for your interest in contributing to Geist! The primary way to contribute is by **creating new profiles** for specific project types or **improving existing profiles** to work better for different use cases.
 
 ---
 
 ## Table of Contents
 
-- [Getting Started](#getting-started)
-- [How to Add New Commands](#how-to-add-new-commands)
-- [How to Add New Workflows](#how-to-add-new-workflows)
-- [How to Add New Standards](#how-to-add-new-standards)
-- [Testing Requirements](#testing-requirements)
-- [Code Style](#code-style)
+- [Why Profiles?](#why-profiles)
+- [Creating a New Profile](#creating-a-new-profile)
+- [Improving Existing Profiles](#improving-existing-profiles)
+- [Profile Structure](#profile-structure)
+- [Testing Your Profile](#testing-your-profile)
 - [PR Process](#pr-process)
 
 ---
 
-## Getting Started
+## Why Profiles?
 
-1. **Fork the repository** on GitHub
-2. **Clone your fork**:
-   ```bash
-   git clone https://github.com/YOUR-USERNAME/Geist-v1.git
-   cd Geist-v1
-   ```
-3. **Create a feature branch**:
-   ```bash
-   git checkout -b feature/your-feature-name
-   ```
+Geist uses **profiles** to adapt to different project types. The `default` profile is technology-agnostic and works with any project, but specialized profiles can provide:
+
+- **Better detection** for specific tech stacks
+- **Optimized workflows** for particular architectures
+- **Tailored standards** for domain-specific requirements
+- **Pre-configured patterns** that match how teams actually work
+
+```
+profiles/
+├── default/              # Technology-agnostic (works with anything)
+├── react-nextjs/         # (example) Optimized for React + Next.js
+├── mobile-native/        # (example) iOS/Android native development
+├── rust-systems/         # (example) Systems programming with Rust
+└── your-profile/         # Your contribution!
+```
 
 ---
 
-## How to Add New Commands
+## Creating a New Profile
 
-### Directory Structure
+### Step 1: Identify the Need
 
-Commands live in `profiles/default/commands/`. Each command has this structure:
+Good candidates for new profiles:
 
-```
-profiles/default/commands/[command-name]/
-├── single-agent/                    # Single-agent implementation
-│   ├── [command-name].md            # Main entry point
-│   ├── 1-[first-phase].md           # Phase 1
-│   ├── 2-[second-phase].md          # Phase 2
-│   └── ...                          # Additional phases
-└── multi-agent/                     # (Optional) Multi-agent implementation
-    └── [command-name].md
-```
+| Project Type | Why a Profile Helps |
+|--------------|---------------------|
+| **Framework-specific** | React, Vue, Rails, Django have distinct patterns |
+| **Platform-specific** | iOS, Android, embedded systems have unique workflows |
+| **Domain-specific** | ML/AI, game dev, fintech have specialized standards |
+| **Architecture-specific** | Microservices, monoliths, serverless differ significantly |
 
-### Required Files
-
-#### 1. Main Command File (`[command-name].md`)
-
-```markdown
-# Command: [command-name]
-
-## Purpose
-
-[One sentence describing what this command does]
-
-## Prerequisites
-
-- [List required files/state]
-- [e.g., "Specialized Agent OS"]
-- [e.g., "`agent-os/product/tech-stack.md` exists"]
-
-## Outputs
-
-- [List files created]
-- [e.g., "`agent-os/specs/[name]/spec.md`"]
-
-## Phases
-
-{{PHASE 1: @agent-os/commands/[command-name]/1-[phase-name].md}}
-
-{{PHASE 2: @agent-os/commands/[command-name]/2-[phase-name].md}}
-
-## Standards
-
-{{standards/global/*}}
-{{standards/[relevant-category]/*}}
-```
-
-#### 2. Phase Files (`N-[phase-name].md`)
-
-```markdown
-# Phase N: [Phase Name]
-
-## Purpose
-
-[What this phase accomplishes]
-
-## Steps
-
-### Step 1: [Step Name]
-
-[Instructions or workflow reference]
-
-{{workflows/[category]/[workflow-name]}}
-
-### Step 2: [Step Name]
-
-[More instructions]
-
-## Outputs
-
-- [What this phase produces]
-
-## Next Phase
-
-Proceed to Phase N+1: [Next Phase Name]
-```
-
-### Phase Numbering Rules
-
-1. **Start at 1**, increment sequentially
-2. **No gaps allowed** (1, 2, 3... not 1, 3, 5)
-3. **Last phase** should navigate to next command or completion
-4. **Use descriptive names** (e.g., `1-initialize-spec.md`, not `1-phase1.md`)
-
-### Example
-
-See `commands/shape-spec/single-agent/` for a well-structured example:
-- `shape-spec.md` - Main entry point
-- `1-initialize-spec.md` - Creates folder structure
-- `2-shape-spec.md` - Gathers requirements
-
----
-
-## How to Add New Workflows
-
-### Directory Structure
-
-Workflows live in `profiles/default/workflows/`, organized by category:
-
-```
-profiles/default/workflows/
-├── basepoints/              # Knowledge extraction
-├── codebase-analysis/       # Codebase analysis and basepoint generation
-├── common/                  # Shared utilities
-├── detection/               # Auto-detection
-├── human-review/            # Human review workflows
-├── implementation/          # Task implementation
-├── learning/                # Session learning
-├── planning/                # Product planning
-├── prompting/               # Prompt optimization
-├── research/                # Web research
-├── scope-detection/         # Scope and layer detection
-├── specification/           # Spec writing
-└── validation/              # Validation utilities
-```
-
-### Workflow Template
-
-```markdown
-# Workflow: [Workflow Name]
-
-## Purpose
-
-[One sentence describing what this workflow does]
-
-## Prerequisites
-
-- [Required state/files]
-
-## Inputs
-
-- `$VARIABLE_NAME` - [Description]
-- [Other inputs]
-
-## Outputs
-
-- [What this workflow produces]
-- [Files created/modified]
-
----
-
-## Workflow
-
-### Step 1: [Step Name]
+### Step 2: Create Profile Directory
 
 ```bash
-echo "📖 [Action description]..."
+# Create your profile
+mkdir -p profiles/your-profile-name
 
-# Implementation
-[code]
-
-echo "✅ [Completion message]"
+# Copy default as starting point
+cp -r profiles/default/* profiles/your-profile-name/
 ```
 
-### Step 2: [Step Name]
+### Step 3: Configure Inheritance
 
-```bash
-# More implementation
-```
-
----
-
-## Important Constraints
-
-- [Any rules or limitations]
-- [Technology-agnostic requirements]
-```
-
-### Registration
-
-After creating a workflow:
-
-1. **Reference from a command**:
-   ```markdown
-   {{workflows/[category]/[workflow-name]}}
-   ```
-
-2. **Document in WORKFLOW-MAP.md**:
-   - Add to appropriate category
-   - Include in command flow diagrams if relevant
-
-3. **Update COMMAND-FLOWS.md** if the workflow is part of a command phase
-
----
-
-## How to Add New Standards
-
-### Directory Structure
-
-Standards live in `profiles/default/standards/`:
-
-```
-profiles/default/standards/
-├── global/                  # Cross-cutting standards
-├── documentation/           # Documentation standards
-├── process/                 # Process standards
-├── quality/                 # Quality standards
-└── testing/                 # Testing standards
-```
-
-### Standards Template
-
-```markdown
-# Standard: [Standard Name]
-
-## Purpose
-
-[What this standard ensures]
-
-## Rules
-
-### Rule 1: [Rule Name]
-
-[Description of the rule]
-
-**Do**:
-- [Good example]
-
-**Don't**:
-- [Bad example]
-
-### Rule 2: [Rule Name]
-
-[More rules]
-
-## Validation
-
-[How to check compliance with this standard]
-```
-
----
-
-## Testing Requirements
-
-Before submitting a PR, verify:
-
-### 1. Workflow References Resolve
-
-```bash
-# Search for workflow references
-grep -r "{{workflows/" profiles/default/commands/
-
-# Verify each referenced workflow exists
-ls profiles/default/workflows/[category]/[name].md
-```
-
-### 2. Phase Numbering is Sequential
-
-```bash
-# List phase files for a command
-ls -1 profiles/default/commands/[command]/single-agent/*.md | sort
-```
-
-Should show: `1-*.md`, `2-*.md`, `3-*.md`, etc. with no gaps.
-
-### 3. Standards Compliance
-
-- All files use kebab-case naming
-- All code blocks have language tags
-- No placeholder text (except intentional `{{...}}`)
-- Proper markdown structure (single H1, proper hierarchy)
-
-### 4. Test with Sample Project
-
-If possible, test your changes with a sample project:
-
-```bash
-# Install to test project
-cd /path/to/test-project
-~/geist/scripts/project-install.sh --profile default
-
-# Run relevant commands
-/adapt-to-product
-/create-basepoints
-# etc.
-```
-
----
-
-## Code Style
-
-### File Naming
-
-- **Directories**: `kebab-case` (e.g., `single-agent/`, `codebase-analysis/`)
-- **Files**: `kebab-case.md` (e.g., `shape-spec.md`, `detect-tech-stack.md`)
-- **Exceptions**: `README.md`, `MANIFEST.md`, `CONTRIBUTING.md` (uppercase)
-
-### Code Blocks
-
-Always include language tags:
-
-```markdown
-```bash
-echo "Hello"
-```
+Create `profiles/your-profile-name/profile-config.yml`:
 
 ```yaml
-key: value
+# Profile Configuration
+name: your-profile-name
+description: "Optimized for [your use case]"
+version: 1.0.0
+
+# Inherit from default (recommended)
+inherits_from: default
+
+# Override specific files from parent
+# Files not listed here are inherited automatically
+exclude_inherited_files:
+  - workflows/detection/detect-project-profile.md  # Replace with your own
+
+# Profile-specific settings
+settings:
+  primary_language: typescript  # or python, rust, swift, etc.
+  framework: nextjs             # or django, rails, flutter, etc.
+  architecture: monolith        # or microservices, serverless, etc.
 ```
 
-```json
-{"key": "value"}
+### Step 4: Customize for Your Use Case
+
+Focus on these areas:
+
+#### Detection (`workflows/detection/`)
+
+Improve auto-detection for your tech stack:
+
+```markdown
+# In detect-project-profile.md
+
+## Framework Detection
+
+```bash
+# Detect Next.js specifically
+if [ -f "next.config.js" ] || [ -f "next.config.mjs" ]; then
+    FRAMEWORK="nextjs"
+    FRAMEWORK_VERSION=$(grep '"next":' package.json | cut -d'"' -f4)
+fi
 ```
 ```
 
-### Markdown Structure
+#### Standards (`standards/`)
 
-- **One H1 heading** per file (the title)
-- **Proper hierarchy**: H1 > H2 > H3 (don't skip levels)
-- **Horizontal rules** (`---`) to separate major sections
+Add domain-specific standards:
 
-### Placeholders
+```
+standards/
+├── global/                    # Inherited from default
+├── nextjs/                    # Your additions
+│   ├── app-router.md          # App Router patterns
+│   ├── server-components.md   # RSC best practices
+│   └── data-fetching.md       # Fetching patterns
+```
 
-Use `{{...}}` syntax for:
-- Workflow references: `{{workflows/category/name}}`
-- Standards references: `{{standards/category/*}}`
-- Project-specific values: `{{PROJECT_BUILD_COMMAND}}`
+#### Workflows (`workflows/`)
+
+Optimize workflows for your patterns:
+
+```markdown
+# In workflows/implementation/implement-tasks.md
+
+## Framework-Specific Implementation
+
+For Next.js projects, follow these patterns:
+- Server Components by default
+- Client Components only when needed ('use client')
+- API routes in app/api/
+```
+
+### Step 5: Document Your Profile
+
+Create `profiles/your-profile-name/README.md`:
+
+```markdown
+# Profile: your-profile-name
+
+## Overview
+
+This profile is optimized for [description].
+
+## When to Use
+
+Use this profile if your project:
+- Uses [framework/language]
+- Follows [architecture pattern]
+- Has [specific requirements]
+
+## Key Differences from Default
+
+| Area | Default | This Profile |
+|------|---------|--------------|
+| Detection | Generic | [Your improvements] |
+| Standards | Technology-agnostic | [Your additions] |
+| Workflows | Generic | [Your optimizations] |
+
+## Installation
+
+```bash
+~/geist/scripts/project-install.sh --profile your-profile-name
+```
+
+## Credits
+
+Created by [your name/handle]
+```
+
+---
+
+## Improving Existing Profiles
+
+### Types of Improvements
+
+1. **Better Detection**
+   - More accurate tech stack detection
+   - Handling edge cases
+   - Supporting newer framework versions
+
+2. **Enhanced Workflows**
+   - More efficient processes
+   - Better error handling
+   - Clearer instructions
+
+3. **Updated Standards**
+   - Current best practices
+   - New patterns from the community
+   - Bug fixes in existing standards
+
+4. **Documentation**
+   - Clearer explanations
+   - More examples
+   - Better troubleshooting guides
+
+### Making Improvements
+
+```bash
+# Fork and clone
+git clone https://github.com/YOUR-USERNAME/Geist-v1.git
+cd Geist-v1
+
+# Create feature branch
+git checkout -b improve/detection-nextjs-15
+
+# Make your changes
+# Edit files in profiles/default/ or profiles/[specific-profile]/
+
+# Test thoroughly (see Testing section)
+
+# Submit PR
+```
+
+---
+
+## Profile Structure
+
+Every profile follows this structure:
+
+```
+profiles/[profile-name]/
+├── profile-config.yml        # Profile configuration
+├── README.md                 # Profile documentation
+│
+├── commands/                 # Command templates
+│   ├── adapt-to-product/
+│   ├── create-basepoints/
+│   ├── deploy-agents/
+│   ├── shape-spec/
+│   ├── write-spec/
+│   ├── create-tasks/
+│   ├── implement-tasks/
+│   ├── orchestrate-tasks/
+│   ├── fix-bug/
+│   ├── cleanup-geist/
+│   └── update-basepoints-and-redeploy/
+│
+├── workflows/                # Reusable workflows
+│   ├── basepoints/
+│   ├── codebase-analysis/
+│   ├── common/
+│   ├── detection/
+│   ├── human-review/
+│   ├── implementation/
+│   ├── learning/
+│   ├── planning/
+│   ├── prompting/
+│   ├── research/
+│   ├── scope-detection/
+│   ├── specification/
+│   └── validation/
+│
+├── standards/                # Quality standards
+│   └── global/
+│
+├── agents/                   # Agent definitions
+│
+└── docs/                     # Documentation
+    ├── COMMAND-FLOWS.md
+    ├── INSTALLATION-GUIDE.md
+    ├── TROUBLESHOOTING.md
+    └── command-references/
+```
+
+### Key Files to Customize
+
+| File | Purpose | Customization Priority |
+|------|---------|----------------------|
+| `workflows/detection/detect-project-profile.md` | Auto-detection | **High** - Make detection accurate |
+| `standards/global/conventions.md` | Coding conventions | **High** - Match your patterns |
+| `workflows/codebase-analysis/generate-module-basepoints.md` | Basepoint generation | **Medium** - Optimize for your structure |
+| `commands/*/single-agent/*.md` | Command phases | **Medium** - Adjust for your workflow |
+| `docs/TROUBLESHOOTING.md` | Common issues | **Low** - Add profile-specific issues |
+
+---
+
+## Testing Your Profile
+
+### 1. Install to Test Project
+
+```bash
+# Create or use a test project matching your profile's target
+cd /path/to/test-project
+
+# Install with your profile
+~/geist/scripts/project-install.sh --profile your-profile-name --geist-commands true
+```
+
+### 2. Run the Full Command Chain
+
+```bash
+# Setup commands
+/adapt-to-product     # Should detect your tech stack correctly
+/create-basepoints    # Should generate relevant basepoints
+/deploy-agents        # Should specialize appropriately
+/cleanup-geist        # Should validate successfully
+
+# Development commands
+/shape-spec "Add a test feature"
+/write-spec
+/create-tasks
+/implement-tasks
+```
+
+### 3. Verify Key Behaviors
+
+| Check | How to Verify |
+|-------|---------------|
+| Detection accuracy | Review `geist/config/project-profile.yml` |
+| Basepoint quality | Read generated basepoints in `geist/basepoints/` |
+| Standard relevance | Check `geist/standards/` for your patterns |
+| Command flow | Run full spec cycle, check outputs |
+
+### 4. Test Edge Cases
+
+- Projects with unusual structure
+- Mixed tech stacks
+- Monorepos
+- Minimal projects
 
 ---
 
 ## PR Process
 
-### 1. Create Your PR
+### 1. Before Submitting
 
-```bash
-# Push your branch
-git push origin feature/your-feature-name
-```
+- [ ] Profile tested with real project
+- [ ] README.md documents the profile
+- [ ] profile-config.yml is complete
+- [ ] No broken workflow references
+- [ ] Standards follow existing format
 
-Then create a PR on GitHub.
-
-### 2. PR Description Template
+### 2. PR Description
 
 ```markdown
-## Summary
+## New Profile: [profile-name]
 
-[Brief description of changes]
+### Target Use Case
+[Who should use this profile and why]
 
-## Changes
+### Key Features
+- [Detection improvements]
+- [Workflow optimizations]
+- [Standards additions]
 
-- [List of specific changes]
-- [Files added/modified]
+### Testing
+- Tested with [describe test project]
+- Full command chain verified
+- Edge cases checked: [list]
 
-## Testing
-
-- [ ] Workflow references verified
-- [ ] Phase numbering checked
-- [ ] Standards compliance verified
-- [ ] Tested with sample project (if applicable)
-
-## Documentation
-
-- [ ] COMMAND-FLOWS.md updated (if adding command)
-- [ ] WORKFLOW-MAP.md updated (if adding workflow)
-- [ ] README updated (if significant change)
+### Screenshots/Examples
+[If applicable, show detection results or generated outputs]
 ```
 
-### 3. Review Process
+### 3. For Profile Improvements
 
-1. Maintainers will review your PR
-2. Address any feedback
-3. Once approved, PR will be merged
+```markdown
+## Improvement: [brief description]
 
-### 4. After Merge
+### Problem
+[What wasn't working well]
 
-- Delete your feature branch
-- Pull latest changes to your fork
+### Solution
+[What you changed and why]
+
+### Testing
+- [ ] Tested with existing projects
+- [ ] No regressions in other areas
+- [ ] Documentation updated
+
+### Files Changed
+- `profiles/default/workflows/...`
+- `profiles/default/standards/...`
+```
 
 ---
 
 ## Questions?
 
-- Check existing documentation in `profiles/default/docs/`
-- Open an issue for discussion
-- Reach out to maintainers
+- **Check existing profiles** for patterns and examples
+- **Open an issue** to discuss new profile ideas before starting
+- **Review `profiles/default/`** as the reference implementation
 
-Thank you for contributing!
+Thank you for contributing to Geist!
 
 ---
 

@@ -14,7 +14,7 @@ Research comprehensive documentation for project libraries including internal ar
 
 ## Outputs
 
-- Library basepoint file at `agent-os/basepoints/libraries/[category]/[library-name].md`
+- Library basepoint file at `geist/basepoints/libraries/[category]/[library-name].md`
 
 ---
 
@@ -137,7 +137,7 @@ Generate the library basepoint file:
 ```bash
 # Determine output path
 LIBRARY_SLUG=$(echo "$LIBRARY_NAME" | tr '[:upper:]' '[:lower:]' | tr ' ' '-')
-OUTPUT_DIR="agent-os/basepoints/libraries/$LIBRARY_CATEGORY"
+OUTPUT_DIR="geist/basepoints/libraries/$LIBRARY_CATEGORY"
 OUTPUT_FILE="$OUTPUT_DIR/$LIBRARY_SLUG.md"
 
 # Create directory if needed

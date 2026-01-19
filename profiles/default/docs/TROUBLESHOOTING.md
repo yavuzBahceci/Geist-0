@@ -22,8 +22,8 @@ This guide helps you diagnose and fix common issues when using Geist.
 **Cause**: Commands not installed or path incorrect
 
 **Solution**:
-1. Verify `agent-os/commands/` exists in your project
-2. Check your AI tool's command configuration points to `agent-os/commands/`
+1. Verify `geist/commands/` exists in your project
+2. Check your AI tool's command configuration points to `geist/commands/`
 3. Re-run installation script:
    ```bash
    ~/geist/scripts/project-install.sh --profile default
@@ -45,7 +45,7 @@ This guide helps you diagnose and fix common issues when using Geist.
 
 2. **Verify the file exists**:
    ```bash
-   ls -la agent-os/[path-from-error]
+   ls -la geist/[path-from-error]
    ```
 
 3. **Run prerequisite command**:
@@ -63,7 +63,7 @@ This guide helps you diagnose and fix common issues when using Geist.
 
 **Solution**:
 1. Run `/deploy-agents` to specialize commands
-2. Run `/cleanup-agent-os` to verify and clean remaining placeholders
+2. Run `/cleanup-geist` to verify and clean remaining placeholders
 3. If placeholders persist, manually replace:
    - `{{PROJECT_BUILD_COMMAND}}` → your build command (e.g., `npm run build`)
    - `{{PROJECT_TEST_COMMAND}}` → your test command (e.g., `npm test`)
@@ -80,13 +80,13 @@ This guide helps you diagnose and fix common issues when using Geist.
 **Solution**:
 1. **Verify basepoints exist**:
    ```bash
-   ls -la agent-os/basepoints/
+   ls -la geist/basepoints/
    ```
    Should see `headquarter.md` and module folders
 
 2. **Check headquarter.md exists**:
    ```bash
-   cat agent-os/basepoints/headquarter.md
+   cat geist/basepoints/headquarter.md
    ```
 
 3. **Re-create basepoints**:
@@ -96,7 +96,7 @@ This guide helps you diagnose and fix common issues when using Geist.
 
 4. **Check cache files**:
    ```bash
-   ls -la agent-os/specs/[your-spec]/implementation/cache/
+   ls -la geist/specs/[your-spec]/implementation/cache/
    ```
    Should see `basepoints-knowledge.md`
 
@@ -111,7 +111,7 @@ This guide helps you diagnose and fix common issues when using Geist.
 **Solution**:
 1. **Check library basepoints exist**:
    ```bash
-   ls -la agent-os/basepoints/libraries/
+   ls -la geist/basepoints/libraries/
    ```
 
 2. **If missing, re-run create-basepoints**:
@@ -122,7 +122,7 @@ This guide helps you diagnose and fix common issues when using Geist.
 
 3. **Check tech-stack.md lists your libraries**:
    ```bash
-   cat agent-os/product/tech-stack.md
+   cat geist/product/tech-stack.md
    ```
 
 ---
@@ -136,7 +136,7 @@ This guide helps you diagnose and fix common issues when using Geist.
 **Solution**:
 1. **Check accumulated-knowledge.md exists**:
    ```bash
-   cat agent-os/specs/[your-spec]/implementation/cache/accumulated-knowledge.md
+   cat geist/specs/[your-spec]/implementation/cache/accumulated-knowledge.md
    ```
 
 2. **Verify shape-spec completed**:
@@ -156,7 +156,7 @@ This guide helps you diagnose and fix common issues when using Geist.
 **Solution**:
 1. **Check validation commands are correct**:
    ```bash
-   grep -r "BUILD_CMD\|TEST_CMD\|LINT_CMD" agent-os/
+   grep -r "BUILD_CMD\|TEST_CMD\|LINT_CMD" geist/
    ```
 
 2. **Verify commands work manually**:
@@ -228,7 +228,7 @@ Check these in order:
 
 1. **Basepoints exist and are up-to-date**:
    ```bash
-   ls -la agent-os/basepoints/
+   ls -la geist/basepoints/
    ```
 
 2. **The relevant module has a basepoint**:
@@ -253,7 +253,7 @@ Check these in order:
 
 2. **Check intermediate files**:
    ```bash
-   ls -la agent-os/specs/[your-spec]/implementation/cache/
+   ls -la geist/specs/[your-spec]/implementation/cache/
    ```
 
 3. **Look for error messages**:
@@ -262,7 +262,7 @@ Check these in order:
 
 4. **Check validation report**:
    ```bash
-   cat agent-os/specs/[your-spec]/implementation/cache/validation-report.md
+   cat geist/specs/[your-spec]/implementation/cache/validation-report.md
    ```
 
 ---
@@ -271,9 +271,9 @@ Check these in order:
 
 To reset and start over:
 
-1. **Remove agent-os folder**:
+1. **Remove geist folder**:
    ```bash
-   rm -rf agent-os/
+   rm -rf geist/
    ```
 
 2. **Re-install**:
@@ -301,7 +301,7 @@ Look for these indicators in command output:
 
 Check the cache file:
 ```bash
-cat agent-os/specs/[your-spec]/implementation/cache/basepoints-knowledge.md
+cat geist/specs/[your-spec]/implementation/cache/basepoints-knowledge.md
 ```
 
 Should contain extracted patterns and standards.
@@ -312,18 +312,18 @@ Should contain extracted patterns and standards.
 
 1. **Open any command file**:
    ```bash
-   cat agent-os/commands/shape-spec/single-agent/shape-spec.md
+   cat geist/commands/shape-spec/single-agent/shape-spec.md
    ```
 
 2. **Search for placeholders**:
    ```bash
-   grep -r "{{" agent-os/commands/ | grep -v "workflows/" | grep -v "standards/"
+   grep -r "{{" geist/commands/ | grep -v "workflows/" | grep -v "standards/"
    ```
    Should find nothing (except intentional workflow/standards references)
 
 3. **Check validation commands**:
    ```bash
-   grep -r "BUILD_CMD\|TEST_CMD" agent-os/
+   grep -r "BUILD_CMD\|TEST_CMD" geist/
    ```
    Should show your actual commands, not placeholders
 

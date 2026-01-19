@@ -2,7 +2,7 @@
 
 ## Core Responsibilities
 
-1. **Check Agent-OS Deployment**: Verify that agent-os directory exists
+1. **Check Agent-OS Deployment**: Verify that geist directory exists
 2. **Check Basepoints Availability**: Verify basepoints folder and files exist (optional check)
 3. **Check Product Files Availability**: Verify product files exist (optional check)
 4. **Set Availability Flags**: Set flags indicating which resources are available
@@ -12,17 +12,17 @@
 
 ### Step 1: Check Agent-OS Deployment
 
-Verify that the agent-os directory exists:
+Verify that the geist directory exists:
 
 ```bash
-# Check if agent-os directory exists
-if [ ! -d "agent-os" ]; then
-    echo "❌ agent-os directory not found. Please run deploy-agents first."
-    AGENT_OS_AVAILABLE="false"
+# Check if geist directory exists
+if [ ! -d "geist" ]; then
+    echo "❌ geist directory not found. Please run deploy-agents first."
+    GEIST_AVAILABLE="false"
     # Note: Commands may choose to exit or continue based on their needs
 else
-    echo "✅ agent-os directory found"
-    AGENT_OS_AVAILABLE="true"
+    echo "✅ geist directory found"
+    GEIST_AVAILABLE="true"
 fi
 ```
 
@@ -32,7 +32,7 @@ Check if basepoints are available (non-blocking check):
 
 ```bash
 # Check if basepoints exist (optional - some commands don't require basepoints)
-if [ ! -d "agent-os/basepoints" ] || [ ! -f "agent-os/basepoints/headquarter.md" ]; then
+if [ ! -d "geist/basepoints" ] || [ ! -f "geist/basepoints/headquarter.md" ]; then
     echo "⚠️  Warning: Basepoints not found."
     BASEPOINTS_AVAILABLE="false"
 else
@@ -47,7 +47,7 @@ Check if product files are available (non-blocking check):
 
 ```bash
 # Check if product files exist (optional - some commands don't require product files)
-if [ ! -d "agent-os/product" ] || [ ! -f "agent-os/product/mission.md" ]; then
+if [ ! -d "geist/product" ] || [ ! -f "geist/product/mission.md" ]; then
     echo "⚠️  Warning: Product files not found."
     PRODUCT_AVAILABLE="false"
 else
@@ -63,7 +63,7 @@ Output a summary of available resources:
 ```bash
 echo ""
 echo "Prerequisites Status:"
-echo "  Agent-OS: $AGENT_OS_AVAILABLE"
+echo "  Agent-OS: $GEIST_AVAILABLE"
 echo "  Basepoints: ${BASEPOINTS_AVAILABLE:-not checked}"
 echo "  Product Files: ${PRODUCT_AVAILABLE:-not checked}"
 ```

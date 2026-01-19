@@ -7,7 +7,7 @@ Use synthesized knowledge to implement the fix with iterative refinement.
 Load the knowledge synthesis from Phase 5:
 
 ```bash
-CACHE_PATH="agent-os/output/fix-bug/cache"
+CACHE_PATH="geist/output/fix-bug/cache"
 
 if [ -f "$CACHE_PATH/knowledge-synthesis.md" ]; then
     KNOWLEDGE_SYNTHESIS=$(cat "$CACHE_PATH/knowledge-synthesis.md")
@@ -327,10 +327,10 @@ Worsening Results: [count]
 
 [If SUCCESS:]
 ✅ Issue resolved!
-📋 Fix report: agent-os/output/fix-bug/cache/fix-report.md
+📋 Fix report: geist/output/fix-bug/cache/fix-report.md
 
 [If GUIDANCE NEEDED:]
 ⚠️ Stop condition met after [count] worsening results
-📋 Guidance request: agent-os/output/fix-bug/cache/guidance-request.md
+📋 Guidance request: geist/output/fix-bug/cache/guidance-request.md
 ⏳ Awaiting user guidance to continue
 ```

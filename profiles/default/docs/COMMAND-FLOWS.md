@@ -11,7 +11,7 @@ This document provides detailed documentation of all commands in the Geist syste
   - [plan-product](#15-plan-product)
   - [create-basepoints](#2-create-basepoints)
   - [deploy-agents](#3-deploy-agents)
-  - [cleanup-agent-os](#4-cleanup-agent-os)
+  - [cleanup-geist](#4-cleanup-geist)
   - [update-basepoints-and-redeploy](#5-update-basepoints-and-redeploy)
 - [Development Commands](#development-commands)
   - [shape-spec](#6-shape-spec)
@@ -29,7 +29,7 @@ This document provides detailed documentation of all commands in the Geist syste
 
 ## Specialization Commands
 
-These commands are used during initial setup to create and specialize your Agent OS instance.
+These commands are used during initial setup to create and specialize your Geist instance.
 
 ---
 
@@ -42,14 +42,14 @@ These commands are used during initial setup to create and specialize your Agent
 **Prerequisites**: None
 
 **Outputs**:
-- `agent-os/product/mission.md`
-- `agent-os/product/roadmap.md`
-- `agent-os/product/tech-stack.md`
-- `agent-os/config/project-profile.yml`
-- `agent-os/config/enriched-knowledge/`
-- `agent-os/output/product-cleanup/detected-scope.yml` (NEW)
-- `agent-os/output/product-cleanup/search-queries.md` (NEW)
-- `agent-os/output/product-cleanup/cleanup-report.md` (NEW)
+- `geist/product/mission.md`
+- `geist/product/roadmap.md`
+- `geist/product/tech-stack.md`
+- `geist/config/project-profile.yml`
+- `geist/config/enriched-knowledge/`
+- `geist/output/product-cleanup/detected-scope.yml` (NEW)
+- `geist/output/product-cleanup/search-queries.md` (NEW)
+- `geist/output/product-cleanup/cleanup-report.md` (NEW)
 
 #### Phases
 
@@ -88,20 +88,20 @@ Phase 1: Setup & Information Gathering (Enhanced)
 │           2. Human review preference? [Minimal/Moderate/High]
 │
 └── Step 0.5: Store Profile
-    └── Save to: agent-os/config/project-profile.yml
-                 agent-os/config/enriched-knowledge/
+    └── Save to: geist/config/project-profile.yml
+                 geist/config/enriched-knowledge/
 
 Phase 2: Analyze Codebase
 └── Analyze README, structure, patterns
 
 Phase 3: Create Mission
-└── Generate: agent-os/product/mission.md
+└── Generate: geist/product/mission.md
 
 Phase 4: Create Roadmap
-└── Generate: agent-os/product/roadmap.md
+└── Generate: geist/product/roadmap.md
 
 Phase 5: Create Tech Stack
-└── Generate: agent-os/product/tech-stack.md
+└── Generate: geist/product/tech-stack.md
 
 Phase 6: Review & Combine Knowledge
 └── Verify consistency, combine into unified knowledge
@@ -118,7 +118,7 @@ Phase 7: Product-Focused Cleanup (NEW)
 ├── Step 5: Web search for trusted information
 │   └── Validate: 2+ sources required
 └── Step 6: Generate cleanup report
-    └── Output: agent-os/output/product-cleanup/
+    └── Output: geist/output/product-cleanup/
 
 Phase 8: Navigate to Next Command
 └── Display: "NEXT STEP: Run /create-basepoints"
@@ -158,12 +158,12 @@ Phase 8: Navigate to Next Command
 **Prerequisites**: None (for new projects without existing codebase)
 
 **Outputs**:
-- `agent-os/product/mission.md`
-- `agent-os/product/roadmap.md`
-- `agent-os/product/tech-stack.md`
-- `agent-os/output/product-cleanup/detected-scope.yml`
-- `agent-os/output/product-cleanup/search-queries.md`
-- `agent-os/output/product-cleanup/cleanup-report.md`
+- `geist/product/mission.md`
+- `geist/product/roadmap.md`
+- `geist/product/tech-stack.md`
+- `geist/output/product-cleanup/detected-scope.yml`
+- `geist/output/product-cleanup/search-queries.md`
+- `geist/output/product-cleanup/cleanup-report.md`
 
 #### Phases
 
@@ -175,13 +175,13 @@ Phase 1: Product Concept
 └── List key features
 
 Phase 2: Create Mission
-└── Generate: agent-os/product/mission.md
+└── Generate: geist/product/mission.md
 
 Phase 3: Create Roadmap
-└── Generate: agent-os/product/roadmap.md
+└── Generate: geist/product/roadmap.md
 
 Phase 4: Create Tech Stack
-└── Generate: agent-os/product/tech-stack.md
+└── Generate: geist/product/tech-stack.md
 
 Phase 5: Product-Focused Cleanup (NEW)
 ├── Step 1: Load product scope detection sources
@@ -195,7 +195,7 @@ Phase 5: Product-Focused Cleanup (NEW)
 ├── Step 5: Web search for trusted information
 │   └── Validate: 2+ sources required
 └── Step 6: Generate cleanup report
-    └── Output: agent-os/output/product-cleanup/
+    └── Output: geist/output/product-cleanup/
 ```
 
 #### When to Use
@@ -216,15 +216,15 @@ Phase 5: Product-Focused Cleanup (NEW)
 **Prerequisites**: Product files (`mission.md`, `roadmap.md`, `tech-stack.md`)
 
 **Outputs**:
-- `agent-os/basepoints/headquarter.md`
-- `agent-os/basepoints/[layer]/[module]/agent-base-[module].md`
+- `geist/basepoints/headquarter.md`
+- `geist/basepoints/[layer]/[module]/agent-base-[module].md`
 
 #### Phases
 
 ```
 Phase 1: Validate Prerequisites (Enhanced)
 ├── Step 0.1: Load Project Profile
-│   └── if [ -f "agent-os/config/project-profile.yml" ]; then
+│   └── if [ -f "geist/config/project-profile.yml" ]; then
 │       Load existing profile (no re-detection)
 │   └── else
 │       Run detection workflow
@@ -290,7 +290,7 @@ Phase 8: Generate Library Basepoints (NEW)
 
 ### 3. deploy-agents
 
-**Purpose**: Transform abstract templates into project-specific implementations.
+**Purpose**: Specialize the installed Geist for this specific project by extracting knowledge and applying it to standards and agents.
 
 **Location**: `commands/deploy-agents/`
 
@@ -299,90 +299,71 @@ Phase 8: Generate Library Basepoints (NEW)
 - Product files (`mission.md`, `roadmap.md`, `tech-stack.md`)
 
 **Outputs**:
-- Specialized commands in `agent-os/commands/`
-- Specialized workflows in `agent-os/workflows/`
-- Specialized standards in `agent-os/standards/`
-- Configured validation commands
-- Deployment report in `agent-os/output/deploy-agents/`
-- Navigation guidance to `/cleanup-agent-os`
+- Specialized standards in `geist/standards/` (project-specific patterns)
+- Specialist agents in `geist/agents/specialists/` (layer-specific agents)
+- Specialist registry in `geist/agents/specialists/registry.yml`
+- Knowledge files in `geist/output/deploy-agents/knowledge/`
+- Reports in `geist/output/deploy-agents/reports/`
+- Navigation guidance to `/cleanup-geist`
 
-#### Phases
+#### Phases (Simplified - 7 phases)
 
 ```
-Phase 1: Validate Prerequisites (Enhanced)
-├── Step 0: Load Project Knowledge
-│   ├── Load: project-profile.yml
-│   │   └── Extract: language, framework, security, commands
-│   ├── Load: enriched-knowledge/
-│   │   └── Check: security-notes.md, version-analysis.md
-│   ├── Ask: ONLY if user preferences not set
-│   └── Determine: specialization hints
-│       └── If complexity=complex OR security=high:
-│           RECOMMENDED_WORKFLOW_COMPLEXITY="comprehensive"
-│
-└── Validate: basepoints + product files exist
+Phase 1: Validate Prerequisites
+├── Check: geist directory exists
+├── Check: basepoints exist (headquarter.md + module basepoints)
+├── Check: product files exist (mission.md, roadmap.md, tech-stack.md)
+└── Load: project-profile.yml
 
 Phase 2: Extract Basepoints Knowledge
-└── {{workflows/basepoints/extract-basepoints-knowledge-automatic}}
+├── Read: headquarter.md
+├── Read: all agent-base-*.md files
+├── Extract: patterns, standards, flows, strategies
+└── Output: basepoints-knowledge.json, basepoints-knowledge-summary.md
 
 Phase 3: Extract Product Knowledge
-└── Parse: mission.md, roadmap.md, tech-stack.md
+├── Read: mission.md, roadmap.md, tech-stack.md
+├── Extract: mission, features, tech stack
+└── Output: product-knowledge.json, product-knowledge-summary.md
 
-Phase 4: Merge Knowledge & Resolve Conflicts
-├── Combine: all knowledge sources
-└── Human review: if conflicts detected
+Phase 4: Merge Knowledge
+├── Combine: basepoints + product knowledge
+├── Detect: conflicts between sources
+├── Resolve: conflicts (user interaction if needed)
+└── Output: merged-knowledge.md
 
-Phase 5: Specialize shape-spec & write-spec
-├── Replace: placeholders with actual values
-└── Inject: project-specific patterns
+Phase 5: Specialize Standards
+├── Read: extracted knowledge
+├── Update: coding-style.md, conventions.md, error-handling.md, etc.
+├── Add: project-specific patterns and examples
+├── Create: new standards if needed (e.g., template-syntax.md)
+└── Output: standards-specialization.md report
 
-Phase 6: Specialize Task Commands
-├── create-tasks
-├── implement-tasks
-└── orchestrate-tasks
+Phase 6: Specialize Agents
+├── Read: abstraction layers from basepoints
+├── Create: specialist agent per layer (e.g., ui-specialist, api-specialist)
+├── Create: registry.yml with collaboration hints
+└── Output: agents-specialization.md report
 
-Phase 7: Update Supporting Structures
-├── Standards
-├── Workflows
-└── Agents
-
-Phase 8: Specialize Standards (Enhanced)
-├── Step 5: Specialize Validation Commands
-│   ├── Detect: tech stack from project files
-│   ├── Map: to validation commands
-│   │   ├── Node.js → npm run build/test/lint
-│   │   ├── Rust → cargo build/test/clippy
-│   │   ├── Go → go build/test/vet
-│   │   └── Python → pytest, flake8, mypy
-│   └── Replace: {{PROJECT_*_COMMAND}} placeholders
-│
-└── Update: validation-commands.md
-
-Phase 9: Specialize Agents
-└── Adapt: agent behaviors for project
-
-Phase 10: Specialize Workflows
-└── Adapt: workflow complexity for project
-
-Phase 11: Adapt Structure & Finalize
-├── Run: comprehensive validation
-└── Generate: deployment report
-
-Phase 12: Optimize Prompts
-└── Generate: context sections for commands
-
-Phase 13: Apply Prompt Optimizations
-└── Inject: approved context sections into templates
-
-Phase 14: Navigate to Cleanup
+Phase 7: Navigate to Cleanup
 ├── Display: summary of accomplishments
-├── List: specialized directories
-└── Recommend: /cleanup-agent-os
+├── List: specialized files
+└── Recommend: /cleanup-geist
 ```
+
+#### Key Design Decisions
+
+1. **No command specialization**: Commands use `@geist/` references that resolve at runtime. No need to rewrite command files.
+
+2. **No workflow specialization**: Workflows are reusable building blocks that stay generic. Specialization happens at the standards level.
+
+3. **Standards are the specialization point**: Project patterns go into standards, which commands/workflows reference.
+
+4. **Specialist agents**: Created based on abstraction layers detected in basepoints. Support multiple specialists per task for cross-layer work.
 
 #### What's Next
 
-After `/deploy-agents` completes, run `/cleanup-agent-os` to:
+After `/deploy-agents` completes, run `/cleanup-geist` to:
 - Verify all placeholders are properly replaced
 - Check for broken file references
 - Ensure knowledge completeness
@@ -394,7 +375,7 @@ After `/deploy-agents` completes, run `/cleanup-agent-os` to:
 
 | Placeholder | Replaced With | Source |
 |------------|--------------|--------|
-| `{{BASEPOINTS_PATH}}` | `agent-os/basepoints` | Convention |
+| `{{BASEPOINTS_PATH}}` | `geist/basepoints` | Convention |
 | `{{PROJECT_BUILD_COMMAND}}` | `npm run build` | Detection |
 | `{{PROJECT_TEST_COMMAND}}` | `npm test` | Detection |
 | `{{PROJECT_LINT_COMMAND}}` | `npm run lint` | Detection |
@@ -402,13 +383,13 @@ After `/deploy-agents` completes, run `/cleanup-agent-os` to:
 
 ---
 
-### 4. cleanup-agent-os
+### 4. cleanup-geist
 
-**Purpose**: Clean up and verify knowledge completeness in deployed Agent OS.
+**Purpose**: Clean up and verify knowledge completeness in deployed Geist.
 
-**Location**: `commands/cleanup-agent-os/`
+**Location**: `commands/cleanup-geist/`
 
-**Prerequisites**: Deployed Agent OS
+**Prerequisites**: Deployed Geist
 
 **Outputs**:
 - Cleaned commands (no placeholders)
@@ -419,7 +400,7 @@ After `/deploy-agents` completes, run `/cleanup-agent-os` to:
 
 ```
 Phase 1: Validate & Run Validation
-├── Check: agent-os deployment
+├── Check: geist deployment
 └── Run: comprehensive validation
 
 Phase 2: Clean Placeholders
@@ -429,7 +410,7 @@ Phase 3: Remove Unnecessary Logic
 └── Remove: project-agnostic conditionals
 
 Phase 4: Fix Broken References
-└── Fix: @agent-os/ references
+└── Fix: @geist/ references
 
 Phase 5: Verify Knowledge Completeness
 ├── Verify: basepoints completeness
@@ -456,7 +437,7 @@ Phase 6: Generate Report
 
 **Location**: `commands/update-basepoints-and-redeploy/`
 
-**Prerequisites**: Deployed Agent OS
+**Prerequisites**: Deployed Geist
 
 **Outputs**:
 - Updated basepoints
@@ -497,7 +478,7 @@ Phase 6: Validate & Report
 
 ## Development Commands
 
-These commands are used during feature development after Agent OS is specialized.
+These commands are used during feature development after Geist is specialized.
 
 ---
 
@@ -507,13 +488,13 @@ These commands are used during feature development after Agent OS is specialized
 
 **Location**: `commands/shape-spec/`
 
-**Prerequisites**: Specialized Agent OS
+**Prerequisites**: Specialized Geist
 
 **Outputs**:
-- `agent-os/specs/[spec-name]/planning/requirements.md`
-- `agent-os/specs/[spec-name]/planning/initialization.md`
-- `agent-os/specs/[spec-name]/implementation/cache/basepoints-knowledge.md`
-- `agent-os/specs/[spec-name]/implementation/cache/detected-layer.txt`
+- `geist/specs/[spec-name]/planning/requirements.md`
+- `geist/specs/[spec-name]/planning/initialization.md`
+- `geist/specs/[spec-name]/implementation/cache/basepoints-knowledge.md`
+- `geist/specs/[spec-name]/implementation/cache/detected-layer.txt`
 
 #### Phases
 
@@ -591,8 +572,8 @@ Feature Description
 **Prerequisites**: `requirements.md` (from shape-spec)
 
 **Outputs**:
-- `agent-os/specs/[spec-name]/spec.md`
-- `agent-os/specs/[spec-name]/implementation/cache/resources-consulted.md`
+- `geist/specs/[spec-name]/spec.md`
+- `geist/specs/[spec-name]/implementation/cache/resources-consulted.md`
 
 #### Flow
 
@@ -630,7 +611,7 @@ Feature Description
 **Prerequisites**: `spec.md` (from write-spec)
 
 **Outputs**:
-- `agent-os/specs/[spec-name]/tasks.md`
+- `geist/specs/[spec-name]/tasks.md`
 
 #### Flow
 
@@ -718,8 +699,8 @@ Phase 3: Verify Implementation
 **Prerequisites**: `tasks.md` (from create-tasks)
 
 **Outputs**:
-- `agent-os/specs/[spec-name]/orchestration.yml`
-- `agent-os/specs/[spec-name]/implementation/prompts/[N]-[task-group].md`
+- `geist/specs/[spec-name]/orchestration.yml`
+- `geist/specs/[spec-name]/implementation/prompts/[N]-[task-group].md`
 
 #### Flow
 
@@ -760,8 +741,8 @@ Phase 3: Verify Implementation
 [Task description and subtasks]
 
 ## Context
-- @agent-os/specs/[spec]/spec.md
-- @agent-os/specs/[spec]/planning/requirements.md
+- @geist/specs/[spec]/spec.md
+- @geist/specs/[spec]/planning/requirements.md
 
 ## Basepoints Knowledge Context
 [Extracted patterns and standards relevant to this task group]
@@ -776,7 +757,7 @@ Phase 3: Verify Implementation
 
 ### Step 1: Run Implementation Validation
 ```bash
-SPEC_PATH="agent-os/specs/[spec]"
+SPEC_PATH="geist/specs/[spec]"
 {{workflows/validation/validate-implementation}}
 ```
 
@@ -802,20 +783,20 @@ SPEC_PATH="agent-os/specs/[spec]"
 
 **Location**: `commands/fix-bug/`
 
-**Prerequisites**: Deployed Agent OS (for basepoints integration)
+**Prerequisites**: Deployed Geist (for basepoints integration)
 
 **Inputs**:
 - Bug reports (error logs, stack traces, error codes)
 - Feedback (feature requests, enhancement suggestions)
 
 **Outputs**:
-- `agent-os/output/fix-bug/cache/issue-analysis.md`
-- `agent-os/output/fix-bug/cache/library-research.md`
-- `agent-os/output/fix-bug/cache/basepoints-integration.md`
-- `agent-os/output/fix-bug/cache/code-analysis.md`
-- `agent-os/output/fix-bug/cache/knowledge-synthesis.md`
-- `agent-os/output/fix-bug/cache/fix-report.md` (on success)
-- `agent-os/output/fix-bug/cache/guidance-request.md` (on stop condition)
+- `geist/output/fix-bug/cache/issue-analysis.md`
+- `geist/output/fix-bug/cache/library-research.md`
+- `geist/output/fix-bug/cache/basepoints-integration.md`
+- `geist/output/fix-bug/cache/code-analysis.md`
+- `geist/output/fix-bug/cache/knowledge-synthesis.md`
+- `geist/output/fix-bug/cache/fix-report.md` (on success)
+- `geist/output/fix-bug/cache/guidance-request.md` (on stop condition)
 
 #### Phases
 
@@ -883,7 +864,7 @@ Phase 6: Iterative Fix Implementation
 
 ### Product-Focused Cleanup Workflow
 
-**Purpose**: Clean irrelevant content and enhance agent-os files based on detected product scope.
+**Purpose**: Clean irrelevant content and enhance geist files based on detected product scope.
 
 **Location**: `workflows/cleanup/product-focused-cleanup.md`
 
@@ -892,14 +873,14 @@ Phase 6: Iterative Fix Implementation
 - `/plan-product` (Phase 5)
 
 **Inputs**:
-- `agent-os/product/tech-stack.md` - Language, framework detection
-- `agent-os/product/mission.md` - Project type detection
-- `agent-os/product/roadmap.md` - Architecture detection
+- `geist/product/tech-stack.md` - Language, framework detection
+- `geist/product/mission.md` - Project type detection
+- `geist/product/roadmap.md` - Architecture detection
 
 **Outputs**:
-- `agent-os/output/product-cleanup/detected-scope.yml`
-- `agent-os/output/product-cleanup/search-queries.md`
-- `agent-os/output/product-cleanup/cleanup-report.md`
+- `geist/output/product-cleanup/detected-scope.yml`
+- `geist/output/product-cleanup/search-queries.md`
+- `geist/output/product-cleanup/cleanup-report.md`
 
 #### Workflow Steps
 
@@ -917,10 +898,10 @@ Step 2: Parse and Categorize Detected Scope
 
 Step 3: Phase A - Simplify
 ├── Define removal rules based on scope
-├── Process agent-os/commands/
-├── Process agent-os/workflows/
-├── Process agent-os/standards/
-└── Process agent-os/agents/
+├── Process geist/commands/
+├── Process geist/workflows/
+├── Process geist/standards/
+└── Process geist/agents/
 
 Step 4: Phase B - Expand
 ├── Define enhancement rules based on scope
@@ -938,7 +919,7 @@ Step 6: Generate Cleanup Report
 ├── List files modified
 ├── List content removed (with reasons)
 ├── List content added (with sources)
-└── Save to agent-os/output/product-cleanup/
+└── Save to geist/output/product-cleanup/
 ```
 
 #### Scope Detection Criteria
@@ -1047,7 +1028,7 @@ A new workflow extracts knowledge from library basepoints:
 ```
 {{workflows/common/extract-library-basepoints-knowledge}}
 
-Extracts from: agent-os/basepoints/libraries/
+Extracts from: geist/basepoints/libraries/
 ├── data/           - Data access, databases, ORM
 ├── domain/         - Domain logic, business rules
 ├── util/           - Utilities, helpers

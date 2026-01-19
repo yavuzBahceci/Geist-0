@@ -16,21 +16,21 @@ Load module folders and their task list from cache:
 
 ```bash
 # Load module folders
-if [ ! -f "agent-os/output/create-basepoints/cache/module-folders.txt" ]; then
+if [ ! -f "geist/output/create-basepoints/cache/module-folders.txt" ]; then
     echo "❌ ERROR: Module folders list not found. Run mirror-project-structure first."
     exit 1
 fi
 
-MODULE_FOLDERS=$(cat agent-os/output/create-basepoints/cache/module-folders.txt | grep -v "^#" | grep -v "^$")
+MODULE_FOLDERS=$(cat geist/output/create-basepoints/cache/module-folders.txt | grep -v "^#" | grep -v "^$")
 TOTAL_MODULES=$(echo "$MODULE_FOLDERS" | wc -l | tr -d ' ')
 
 echo "📋 Loaded $TOTAL_MODULES modules from task list"
 
 # Initialize progress tracking
-echo "# Basepoints Generation Progress" > agent-os/output/create-basepoints/cache/generation-progress.md
-echo "" >> agent-os/output/create-basepoints/cache/generation-progress.md
-echo "Started: $(date)" >> agent-os/output/create-basepoints/cache/generation-progress.md
-echo "" >> agent-os/output/create-basepoints/cache/generation-progress.md
+echo "# Basepoints Generation Progress" > geist/output/create-basepoints/cache/generation-progress.md
+echo "" >> geist/output/create-basepoints/cache/generation-progress.md
+echo "Started: $(date)" >> geist/output/create-basepoints/cache/generation-progress.md
+echo "" >> geist/output/create-basepoints/cache/generation-progress.md
 ```
 
 ### Step 2: Generate Basepoint for Each Module (One-by-One)
@@ -59,10 +59,10 @@ echo "$MODULE_FOLDERS" | while read module_dir; do
     # Handle root-level modules
     if [ -z "$NORMALIZED_DIR" ] || [ "$NORMALIZED_DIR" = "." ]; then
         PROJECT_ROOT_NAME=$(basename "$(pwd)" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9-]/-/g')
-        BASEPOINT_DIR="agent-os/basepoints"
+        BASEPOINT_DIR="geist/basepoints"
         MODULE_NAME="$PROJECT_ROOT_NAME"
     else
-        BASEPOINT_DIR="agent-os/basepoints/$NORMALIZED_DIR"
+        BASEPOINT_DIR="geist/basepoints/$NORMALIZED_DIR"
         MODULE_NAME=$(basename "$NORMALIZED_DIR")
     fi
     
@@ -78,7 +78,7 @@ echo "$MODULE_FOLDERS" | while read module_dir; do
     # [Analyze module and generate content here]
     
     # Log progress
-    echo "- [x] **$CURRENT/$TOTAL_MODULES**: \`$module_dir\` → \`$BASEPOINT_FILE\`" >> agent-os/output/create-basepoints/cache/generation-progress.md
+    echo "- [x] **$CURRENT/$TOTAL_MODULES**: \`$module_dir\` → \`$BASEPOINT_FILE\`" >> geist/output/create-basepoints/cache/generation-progress.md
     
     echo "   ✅ Created: $BASEPOINT_FILE"
 done
@@ -139,24 +139,24 @@ echo "🔍 VERIFICATION: Checking basepoint coverage"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 # Count expected vs actual
-EXPECTED_COUNT=$(cat agent-os/output/create-basepoints/cache/module-folders.txt | grep -v "^#" | grep -v "^$" | wc -l | tr -d ' ')
-ACTUAL_COUNT=$(find agent-os/basepoints -name "agent-base-*.md" -type f | wc -l | tr -d ' ')
+EXPECTED_COUNT=$(cat geist/output/create-basepoints/cache/module-folders.txt | grep -v "^#" | grep -v "^$" | wc -l | tr -d ' ')
+ACTUAL_COUNT=$(find geist/basepoints -name "agent-base-*.md" -type f | wc -l | tr -d ' ')
 
 echo "Expected module basepoints: $EXPECTED_COUNT"
 echo "Actual module basepoints: $ACTUAL_COUNT"
 
 # List all generated basepoints
-echo "" >> agent-os/output/create-basepoints/cache/generation-progress.md
-echo "## Generated Basepoints" >> agent-os/output/create-basepoints/cache/generation-progress.md
-echo "" >> agent-os/output/create-basepoints/cache/generation-progress.md
-find agent-os/basepoints -name "agent-base-*.md" -type f | sort | while read bp; do
-    echo "- \`$bp\`" >> agent-os/output/create-basepoints/cache/generation-progress.md
+echo "" >> geist/output/create-basepoints/cache/generation-progress.md
+echo "## Generated Basepoints" >> geist/output/create-basepoints/cache/generation-progress.md
+echo "" >> geist/output/create-basepoints/cache/generation-progress.md
+find geist/basepoints -name "agent-base-*.md" -type f | sort | while read bp; do
+    echo "- \`$bp\`" >> geist/output/create-basepoints/cache/generation-progress.md
 done
 
 # Check for missing basepoints
-echo "" >> agent-os/output/create-basepoints/cache/generation-progress.md
-echo "## Coverage Check" >> agent-os/output/create-basepoints/cache/generation-progress.md
-echo "" >> agent-os/output/create-basepoints/cache/generation-progress.md
+echo "" >> geist/output/create-basepoints/cache/generation-progress.md
+echo "## Coverage Check" >> geist/output/create-basepoints/cache/generation-progress.md
+echo "" >> geist/output/create-basepoints/cache/generation-progress.md
 
 MISSING_COUNT=0
 while read module_dir; do
@@ -168,24 +168,24 @@ while read module_dir; do
     
     if [ -z "$NORMALIZED_DIR" ] || [ "$NORMALIZED_DIR" = "." ]; then
         PROJECT_ROOT_NAME=$(basename "$(pwd)" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9-]/-/g')
-        EXPECTED_FILE="agent-os/basepoints/agent-base-$PROJECT_ROOT_NAME.md"
+        EXPECTED_FILE="geist/basepoints/agent-base-$PROJECT_ROOT_NAME.md"
     else
         MODULE_NAME=$(basename "$NORMALIZED_DIR")
-        EXPECTED_FILE="agent-os/basepoints/$NORMALIZED_DIR/agent-base-$MODULE_NAME.md"
+        EXPECTED_FILE="geist/basepoints/$NORMALIZED_DIR/agent-base-$MODULE_NAME.md"
     fi
     
     if [ ! -f "$EXPECTED_FILE" ]; then
-        echo "❌ MISSING: $module_dir → $EXPECTED_FILE" >> agent-os/output/create-basepoints/cache/generation-progress.md
+        echo "❌ MISSING: $module_dir → $EXPECTED_FILE" >> geist/output/create-basepoints/cache/generation-progress.md
         MISSING_COUNT=$((MISSING_COUNT + 1))
     fi
-done < agent-os/output/create-basepoints/cache/module-folders.txt
+done < geist/output/create-basepoints/cache/module-folders.txt
 
 if [ "$MISSING_COUNT" -gt 0 ]; then
     echo "❌ VERIFICATION FAILED: $MISSING_COUNT basepoints missing!"
-    echo "   Check: agent-os/output/create-basepoints/cache/generation-progress.md"
+    echo "   Check: geist/output/create-basepoints/cache/generation-progress.md"
 else
     echo "✅ VERIFICATION PASSED: All $EXPECTED_COUNT module basepoints created"
-    echo "✅ All modules have basepoints" >> agent-os/output/create-basepoints/cache/generation-progress.md
+    echo "✅ All modules have basepoints" >> geist/output/create-basepoints/cache/generation-progress.md
 fi
 ```
 
@@ -202,8 +202,8 @@ Display final summary:
 ✅ Basepoints created: [N]
 ❌ Failed: [N] (if any)
 
-📁 Basepoints location: agent-os/basepoints/
-📋 Progress report: agent-os/output/create-basepoints/cache/generation-progress.md
+📁 Basepoints location: geist/basepoints/
+📋 Progress report: geist/output/create-basepoints/cache/generation-progress.md
 
 Next: Parent basepoints will be generated to complete the hierarchy.
 ```

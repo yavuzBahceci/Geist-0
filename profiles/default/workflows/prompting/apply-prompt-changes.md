@@ -111,7 +111,7 @@ echo "$APPLIED_CHANGES" > "$BACKUP_DIR/applied-changes.log"
 
 ## Output
 
-- Updated command files in `agent-os/commands/`
+- Updated command files in `geist/commands/`
 - Applied changes log: `$BACKUP_DIR/applied-changes.log`
 - Report file with summary (created by calling phase)
 

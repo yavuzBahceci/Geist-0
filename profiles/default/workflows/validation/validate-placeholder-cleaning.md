@@ -5,7 +5,7 @@
 1. **Comprehensive Placeholder Detection**: Detect all placeholder types that should be cleaned from specialized commands
 2. **Categorize by Type**: Group placeholders by category (basepoints, scope detection, deep reading, workflows, standards)
 3. **Generate Cleaning Report**: Create detailed report with file locations and recommendations for cleaning
-4. **Support Validation Context**: Support validation of both profiles/default (template) and installed agent-os (specialized)
+4. **Support Validation Context**: Support validation of both profiles/default (template) and installed geist (specialized)
 
 ## Workflow
 
@@ -23,8 +23,8 @@ if [ -d "profiles/default" ] && [ "$(pwd)" = *"/profiles/default"* ]; then
     SCAN_PATH="profiles/default"
     CACHE_PATH="$SPEC_PATH/implementation/cache/validation"
 else
-    VALIDATION_CONTEXT="installed-agent-os"
-    SCAN_PATH="agent-os"
+    VALIDATION_CONTEXT="installed-geist"
+    SCAN_PATH="geist"
     CACHE_PATH="$SPEC_PATH/implementation/cache/validation"
 fi
 
@@ -318,7 +318,7 @@ echo "$FILES_TO_SCAN" | while read file_path; do
             PLACEHOLDER=$(echo "$rest" | grep -oE '\{\{workflows/[^}]+\}\}')
             # Check if placeholder references an actual workflow file
             WORKFLOW_PATH=$(echo "$PLACEHOLDER" | sed 's/{{workflows\///' | sed 's/}}//')
-            if [ "$VALIDATION_CONTEXT" = "installed-agent-os" ]; then
+            if [ "$VALIDATION_CONTEXT" = "installed-geist" ]; then
                 # In specialized context, check if workflow exists
                 if [ ! -f "$SCAN_PATH/workflows/$WORKFLOW_PATH.md" ] && [ ! -f "profiles/default/workflows/$WORKFLOW_PATH.md" ]; then
                     WORKFLOWS_STANDARDS_PLACEHOLDERS_FOUND="${WORKFLOWS_STANDARDS_PLACEHOLDERS_FOUND}\nworkflows:$PLACEHOLDER:$file_path:$line_number:Unresolved workflow reference"
@@ -334,7 +334,7 @@ echo "$FILES_TO_SCAN" | while read file_path; do
             PLACEHOLDER=$(echo "$rest" | grep -oE '\{\{standards/[^}]+\}\}')
             # Check if placeholder references an actual standards file
             STANDARDS_PATH=$(echo "$PLACEHOLDER" | sed 's/{{standards\///' | sed 's/}}//')
-            if [ "$VALIDATION_CONTEXT" = "installed-agent-os" ]; then
+            if [ "$VALIDATION_CONTEXT" = "installed-geist" ]; then
                 # In specialized context, check if standards file exists
                 if [ ! -f "$SCAN_PATH/standards/$STANDARDS_PATH.md" ] && [ ! -f "profiles/default/standards/$STANDARDS_PATH.md" ]; then
                     WORKFLOWS_STANDARDS_PLACEHOLDERS_FOUND="${WORKFLOWS_STANDARDS_PLACEHOLDERS_FOUND}\nstandards:$PLACEHOLDER:$file_path:$line_number:Unresolved standards reference"
@@ -488,7 +488,7 @@ $(if [ "$TOTAL_PLACEHOLDERS" -gt 0 ]; then
     echo ""
     echo "1. **Run deploy-agents command** to replace placeholders with project-specific content"
     echo "2. **Review deploy-agents specialization functions** to ensure all placeholder types are handled"
-    echo "3. **Run cleanup command** (if available) to fix remaining placeholders in already-deployed agent-os"
+    echo "3. **Run cleanup command** (if available) to fix remaining placeholders in already-deployed geist"
     echo "4. **Manually review** files listed above and replace placeholders with project-specific content"
 else
     echo "✅ **No Action Required** - All placeholders have been cleaned!"
@@ -506,6 +506,6 @@ echo "📁 Report stored in: $CACHE_PATH/placeholder-cleaning-validation-summary
 - Must categorize placeholders by type for easy analysis
 - Must generate comprehensive reports with file locations
 - Must provide recommendations for cleaning each placeholder type
-- Must support validation of both profiles/default (template) and installed agent-os (specialized)
-- **CRITICAL**: All reports must be stored in `agent-os/specs/[current-spec]/implementation/cache/validation/` when running within a spec command, not scattered around the codebase
+- Must support validation of both profiles/default (template) and installed geist (specialized)
+- **CRITICAL**: All reports must be stored in `geist/specs/[current-spec]/implementation/cache/validation/` when running within a spec command, not scattered around the codebase
 - Must use placeholder syntax ({{PLACEHOLDER}}) for project-specific parts that will be replaced during deploy-agents

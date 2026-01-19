@@ -12,12 +12,12 @@
 ### Step 1: Analyze Spec & Requirements
 
 Read each of these files (whichever are available) and analyze them to understand the requirements for this feature implementation:
-- `agent-os/specs/[this-spec]/spec.md`
-- `agent-os/specs/[this-spec]/planning/requirements.md`
+- `geist/specs/[this-spec]/spec.md`
+- `geist/specs/[this-spec]/planning/requirements.md`
 
 ```bash
 # Determine spec path
-SPEC_PATH="agent-os/specs/[this-spec]"
+SPEC_PATH="geist/specs/[this-spec]"
 
 # Load extracted basepoints knowledge if available
 if [ -f "$SPEC_PATH/implementation/cache/basepoints-knowledge.json" ]; then
@@ -84,7 +84,7 @@ If a checkpoint is needed, present it to the user and wait for their confirmatio
 
 ### Step 4: Create Tasks Breakdown (SDD-aligned)
 
-Generate `agent-os/specs/[current-spec]/tasks.md`.
+Generate `geist/specs/[current-spec]/tasks.md`.
 
 **SDD Task Decomposition Best Practices:**
 - Respect SDD phase order: Specify → Tasks → Implement (spec should be complete before tasks)
@@ -418,7 +418,7 @@ This workflow has been enhanced with Spec-Driven Development (SDD) best practice
 - All SDD framework references are abstract (e.g., "task decomposition frameworks" not technology-specific tools)
 - No hardcoded technology-specific task management tool references in default templates
 - Task validation maintains technology-agnostic state throughout **in default profile templates**
-- **After Specialization:** When templates are compiled to `agent-os/workflows/`, workflows can and should become technology-specific based on the project's actual stack
+- **After Specialization:** When templates are compiled to `geist/workflows/`, workflows can and should become technology-specific based on the project's actual stack
 - **Command Outputs:** Specs, tasks, and implementations should reflect the project's actual technology stack
 
 **Workflow Steps Enhanced:**

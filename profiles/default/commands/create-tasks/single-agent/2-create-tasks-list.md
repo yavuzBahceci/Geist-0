@@ -5,7 +5,7 @@ Now that you have the spec.md AND/OR requirements.md, proceed with creating the 
 First, load any accumulated knowledge from the previous write-spec command:
 
 ```bash
-SPEC_PATH="agent-os/specs/[current-spec]"
+SPEC_PATH="geist/specs/[current-spec]"
 CACHE_PATH="$SPEC_PATH/implementation/cache"
 
 # Load accumulated knowledge from write-spec (which includes shape-spec knowledge)
@@ -53,8 +53,8 @@ echo "🎯 Applying narrow focus + expand knowledge strategy..."
 
 # Load tech stack for implementation context
 TECH_STACK=""
-if [ -f "agent-os/product/tech-stack.md" ]; then
-    TECH_STACK=$(cat agent-os/product/tech-stack.md)
+if [ -f "geist/product/tech-stack.md" ]; then
+    TECH_STACK=$(cat geist/product/tech-stack.md)
 fi
 
 # Combine all knowledge sources (building upon previous)
@@ -110,7 +110,7 @@ Break down the spec and requirements into an actionable tasks list with strategi
 Before completing, run validation to ensure outputs are correct:
 
 ```bash
-SPEC_PATH="agent-os/specs/[current-spec]"
+SPEC_PATH="geist/specs/[current-spec]"
 COMMAND="create-tasks"
 {{workflows/validation/validate-output-exists}}
 {{workflows/validation/validate-knowledge-integration}}
@@ -130,7 +130,7 @@ Generate a checklist of all resources consulted:
 Display the following message to the user:
 
 ```
-The tasks list has been created at `agent-os/specs/[this-spec]/tasks.md`.
+The tasks list has been created at `geist/specs/[this-spec]/tasks.md`.
 
 ✅ Tasks breakdown complete
 ✅ Basepoints knowledge used: [Yes / No basepoints found]

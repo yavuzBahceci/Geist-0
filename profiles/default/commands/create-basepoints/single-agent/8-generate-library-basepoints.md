@@ -4,7 +4,7 @@ Now that module basepoints, parent basepoints, and headquarter have been generat
 
 ## Prerequisites
 
-- Tech stack must be documented in `agent-os/product/tech-stack.md`
+- Tech stack must be documented in `geist/product/tech-stack.md`
 - Module basepoints should be generated (Phase 5)
 - Parent basepoints should be generated (Phase 6)
 - Headquarter should be generated (Phase 7)
@@ -12,9 +12,9 @@ Now that module basepoints, parent basepoints, and headquarter have been generat
 ## Step 1: Validate Prerequisites
 
 ```bash
-TECH_STACK_FILE="agent-os/product/tech-stack.md"
-HEADQUARTER_FILE="agent-os/basepoints/headquarter.md"
-BASEPOINTS_DIR="agent-os/basepoints"
+TECH_STACK_FILE="geist/product/tech-stack.md"
+HEADQUARTER_FILE="geist/basepoints/headquarter.md"
+BASEPOINTS_DIR="geist/basepoints"
 
 if [ ! -f "$TECH_STACK_FILE" ]; then
     echo "⚠️ Tech stack file not found at $TECH_STACK_FILE"
@@ -121,7 +121,7 @@ The `generate-library-basepoints` workflow creates comprehensive library basepoi
 After generation, verify the library basepoints:
 
 ```bash
-LIBRARIES_PATH="agent-os/basepoints/libraries"
+LIBRARIES_PATH="geist/basepoints/libraries"
 
 echo "🔍 Verifying library basepoints..."
 
@@ -154,8 +154,8 @@ Once ALL library basepoints are generated, output:
 ✅ Library basepoints created: [number]
 ✅ Solution-specific basepoints: [number]
 
-📁 Library basepoints location: agent-os/basepoints/libraries/
-📋 Library index: agent-os/basepoints/libraries/README.md
+📁 Library basepoints location: geist/basepoints/libraries/
+📋 Library index: geist/basepoints/libraries/README.md
 
 Knowledge Sources Combined:
   ✅ Product knowledge (tech-stack.md)

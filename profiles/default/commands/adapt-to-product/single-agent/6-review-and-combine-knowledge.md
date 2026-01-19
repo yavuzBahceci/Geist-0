@@ -6,9 +6,9 @@ Read and analyze all created product documents:
 
 ```bash
 # Load all product files
-MISSION=$(cat agent-os/product/mission.md 2>/dev/null)
-ROADMAP=$(cat agent-os/product/roadmap.md 2>/dev/null)
-TECH_STACK=$(cat agent-os/product/tech-stack.md 2>/dev/null)
+MISSION=$(cat geist/product/mission.md 2>/dev/null)
+ROADMAP=$(cat geist/product/roadmap.md 2>/dev/null)
+TECH_STACK=$(cat geist/product/tech-stack.md 2>/dev/null)
 
 # Verify all files exist
 if [ -z "$MISSION" ] || [ -z "$ROADMAP" ] || [ -z "$TECH_STACK" ]; then
@@ -37,20 +37,33 @@ Document any issues found:
 - Inconsistencies that need resolution
 - Questions that need user clarification
 
+---
+
+### ⚠️ CHECKPOINT - USER INTERACTION REQUIRED (if issues found)
+
+**IF any gaps, inconsistencies, or questions are identified:**
+1. Present all issues clearly to the user
+2. **STOP and WAIT** for the user to provide clarification or resolution
+3. Do NOT proceed until issues are resolved
+
+**IF no issues are found**, you may proceed automatically.
+
+---
+
 ## Step 4: Create Product Summary Report
 
 Create a summary document that combines insights from all product files:
 
 ```bash
-mkdir -p agent-os/output/adapt-to-product/reports
+mkdir -p geist/output/adapt-to-product/reports
 
-cat > agent-os/output/adapt-to-product/reports/product-summary.md << 'EOF'
+cat > geist/output/adapt-to-product/reports/product-summary.md << 'EOF'
 # Product Documentation Summary
 
 ## Documents Created
-- `agent-os/product/mission.md` - Product mission and vision
-- `agent-os/product/roadmap.md` - Development roadmap and phases
-- `agent-os/product/tech-stack.md` - Technical stack documentation
+- `geist/product/mission.md` - Product mission and vision
+- `geist/product/roadmap.md` - Development roadmap and phases
+- `geist/product/tech-stack.md` - Technical stack documentation
 
 ## Consistency Analysis
 
@@ -87,7 +100,7 @@ Once you've reviewed and combined the knowledge, output the following message:
 - Tech stack coverage: [status]
 - Cross-document consistency: [status]
 
-**Summary report created:** `agent-os/output/adapt-to-product/reports/product-summary.md`
+**Summary report created:** `geist/output/adapt-to-product/reports/product-summary.md`
 
 NEXT STEP 👉 Run the command, `7-navigate-to-next-command.md`
 ```

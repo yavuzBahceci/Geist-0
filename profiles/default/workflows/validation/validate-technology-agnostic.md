@@ -3,7 +3,7 @@
 ## Core Responsibilities
 
 1. **Verify profiles/default Technology-Agnostic**: Verify profiles/default commands are truly technology-agnostic
-2. **Verify Specialized Commands Reference Project Structure**: Verify specialized commands in installed agent-os reference actual project structure
+2. **Verify Specialized Commands Reference Project Structure**: Verify specialized commands in installed geist reference actual project structure
 3. **Check for Technology Leaks**: Check for technology-specific assumptions leaking into profiles/default template
 4. **Validate Transition**: Validate transition preserves functionality while adding specialization
 
@@ -11,7 +11,7 @@
 
 ### Step 1: Determine Context and Paths
 
-Determine whether we're validating profiles/default (template) or installed agent-os (specialized):
+Determine whether we're validating profiles/default (template) or installed geist (specialized):
 
 ```bash
 # Determine spec path
@@ -23,8 +23,8 @@ if [ -d "profiles/default" ] && [ "$(pwd)" = *"/profiles/default"* ]; then
     SCAN_PATH="profiles/default"
     CACHE_PATH="$SPEC_PATH/implementation/cache/validation"
 else
-    VALIDATION_CONTEXT="installed-agent-os"
-    SCAN_PATH="agent-os"
+    VALIDATION_CONTEXT="installed-geist"
+    SCAN_PATH="geist"
     CACHE_PATH="$SPEC_PATH/implementation/cache/validation"
 fi
 
@@ -74,20 +74,20 @@ if [ "$VALIDATION_CONTEXT" = "profiles/default" ]; then
 fi
 ```
 
-### Step 3: Verify Specialized Commands Reference Project Structure (if validating installed agent-os)
+### Step 3: Verify Specialized Commands Reference Project Structure (if validating installed geist)
 
-If validating installed agent-os, verify commands reference actual project structure:
+If validating installed geist, verify commands reference actual project structure:
 
 ```bash
 # Initialize results
 PROJECT_STRUCTURE_ISSUES=""
 
-if [ "$VALIDATION_CONTEXT" = "installed-agent-os" ]; then
+if [ "$VALIDATION_CONTEXT" = "installed-geist" ]; then
     # Check if basepoints exist (to verify project structure references)
-    if [ -d "agent-os/basepoints" ] && [ -f "agent-os/basepoints/headquarter.md" ]; then
+    if [ -d "geist/basepoints" ] && [ -f "geist/basepoints/headquarter.md" ]; then
         # Extract actual project structure from basepoints
-        ACTUAL_LAYERS=$(find agent-os/basepoints -type d -mindepth 1 -maxdepth 2 | sed 's|agent-os/basepoints/||' | cut -d'/' -f1 | sort -u)
-        ACTUAL_MODULES=$(find agent-os/basepoints -name "agent-base-*.md" -type f | sed 's|agent-os/basepoints/||' | sed 's|/agent-base-.*\.md||')
+        ACTUAL_LAYERS=$(find geist/basepoints -type d -mindepth 1 -maxdepth 2 | sed 's|geist/basepoints/||' | cut -d'/' -f1 | sort -u)
+        ACTUAL_MODULES=$(find geist/basepoints -name "agent-base-*.md" -type f | sed 's|geist/basepoints/||' | sed 's|/agent-base-.*\.md||')
         
         # Find files to scan
         FILES_TO_SCAN=$(find "$SCAN_PATH/commands" -type f \( -name "*.md" \) ! -path "*/node_modules/*" ! -path "*/.git/*" 2>/dev/null)
@@ -133,10 +133,10 @@ Check that transition from template to specialized maintains functionality:
 # Initialize results
 FUNCTIONALITY_ISSUES=""
 
-if [ "$VALIDATION_CONTEXT" = "installed-agent-os" ]; then
+if [ "$VALIDATION_CONTEXT" = "installed-geist" ]; then
     # Check that specialized commands maintain same structure as template
     TEMPLATE_COMMANDS=$(find profiles/default/commands -name "*.md" -type f 2>/dev/null | wc -l | tr -d ' ')
-    SPECIALIZED_COMMANDS=$(find agent-os/commands -name "*.md" -type f 2>/dev/null | wc -l | tr -d ' ')
+    SPECIALIZED_COMMANDS=$(find geist/commands -name "*.md" -type f 2>/dev/null | wc -l | tr -d ' ')
     
     if [ "$TEMPLATE_COMMANDS" -gt 0 ] && [ "$SPECIALIZED_COMMANDS" -eq 0 ]; then
         FUNCTIONALITY_ISSUES="${FUNCTIONALITY_ISSUES}\nissue:No specialized commands found (expected $TEMPLATE_COMMANDS commands)"
@@ -144,7 +144,7 @@ if [ "$VALIDATION_CONTEXT" = "installed-agent-os" ]; then
     
     # Check that command structure is preserved
     TEMPLATE_STRUCTURE=$(find profiles/default/commands -type d | sort)
-    SPECIALIZED_STRUCTURE=$(find agent-os/commands -type d 2>/dev/null | sort)
+    SPECIALIZED_STRUCTURE=$(find geist/commands -type d 2>/dev/null | sort)
     
     # Compare structure (simplified check)
     if [ -n "$TEMPLATE_STRUCTURE" ] && [ -z "$SPECIALIZED_STRUCTURE" ]; then
@@ -225,7 +225,7 @@ $(echo "$TECHNOLOGY_LEAKS" | grep -v "^$" | while IFS=':' read -r type file_path
     echo ""
 done)
 
-## Project Structure Issues (installed agent-os)
+## Project Structure Issues (installed geist)
 
 $(echo "$PROJECT_STRUCTURE_ISSUES" | grep -v "^$" | while IFS=':' read -r type file_path line_numbers description; do
     echo "- **$description**"
@@ -251,5 +251,5 @@ echo "✅ Technology-agnostic validation complete. Report stored in $CACHE_PATH/
 - Must verify specialized commands reference actual project structure
 - Must check for technology-specific assumptions leaking into profiles/default template
 - Must validate transition preserves functionality while adding specialization
-- **CRITICAL**: All reports must be stored in `agent-os/specs/[current-spec]/implementation/cache/validation/` when running within a spec command, not scattered around the codebase
+- **CRITICAL**: All reports must be stored in `geist/specs/[current-spec]/implementation/cache/validation/` when running within a spec command, not scattered around the codebase
 - Must use placeholder syntax ({{PLACEHOLDER}}) for project-specific parts that will be replaced during deploy-agents

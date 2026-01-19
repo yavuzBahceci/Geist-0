@@ -5,13 +5,13 @@
 1. **Scan Files for Placeholders**: Scan commands, workflows, and standards files for placeholder syntax
 2. **Categorize Placeholders**: Group placeholders by type (basepoints, scope detection, deep reading, workflows, standards)
 3. **Generate Report**: Create comprehensive report with file locations and placeholder types
-4. **Support Multiple Contexts**: Support validation of both profiles/default (template) and installed agent-os (specialized)
+4. **Support Multiple Contexts**: Support validation of both profiles/default (template) and installed geist (specialized)
 
 ## Workflow
 
 ### Step 1: Determine Context and Paths
 
-Determine whether we're validating profiles/default (template) or installed agent-os (specialized):
+Determine whether we're validating profiles/default (template) or installed geist (specialized):
 
 ```bash
 # Determine spec path
@@ -23,8 +23,8 @@ if [ -d "profiles/default" ] && [ "$(pwd)" = *"/profiles/default"* ]; then
     SCAN_PATH="profiles/default"
     CACHE_PATH="$SPEC_PATH/implementation/cache/validation"
 else
-    VALIDATION_CONTEXT="installed-agent-os"
-    SCAN_PATH="agent-os"
+    VALIDATION_CONTEXT="installed-geist"
+    SCAN_PATH="geist"
     CACHE_PATH="$SPEC_PATH/implementation/cache/validation"
 fi
 
@@ -480,8 +480,8 @@ echo "✅ Placeholder detection complete. Report stored in $CACHE_PATH/"
 
 - Must detect all placeholder syntax patterns across all categories
 - Must scan commands, workflows, and standards files
-- Must support both profiles/default (template) and installed agent-os (specialized) validation
+- Must support both profiles/default (template) and installed geist (specialized) validation
 - Must generate comprehensive reports with file locations and placeholder types
 - Must categorize placeholders by type for easy analysis
-- **CRITICAL**: All reports must be stored in `agent-os/specs/[current-spec]/implementation/cache/validation/` when running within a spec command, not scattered around the codebase
+- **CRITICAL**: All reports must be stored in `geist/specs/[current-spec]/implementation/cache/validation/` when running within a spec command, not scattered around the codebase
 - Must use placeholder syntax ({{PLACEHOLDER}}) for project-specific parts that will be replaced during deploy-agents

@@ -6,7 +6,7 @@ Apply user-approved adaptations to command templates.
 
 - User has reviewed learnings from Phase 7
 - User has approved specific adaptations (all or select)
-- Adaptations file exists: `agent-os/output/session-feedback/adaptations/pending.md`
+- Adaptations file exists: `geist/output/session-feedback/adaptations/pending.md`
 
 ## Core Responsibilities
 
@@ -22,7 +22,7 @@ Apply user-approved adaptations to command templates.
 ### Step 1: Check Prerequisites
 
 ```bash
-PENDING_FILE="agent-os/output/session-feedback/adaptations/pending.md"
+PENDING_FILE="geist/output/session-feedback/adaptations/pending.md"
 
 if [ ! -f "$PENDING_FILE" ]; then
     echo "ℹ️ No pending adaptations found. Skipping adaptation phase."
@@ -43,7 +43,7 @@ echo "📋 Applying approved adaptations..."
 ### Step 2: Load Approved Adaptations
 
 ```bash
-APPLIED_FILE="agent-os/output/session-feedback/adaptations/applied.md"
+APPLIED_FILE="geist/output/session-feedback/adaptations/applied.md"
 
 # Ensure applied file exists
 mkdir -p "$(dirname "$APPLIED_FILE")"
@@ -94,9 +94,9 @@ echo "✅ Applied adaptations logged to: $APPLIED_FILE"
 After adaptations are applied:
 
 ```bash
-SESSION_FILE="agent-os/output/session-feedback/current-session.md"
-HISTORY_DIR="agent-os/output/session-feedback/history"
-PATTERNS_DIR="agent-os/output/session-feedback/patterns"
+SESSION_FILE="geist/output/session-feedback/current-session.md"
+HISTORY_DIR="geist/output/session-feedback/history"
+PATTERNS_DIR="geist/output/session-feedback/patterns"
 
 # Create history directory if it doesn't exist
 mkdir -p "$HISTORY_DIR"
@@ -165,8 +165,8 @@ echo "✅ New session started"
 ### Step 6: Generate Report
 
 ```bash
-BACKUP_DIR=$(ls -td agent-os/output/update-basepoints-and-redeploy/backups/* | head -1)
-REPORT_FILE="agent-os/output/update-basepoints-and-redeploy/reports/adaptation-report.md"
+BACKUP_DIR=$(ls -td geist/output/update-basepoints-and-redeploy/backups/* | head -1)
+REPORT_FILE="geist/output/update-basepoints-and-redeploy/reports/adaptation-report.md"
 
 mkdir -p "$(dirname "$REPORT_FILE")"
 
@@ -187,14 +187,14 @@ cat > "$REPORT_FILE" << EOF
 
 ## Applied Adaptations Log
 
-See: \`agent-os/output/session-feedback/adaptations/applied.md\`
+See: \`geist/output/session-feedback/adaptations/applied.md\`
 
 ## Rollback Instructions
 
 To rollback these changes:
 
 \`\`\`bash
-cp -r $BACKUP_DIR/* agent-os/commands/
+cp -r $BACKUP_DIR/* geist/commands/
 \`\`\`
 
 ## Session Archive
@@ -217,12 +217,12 @@ echo "Report: $REPORT_FILE"
 
 ## Output
 
-- Applied changes to command files in `agent-os/commands/`
-- Backup directory: `agent-os/output/update-basepoints-and-redeploy/backups/[timestamp]/`
-- Applied log: `agent-os/output/session-feedback/adaptations/applied.md`
-- Adaptation report: `agent-os/output/update-basepoints-and-redeploy/reports/adaptation-report.md`
-- Archived session: `agent-os/output/session-feedback/history/[date]-session.md`
-- New session file: `agent-os/output/session-feedback/current-session.md`
+- Applied changes to command files in `geist/commands/`
+- Backup directory: `geist/output/update-basepoints-and-redeploy/backups/[timestamp]/`
+- Applied log: `geist/output/session-feedback/adaptations/applied.md`
+- Adaptation report: `geist/output/update-basepoints-and-redeploy/reports/adaptation-report.md`
+- Archived session: `geist/output/session-feedback/history/[date]-session.md`
+- New session file: `geist/output/session-feedback/current-session.md`
 
 ## Safety Requirements
 

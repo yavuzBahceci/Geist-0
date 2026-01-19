@@ -11,9 +11,9 @@ Analyze prompt effectiveness from session data to identify:
 
 ## Inputs
 
-- Session file: `agent-os/output/session-feedback/current-session.md`
-- Raw prompt data: `agent-os/output/session-feedback/prompts/effective-raw.txt`
-- Raw prompt issues: `agent-os/output/session-feedback/prompts/needs-improvement-raw.txt`
+- Session file: `geist/output/session-feedback/current-session.md`
+- Raw prompt data: `geist/output/session-feedback/prompts/effective-raw.txt`
+- Raw prompt issues: `geist/output/session-feedback/prompts/needs-improvement-raw.txt`
 
 ## Indicators of Effective Prompts
 
@@ -38,8 +38,8 @@ Prompts that lead to:
 ### Step 1: Load Session Data
 
 ```bash
-SESSION_FILE="agent-os/output/session-feedback/current-session.md"
-PROMPTS_DIR="agent-os/output/session-feedback/prompts"
+SESSION_FILE="geist/output/session-feedback/current-session.md"
+PROMPTS_DIR="geist/output/session-feedback/prompts"
 
 # Create prompts directory if needed
 mkdir -p "$PROMPTS_DIR"
@@ -244,9 +244,9 @@ echo "✅ Improvement suggestions: $SUGGESTIONS_FILE"
 
 ## Output
 
-- Effective prompts: `agent-os/output/session-feedback/prompts/effective.md`
-- Prompts needing improvement: `agent-os/output/session-feedback/prompts/needs-improvement.md`
-- Improvement suggestions: `agent-os/output/session-feedback/prompts/improvement-suggestions.md`
+- Effective prompts: `geist/output/session-feedback/prompts/effective.md`
+- Prompts needing improvement: `geist/output/session-feedback/prompts/needs-improvement.md`
+- Improvement suggestions: `geist/output/session-feedback/prompts/improvement-suggestions.md`
 - Updated session file with prompt effectiveness summary
 
 ## Usage

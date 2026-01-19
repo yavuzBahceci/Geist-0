@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # =============================================================================
-# Agent OS Project Installation Script
-# Installs Agent OS into a project's codebase
+# Geist Project Installation Script
+# Installs Geist into a project's codebase
 # =============================================================================
 
 set -e  # Exit on error
@@ -26,7 +26,7 @@ VERBOSE="false"
 PROFILE=""
 CLAUDE_CODE_COMMANDS=""
 USE_CLAUDE_CODE_SUBAGENTS=""
-AGENT_OS_COMMANDS=""
+GEIST_COMMANDS=""
 STANDARDS_AS_CLAUDE_CODE_SKILLS=""
 RE_INSTALL="false"
 OVERWRITE_ALL="false"
@@ -43,15 +43,15 @@ show_help() {
     cat << EOF
 Usage: $0 [OPTIONS]
 
-Install Agent OS into the current project directory.
+Install Geist into the current project directory.
 
 Options:
     --profile PROFILE                        Use specified profile (default: from config.yml)
     --claude-code-commands [BOOL]            Install Claude Code commands (default: from config.yml)
     --use-claude-code-subagents [BOOL]       Use Claude Code subagents (default: from config.yml)
-    --agent-os-commands [BOOL]               Install agent-os commands (default: from config.yml)
+    --geist-commands [BOOL]                  Install geist commands (default: from config.yml)
     --standards-as-claude-code-skills [BOOL] Use Claude Code Skills for standards (default: from config.yml)
-    --re-install                             Delete and reinstall Agent OS
+    --re-install                             Delete and reinstall Geist
     --overwrite-all                          Overwrite all existing files during update
     --overwrite-standards                    Overwrite existing standards during update
     --overwrite-commands                     Overwrite existing commands during update
@@ -63,8 +63,8 @@ Options:
 Note: Flags accept both hyphens and underscores (e.g., --use-claude-code-subagents or --use_claude_code_subagents)
 
 Examples:
-    $0 --profile default --agent-os-commands true
-    $0 --profile default --agent-os-commands true --dry-run
+    $0 --profile default --geist-commands true
+    $0 --profile default --geist-commands true --dry-run
     $0 --claude-code-commands true --use-claude-code-subagents true
 
 EOF
@@ -93,8 +93,8 @@ parse_arguments() {
                 read USE_CLAUDE_CODE_SUBAGENTS shift_count <<< "$(parse_bool_flag "$USE_CLAUDE_CODE_SUBAGENTS" "$2")"
                 shift $shift_count
                 ;;
-            --agent-os-commands)
-                read AGENT_OS_COMMANDS shift_count <<< "$(parse_bool_flag "$AGENT_OS_COMMANDS" "$2")"
+            --geist-commands)
+                read GEIST_COMMANDS shift_count <<< "$(parse_bool_flag "$GEIST_COMMANDS" "$2")"
                 shift $shift_count
                 ;;
             --standards-as-claude-code-skills)
@@ -152,18 +152,18 @@ load_configuration() {
     EFFECTIVE_PROFILE="${PROFILE:-$BASE_PROFILE}"
     EFFECTIVE_CLAUDE_CODE_COMMANDS="${CLAUDE_CODE_COMMANDS:-$BASE_CLAUDE_CODE_COMMANDS}"
     EFFECTIVE_USE_CLAUDE_CODE_SUBAGENTS="${USE_CLAUDE_CODE_SUBAGENTS:-$BASE_USE_CLAUDE_CODE_SUBAGENTS}"
-    EFFECTIVE_AGENT_OS_COMMANDS="${AGENT_OS_COMMANDS:-$BASE_AGENT_OS_COMMANDS}"
+    EFFECTIVE_GEIST_COMMANDS="${GEIST_COMMANDS:-$BASE_GEIST_COMMANDS}"
     EFFECTIVE_STANDARDS_AS_CLAUDE_CODE_SKILLS="${STANDARDS_AS_CLAUDE_CODE_SKILLS:-$BASE_STANDARDS_AS_CLAUDE_CODE_SKILLS}"
     EFFECTIVE_VERSION="$BASE_VERSION"
 
     # Validate configuration using common function (may override EFFECTIVE_STANDARDS_AS_CLAUDE_CODE_SKILLS if dependency not met)
-    validate_config "$EFFECTIVE_CLAUDE_CODE_COMMANDS" "$EFFECTIVE_USE_CLAUDE_CODE_SUBAGENTS" "$EFFECTIVE_AGENT_OS_COMMANDS" "$EFFECTIVE_STANDARDS_AS_CLAUDE_CODE_SKILLS" "$EFFECTIVE_PROFILE"
+    validate_config "$EFFECTIVE_CLAUDE_CODE_COMMANDS" "$EFFECTIVE_USE_CLAUDE_CODE_SUBAGENTS" "$EFFECTIVE_GEIST_COMMANDS" "$EFFECTIVE_STANDARDS_AS_CLAUDE_CODE_SKILLS" "$EFFECTIVE_PROFILE"
 
     print_verbose "Configuration loaded:"
     print_verbose "  Profile: $EFFECTIVE_PROFILE"
     print_verbose "  Claude Code commands: $EFFECTIVE_CLAUDE_CODE_COMMANDS"
     print_verbose "  Use Claude Code subagents: $EFFECTIVE_USE_CLAUDE_CODE_SUBAGENTS"
-    print_verbose "  Agent OS commands: $EFFECTIVE_AGENT_OS_COMMANDS"
+    print_verbose "  Geist commands: $EFFECTIVE_GEIST_COMMANDS"
     print_verbose "  Standards as Claude Code Skills: $EFFECTIVE_STANDARDS_AS_CLAUDE_CODE_SKILLS"
 }
 
@@ -182,7 +182,7 @@ install_standards() {
     while read file; do
         if [[ "$file" == standards/* ]]; then
             local source=$(get_profile_file "$EFFECTIVE_PROFILE" "$file" "$BASE_DIR")
-            local dest="$PROJECT_DIR/agent-os/$file"
+            local dest="$PROJECT_DIR/geist/$file"
 
             if [[ -f "$source" ]]; then
                 local installed_file=$(copy_file "$source" "$dest")
@@ -196,7 +196,7 @@ install_standards() {
 
     if [[ "$DRY_RUN" != "true" ]]; then
         if [[ $standards_count -gt 0 ]]; then
-            echo "✓ Installed $standards_count standards in agent-os/standards"
+            echo "✓ Installed $standards_count standards in geist/standards"
         fi
     fi
 }
@@ -209,7 +209,7 @@ install_claude_code_commands_with_delegation() {
     fi
 
     local commands_count=0
-    local target_dir="$PROJECT_DIR/.claude/commands/agent-os"
+    local target_dir="$PROJECT_DIR/.claude/commands/geist"
 
     mkdir -p "$target_dir"
 
@@ -254,7 +254,7 @@ install_claude_code_commands_without_delegation() {
             if [[ -f "$source" ]]; then
                 # Handle orchestrate-tasks specially (flat destination)
                 if [[ "$file" == commands/orchestrate-tasks/orchestrate-tasks.md ]]; then
-                    local dest="$PROJECT_DIR/.claude/commands/agent-os/orchestrate-tasks.md"
+                    local dest="$PROJECT_DIR/.claude/commands/geist/orchestrate-tasks.md"
                     # Compile without PHASE embedding for orchestrate-tasks
                     local compiled=$(compile_command "$source" "$dest" "$BASE_DIR" "$EFFECTIVE_PROFILE" "")
                     if [[ "$DRY_RUN" == "true" ]]; then
@@ -267,7 +267,7 @@ install_claude_code_commands_without_delegation() {
                     if [[ ! "$filename" =~ ^[0-9]+-.*\.md$ ]]; then
                         # Extract command name (e.g., commands/plan-product/single-agent/plan-product.md -> plan-product.md)
                         local cmd_name=$(echo "$file" | sed 's|commands/\([^/]*\)/single-agent/.*|\1|')
-                        local dest="$PROJECT_DIR/.claude/commands/agent-os/$cmd_name.md"
+                        local dest="$PROJECT_DIR/.claude/commands/geist/$cmd_name.md"
 
                         # Compile with PHASE embedding (mode="embed")
                         local compiled=$(compile_command "$source" "$dest" "$BASE_DIR" "$EFFECTIVE_PROFILE" "embed")
@@ -295,7 +295,7 @@ install_claude_code_agents() {
     fi
 
     local agents_count=0
-    local target_dir="$PROJECT_DIR/.claude/agents/agent-os"
+    local target_dir="$PROJECT_DIR/.claude/agents/geist"
     
     mkdir -p "$target_dir"
 
@@ -325,10 +325,10 @@ install_claude_code_agents() {
     fi
 }
 
-# Install agent-os commands (single-agent files with injection)
-install_agent_os_commands() {
+# Install geist commands (single-agent files with injection)
+install_geist_commands() {
     if [[ "$DRY_RUN" != "true" ]]; then
-        print_status "Installing agent-os commands..."
+        print_status "Installing geist commands..."
     fi
 
     local commands_count=0
@@ -340,11 +340,11 @@ install_agent_os_commands() {
             if [[ -f "$source" ]]; then
                 # Handle orchestrate-tasks specially (preserve folder structure)
                 if [[ "$file" == commands/orchestrate-tasks/orchestrate-tasks.md ]]; then
-                    local dest="$PROJECT_DIR/agent-os/commands/orchestrate-tasks/orchestrate-tasks.md"
+                    local dest="$PROJECT_DIR/geist/commands/orchestrate-tasks/orchestrate-tasks.md"
                 else
                     # Extract command name and preserve numbering
                     local cmd_path=$(echo "$file" | sed 's|commands/\([^/]*\)/single-agent/\(.*\)|\1/\2|')
-                    local dest="$PROJECT_DIR/agent-os/commands/$cmd_path"
+                    local dest="$PROJECT_DIR/geist/commands/$cmd_path"
                 fi
 
                 # Compile with workflow and standards injection and PHASE embedding
@@ -359,15 +359,15 @@ install_agent_os_commands() {
 
     if [[ "$DRY_RUN" != "true" ]]; then
         if [[ $commands_count -gt 0 ]]; then
-            echo "✓ Installed $commands_count agent-os commands"
+            echo "✓ Installed $commands_count geist commands"
         fi
     fi
 }
 
-# Install agent-os workflows
-install_agent_os_workflows() {
+# Install geist workflows
+install_geist_workflows() {
     if [[ "$DRY_RUN" != "true" ]]; then
-        print_status "Installing agent-os workflows..."
+        print_status "Installing geist workflows..."
     fi
 
     local workflows_count=0
@@ -375,7 +375,7 @@ install_agent_os_workflows() {
     while read file; do
         if [[ "$file" == workflows/* ]]; then
             local source=$(get_profile_file "$EFFECTIVE_PROFILE" "$file" "$BASE_DIR")
-            local dest="$PROJECT_DIR/agent-os/$file"
+            local dest="$PROJECT_DIR/geist/$file"
 
             if [[ -f "$source" ]]; then
                 local installed_file=$(copy_file "$source" "$dest")
@@ -389,15 +389,15 @@ install_agent_os_workflows() {
 
     if [[ "$DRY_RUN" != "true" ]]; then
         if [[ $workflows_count -gt 0 ]]; then
-            echo "✓ Installed $workflows_count workflows in agent-os/workflows"
+            echo "✓ Installed $workflows_count workflows in geist/workflows"
         fi
     fi
 }
 
-# Install agent-os agents
-install_agent_os_agents() {
+# Install geist agents
+install_geist_agents() {
     if [[ "$DRY_RUN" != "true" ]]; then
-        print_status "Installing agent-os agents..."
+        print_status "Installing geist agents..."
     fi
 
     local agents_count=0
@@ -409,7 +409,7 @@ install_agent_os_agents() {
             if [[ -f "$source" ]]; then
                 # Get just the filename (flatten directory structure)
                 local filename=$(basename "$file")
-                local dest="$PROJECT_DIR/agent-os/agents/$filename"
+                local dest="$PROJECT_DIR/geist/agents/$filename"
                 
                 local installed_file=$(copy_file "$source" "$dest")
                 if [[ -n "$installed_file" ]]; then
@@ -422,7 +422,7 @@ install_agent_os_agents() {
 
     if [[ "$DRY_RUN" != "true" ]]; then
         if [[ $agents_count -gt 0 ]]; then
-            echo "✓ Installed $agents_count agents in agent-os/agents"
+            echo "✓ Installed $agents_count agents in geist/agents"
         fi
     fi
 }
@@ -434,44 +434,44 @@ create_output_structure() {
     fi
 
     # Create installation cache and logs directories
-    ensure_dir "$PROJECT_DIR/agent-os/output/installation/cache/basepoints-cache"
-    ensure_dir "$PROJECT_DIR/agent-os/output/installation/cache/deploy-agents-cache"
-    ensure_dir "$PROJECT_DIR/agent-os/output/installation/logs"
+    ensure_dir "$PROJECT_DIR/geist/output/installation/cache/basepoints-cache"
+    ensure_dir "$PROJECT_DIR/geist/output/installation/cache/deploy-agents-cache"
+    ensure_dir "$PROJECT_DIR/geist/output/installation/logs"
 
     # Create command-specific output directories
-    ensure_dir "$PROJECT_DIR/agent-os/output/adapt-to-product/analysis"
-    ensure_dir "$PROJECT_DIR/agent-os/output/adapt-to-product/cache"
-    ensure_dir "$PROJECT_DIR/agent-os/output/adapt-to-product/reports"
+    ensure_dir "$PROJECT_DIR/geist/output/adapt-to-product/analysis"
+    ensure_dir "$PROJECT_DIR/geist/output/adapt-to-product/cache"
+    ensure_dir "$PROJECT_DIR/geist/output/adapt-to-product/reports"
 
-    ensure_dir "$PROJECT_DIR/agent-os/output/create-basepoints/cache"
-    ensure_dir "$PROJECT_DIR/agent-os/output/create-basepoints/analysis"
-    ensure_dir "$PROJECT_DIR/agent-os/output/create-basepoints/reports"
+    ensure_dir "$PROJECT_DIR/geist/output/create-basepoints/cache"
+    ensure_dir "$PROJECT_DIR/geist/output/create-basepoints/analysis"
+    ensure_dir "$PROJECT_DIR/geist/output/create-basepoints/reports"
 
-    ensure_dir "$PROJECT_DIR/agent-os/output/deploy-agents/knowledge"
-    ensure_dir "$PROJECT_DIR/agent-os/output/deploy-agents/specialization"
-    ensure_dir "$PROJECT_DIR/agent-os/output/deploy-agents/reports"
+    ensure_dir "$PROJECT_DIR/geist/output/deploy-agents/knowledge"
+    ensure_dir "$PROJECT_DIR/geist/output/deploy-agents/specialization"
+    ensure_dir "$PROJECT_DIR/geist/output/deploy-agents/reports"
 
     # Create specs output directory (specs will create their own subdirectories)
-    ensure_dir "$PROJECT_DIR/agent-os/output/specs"
+    ensure_dir "$PROJECT_DIR/geist/output/specs"
 
     if [[ "$DRY_RUN" != "true" ]]; then
         echo "✓ Created centralized output structure"
     fi
 }
 
-# Create agent-os folder structure
-create_agent_os_folder() {
+# Create geist folder structure
+create_geist_folder() {
     if [[ "$DRY_RUN" != "true" ]]; then
-        print_status "Installing agent-os folder"
+        print_status "Installing geist folder"
     fi
 
-    # Create the main agent-os folder
-    ensure_dir "$PROJECT_DIR/agent-os"
+    # Create the main geist folder
+    ensure_dir "$PROJECT_DIR/geist"
 
     # Create the configuration file
     local config_file=$(write_project_config "$EFFECTIVE_VERSION" "$EFFECTIVE_PROFILE" \
         "$EFFECTIVE_CLAUDE_CODE_COMMANDS" "$EFFECTIVE_USE_CLAUDE_CODE_SUBAGENTS" \
-        "$EFFECTIVE_AGENT_OS_COMMANDS" "$EFFECTIVE_STANDARDS_AS_CLAUDE_CODE_SKILLS")
+        "$EFFECTIVE_GEIST_COMMANDS" "$EFFECTIVE_STANDARDS_AS_CLAUDE_CODE_SKILLS")
     if [[ "$DRY_RUN" == "true" && -n "$config_file" ]]; then
         INSTALLED_FILES+=("$config_file")
     fi
@@ -480,8 +480,8 @@ create_agent_os_folder() {
     create_output_structure
 
     if [[ "$DRY_RUN" != "true" ]]; then
-        echo "✓ Created agent-os folder"
-        echo "✓ Created agent-os project configuration"
+        echo "✓ Created geist folder"
+        echo "✓ Created geist project configuration"
     fi
 }
 
@@ -500,13 +500,13 @@ perform_installation() {
     echo -e "  Claude Code commands: ${YELLOW}$EFFECTIVE_CLAUDE_CODE_COMMANDS${NC}"
     echo -e "  Use Claude Code subagents: ${YELLOW}$EFFECTIVE_USE_CLAUDE_CODE_SUBAGENTS${NC}"
     echo -e "  Standards as Claude Code Skills: ${YELLOW}$EFFECTIVE_STANDARDS_AS_CLAUDE_CODE_SKILLS${NC}"
-    echo -e "  Agent OS commands: ${YELLOW}$EFFECTIVE_AGENT_OS_COMMANDS${NC}"
+    echo -e "  Geist commands: ${YELLOW}$EFFECTIVE_GEIST_COMMANDS${NC}"
     echo ""
 
     # In dry run mode, just collect files silently
     if [[ "$DRY_RUN" == "true" ]]; then
         # Collect files without output
-        create_agent_os_folder
+        create_geist_folder
         install_standards
 
         # Install Claude Code files if enabled
@@ -521,13 +521,13 @@ perform_installation() {
             install_improve_skills_command
         fi
 
-        # Install agent-os commands if enabled
-        if [[ "$EFFECTIVE_AGENT_OS_COMMANDS" == "true" ]]; then
-            install_agent_os_commands
+        # Install geist commands if enabled
+        if [[ "$EFFECTIVE_GEIST_COMMANDS" == "true" ]]; then
+            install_geist_commands
             echo ""
-            install_agent_os_workflows
+            install_geist_workflows
             echo ""
-            install_agent_os_agents
+            install_geist_agents
         fi
 
         echo ""
@@ -539,7 +539,7 @@ perform_installation() {
         done
     else
         # Normal installation with output
-        create_agent_os_folder
+        create_geist_folder
         echo ""
 
         install_standards
@@ -561,13 +561,13 @@ perform_installation() {
             echo ""
         fi
 
-        # Install agent-os commands if enabled
-        if [[ "$EFFECTIVE_AGENT_OS_COMMANDS" == "true" ]]; then
-            install_agent_os_commands
+        # Install geist commands if enabled
+        if [[ "$EFFECTIVE_GEIST_COMMANDS" == "true" ]]; then
+            install_geist_commands
             echo ""
-            install_agent_os_workflows
+            install_geist_workflows
             echo ""
-            install_agent_os_agents
+            install_geist_agents
             echo ""
         fi
     fi
@@ -582,7 +582,7 @@ perform_installation() {
             perform_installation
         fi
     else
-        print_success "Agent OS has been successfully installed in your project!"
+        print_success "Geist has been successfully installed in your project!"
         echo ""
     fi
 }
@@ -591,14 +591,14 @@ perform_installation() {
 handle_reinstallation() {
     print_section "Re-installation"
 
-    print_warning "This will DELETE your current agent-os/ folder and reinstall from scratch."
+    print_warning "This will DELETE your current geist/ folder and reinstall from scratch."
     echo ""
 
     # Check for Claude Code files
-    if [[ -d "$PROJECT_DIR/.claude/agents/agent-os" ]] || [[ -d "$PROJECT_DIR/.claude/commands/agent-os" ]]; then
+    if [[ -d "$PROJECT_DIR/.claude/agents/geist" ]] || [[ -d "$PROJECT_DIR/.claude/commands/geist" ]]; then
         print_warning "This will also DELETE:"
-        [[ -d "$PROJECT_DIR/.claude/agents/agent-os" ]] && echo "  - .claude/agents/agent-os/"
-        [[ -d "$PROJECT_DIR/.claude/commands/agent-os" ]] && echo "  - .claude/commands/agent-os/"
+        [[ -d "$PROJECT_DIR/.claude/agents/geist" ]] && echo "  - .claude/agents/geist/"
+        [[ -d "$PROJECT_DIR/.claude/commands/geist" ]] && echo "  - .claude/commands/geist/"
         echo ""
     fi
 
@@ -611,9 +611,9 @@ handle_reinstallation() {
 
     if [[ "$DRY_RUN" != "true" ]]; then
         print_status "Removing existing installation..."
-        rm -rf "$PROJECT_DIR/agent-os"
-        rm -rf "$PROJECT_DIR/.claude/agents/agent-os"
-        rm -rf "$PROJECT_DIR/.claude/commands/agent-os"
+        rm -rf "$PROJECT_DIR/geist"
+        rm -rf "$PROJECT_DIR/.claude/agents/geist"
+        rm -rf "$PROJECT_DIR/.claude/commands/geist"
         echo "✓ Existing installation removed"
         echo ""
     fi
@@ -626,7 +626,7 @@ handle_reinstallation() {
 # -----------------------------------------------------------------------------
 
 main() {
-    print_section "Agent OS Project Installation"
+    print_section "Geist Project Installation"
 
     # Parse command line arguments
     parse_arguments "$@"
@@ -641,7 +641,7 @@ main() {
     load_configuration
 
     # Check if Agent OS is already installed
-    if is_agent_os_installed "$PROJECT_DIR"; then
+    if is_geist_installed "$PROJECT_DIR"; then
         if [[ "$RE_INSTALL" == "true" ]]; then
             handle_reinstallation
         else

@@ -9,7 +9,7 @@ Run project-specific deterministic validation before marking tasks as complete. 
 ### Step 1: Determine Available Validators
 
 ```bash
-SPEC_PATH="${SPEC_PATH:-agent-os/specs/current-spec}"
+SPEC_PATH="${SPEC_PATH:-geist/specs/current-spec}"
 VALIDATION_CACHE="$SPEC_PATH/implementation/cache/validation"
 mkdir -p "$VALIDATION_CACHE"
 

@@ -19,7 +19,7 @@ Implement all tasks assigned to you and ONLY those task(s) that have been assign
 2. Load basepoints knowledge (if available):
    ```bash
    # Determine spec path
-   SPEC_PATH="agent-os/specs/[this-spec]"
+   SPEC_PATH="geist/specs/[this-spec]"
    
    # Load extracted basepoints knowledge if available
    if [ -f "$SPEC_PATH/implementation/cache/basepoints-knowledge.json" ]; then
@@ -53,7 +53,7 @@ Implement all tasks assigned to you and ONLY those task(s) that have been assign
    - Reference similar logic found in implementation
    - Consider refactoring opportunities
 8. Implement the assigned task group according to requirements, standards, basepoints knowledge, and deep reading results
-9. Update `agent-os/specs/[this-spec]/tasks.md` to update the tasks you've implemented to mark that as done by updating their checkbox to checked state: `- [x]`
+9. Update `geist/specs/[this-spec]/tasks.md` to update the tasks you've implemented to mark that as done by updating their checkbox to checked state: `- [x]`
 
 ## Guide your implementation using:
 - **The existing patterns** that you've found and analyzed in the codebase AND basepoints knowledge (if available) AND deep reading results (if available)
@@ -69,11 +69,11 @@ Implement all tasks assigned to you and ONLY those task(s) that have been assign
   - Refactoring opportunities identified
   - Implementation analysis (logic flow, data flow, control flow, dependencies, patterns)
 - **Specific notes provided in requirements.md, spec.md AND/OR tasks.md**
-- **Visuals provided (if any)** which would be located in `agent-os/specs/[this-spec]/planning/visuals/`
+- **Visuals provided (if any)** which would be located in `geist/specs/[this-spec]/planning/visuals/`
 - **User Standards & Preferences** which are defined below.
 
 ## Self-verify and test your work by:
 - Running ONLY the tests you've written (if any) and ensuring those tests pass.
 - IF your task involves user-facing UI, and IF you have access to browser testing tools, open a browser and use the feature you've implemented as if you are a user to ensure a user can use the feature in the intended way.
-  - Take screenshots of the views and UI elements you've tested and store those in `agent-os/specs/[this-spec]/verification/screenshots/`.  Do not store screenshots anywhere else in the codebase other than this location.
+  - Take screenshots of the views and UI elements you've tested and store those in `geist/specs/[this-spec]/verification/screenshots/`.  Do not store screenshots anywhere else in the codebase other than this location.
   - Analyze the screenshot(s) you've taken to check them against your current requirements.

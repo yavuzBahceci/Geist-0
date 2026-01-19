@@ -164,8 +164,8 @@
 │  │                                                                     │     │
 │  │ ## Context                                                          │     │
 │  │ ─────────                                                           │     │
-│  │ - @agent-os/specs/[spec]/spec.md                                    │     │
-│  │ - @agent-os/specs/[spec]/planning/requirements.md                   │     │
+│  │ - @geist/specs/[spec]/spec.md                                    │     │
+│  │ - @geist/specs/[spec]/planning/requirements.md                   │     │
 │  │                                                                     │     │
 │  │ ## Basepoints Knowledge Context                                     │     │
 │  │ ─────────────────────────────                                       │     │
@@ -192,7 +192,7 @@
 │  │                                                                     │     │
 │  │ ### Step 1: Run Implementation Validation                           │     │
 │  │ ```bash                                                             │     │
-│  │ SPEC_PATH="agent-os/specs/[spec]"                                   │     │
+│  │ SPEC_PATH="geist/specs/[spec]"                                   │     │
 │  │ {{workflows/validation/validate-implementation}}                    │     │
 │  │ ```                                                                 │     │
 │  │                                                                     │     │

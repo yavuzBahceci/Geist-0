@@ -100,7 +100,7 @@ layer_to_specialist() {
 # Check if specialist exists
 specialist_exists() {
     local specialist="$1"
-    local specialist_file="agent-os/agents/specialists/${specialist}.md"
+    local specialist_file="geist/agents/specialists/${specialist}.md"
     
     if [ -f "$specialist_file" ]; then
         return 0

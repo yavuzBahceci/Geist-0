@@ -37,8 +37,8 @@ This document provides guidelines for maintaining and refactoring command and wo
 **Example - Bad (Inline Code):**
 ```bash
 # Check if basepoints exist
-if [ -d "agent-os/basepoints" ] && [ -f "agent-os/basepoints/headquarter.md" ]; then
-    SPEC_PATH="agent-os/specs/[current-spec]"
+if [ -d "geist/basepoints" ] && [ -f "geist/basepoints/headquarter.md" ]; then
+    SPEC_PATH="geist/specs/[current-spec]"
     {{workflows/basepoints/extract-basepoints-knowledge-automatic}}
     {{workflows/scope-detection/detect-abstraction-layer}}
     {{workflows/scope-detection/detect-scope-semantic-analysis}}
@@ -160,8 +160,8 @@ If basepoints exist, the extracted knowledge (`$EXTRACTED_KNOWLEDGE` and `$DETEC
 **❌ Before - Inline Pattern (Repeated in 5 Files):**
 ```bash
 # Check if basepoints exist
-if [ -d "agent-os/basepoints" ] && [ -f "agent-os/basepoints/headquarter.md" ]; then
-    SPEC_PATH="agent-os/specs/[current-spec]"
+if [ -d "geist/basepoints" ] && [ -f "geist/basepoints/headquarter.md" ]; then
+    SPEC_PATH="geist/specs/[current-spec]"
     {{workflows/basepoints/extract-basepoints-knowledge-automatic}}
     {{workflows/scope-detection/detect-abstraction-layer}}
     {{workflows/scope-detection/detect-scope-semantic-analysis}}
@@ -193,7 +193,7 @@ fi
 **❌ Before - Repeated Pattern:**
 ```bash
 # Determine spec path
-SPEC_PATH="agent-os/specs/[current-spec]"
+SPEC_PATH="geist/specs/[current-spec]"
 
 # Create cache directories
 mkdir -p "$SPEC_PATH/implementation/cache"

@@ -18,7 +18,7 @@ Check if a big change or abstraction layer transition is detected:
 # Determine spec path
 SPEC_PATH="{{SPEC_PATH}}"
 if [ -z "$SPEC_PATH" ]; then
-    SPEC_PATH="agent-os/specs/[current-spec]"
+    SPEC_PATH="geist/specs/[current-spec]"
 fi
 
 # Load scope detection results
@@ -268,7 +268,7 @@ Present the checkpoint following default profile human-in-the-loop structure, in
 if [ -n "$SPEC_PATH" ]; then
     CACHE_PATH="$SPEC_PATH/implementation/cache"
 else
-    CACHE_PATH="agent-os/output/deploy-agents/knowledge"
+    CACHE_PATH="geist/output/deploy-agents/knowledge"
 fi
 
 mkdir -p "$CACHE_PATH/human-review"
@@ -305,7 +305,7 @@ EOF
 - Must allow user to review and confirm before continuing
 - Must use placeholder syntax ({{PLACEHOLDER}}) for project-specific parts that will be replaced during deploy-agents
 - Must be technology-agnostic and work with any basepoint structure
-- **CRITICAL**: All checkpoint results must be stored in `agent-os/specs/[current-spec]/implementation/cache/human-review/`, not scattered around the codebase
+- **CRITICAL**: All checkpoint results must be stored in `geist/specs/[current-spec]/implementation/cache/human-review/`, not scattered around the codebase
 
 ## SDD Integration Notes
 
@@ -325,5 +325,5 @@ This workflow has been enhanced with Spec-Driven Development (SDD) best practice
 - All SDD checkpoint detection is structure-based, not technology-specific
 - No hardcoded technology-specific references in default templates
 - Checkpoints maintain technology-agnostic state throughout **in default profile templates**
-- **After Specialization:** When templates are compiled to `agent-os/workflows/`, workflows can and should become technology-specific based on the project's actual stack
+- **After Specialization:** When templates are compiled to `geist/workflows/`, workflows can and should become technology-specific based on the project's actual stack
 - **Command Outputs:** Specs, tasks, and implementations should reflect the project's actual technology stack

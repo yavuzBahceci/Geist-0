@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # =============================================================================
-# Agent OS Common Functions
-# Shared utilities for Agent OS scripts
+# Geist Common Functions
+# Shared utilities for Geist scripts
 # =============================================================================
 
 # Colors for output
@@ -62,6 +62,12 @@ print_verbose() {
     if [[ "$VERBOSE" == "true" ]]; then
         echo "[VERBOSE] $1" >&2
     fi
+}
+
+# Strip ANSI escape codes from text
+strip_ansi() {
+    local text=$1
+    echo "$text" | sed 's/\x1b\[[0-9;]*m//g'
 }
 
 # -----------------------------------------------------------------------------
@@ -519,7 +525,8 @@ process_conditionals() {
                     [[ "$compiled_single_command" == "true" ]] && condition_met=true
                     ;;
                 *)
-                    print_warning "Unknown conditional flag: $flag_name"
+                    # Log warning to stderr only (no ANSI codes in file content)
+                    echo "Warning: Unknown conditional flag: $flag_name" >&2
                     ;;
             esac
 
@@ -554,7 +561,8 @@ process_conditionals() {
                     [[ "$compiled_single_command" != "true" ]] && condition_met=true
                     ;;
                 *)
-                    print_warning "Unknown conditional flag: $flag_name"
+                    # Log warning to stderr only (no ANSI codes in file content)
+                    echo "Warning: Unknown conditional flag: $flag_name" >&2
                     ;;
             esac
 
@@ -616,20 +624,22 @@ process_conditionals() {
 
     # Check for unclosed conditionals
     if [[ $nesting_level -ne 0 ]]; then
-        print_warning "Unclosed conditional block detected (nesting level: $nesting_level)"
+        # Log warning to stderr only (no ANSI codes in file content)
+        echo "Warning: Unclosed conditional block detected (nesting level: $nesting_level)" >&2
     fi
 
     echo "$result"
 }
 
-# Process workflow replacements recursively
+# Process workflow references - convert to readable @geist/ references
+# Workflows are installed separately in geist/workflows/ and AI reads them at runtime
 process_workflows() {
     local content=$1
     local base_dir=$2
     local profile=$3
-    local processed_files=$4
+    local processed_files=$4  # Not used anymore, kept for compatibility
 
-    # Process each workflow reference
+    # Find workflow references
     local workflow_refs=$(echo "$content" | grep -o '{{workflows/[^}]*}}' | sort -u)
 
     while IFS= read -r workflow_ref; do
@@ -638,91 +648,50 @@ process_workflows() {
         fi
 
         local workflow_path=$(echo "$workflow_ref" | sed 's/{{workflows\///' | sed 's/}}//')
-
-        # Avoid infinite recursion
-        if [[ " $processed_files " == *" $workflow_path "* ]]; then
-            print_warning "Circular workflow reference detected: $workflow_path"
-            continue
-        fi
-
-        # Get workflow file
         local workflow_file=$(get_profile_file "$profile" "workflows/${workflow_path}.md" "$base_dir")
 
+        # Create the replacement - either a readable reference or a warning
+        local replacement=""
         if [[ -f "$workflow_file" ]]; then
-            local workflow_content=$(cat "$workflow_file")
-
-            # Recursively process nested workflows
-            workflow_content=$(process_workflows "$workflow_content" "$base_dir" "$profile" "$processed_files $workflow_path")
-
-            # Create temp files for safe replacement
-            local temp_content=$(mktemp)
-            local temp_replacement=$(mktemp)
-            echo "$content" > "$temp_content"
-            echo "$workflow_content" > "$temp_replacement"
-
-            # Use perl to do the replacement without escaping newlines
-            content=$(perl -e '
-                use strict;
-                use warnings;
-
-                my $ref = $ARGV[0];
-                my $replacement_file = $ARGV[1];
-                my $content_file = $ARGV[2];
-
-                # Read replacement content
-                open(my $fh, "<", $replacement_file) or die $!;
-                my $replacement = do { local $/; <$fh> };
-                close($fh);
-
-                # Read main content
-                open($fh, "<", $content_file) or die $!;
-                my $content = do { local $/; <$fh> };
-                close($fh);
-
-                # Do the replacement - use quotemeta on entire reference
-                my $pattern = quotemeta($ref);
-                $content =~ s/$pattern/$replacement/g;
-
-                print $content;
-            ' "$workflow_ref" "$temp_replacement" "$temp_content")
-
-            rm -f "$temp_content" "$temp_replacement"
+            # Convert to readable @geist/ reference that AI will understand
+            replacement="**Read and follow the workflow instructions in:** \`@geist/workflows/${workflow_path}.md\`"
         else
-            # Instead of printing warning to stderr, insert it into the content
-            local warning_msg="⚠️ This workflow file was not found in profiles/$profile/workflows/${workflow_path}.md"
-            # Use perl with temp files for safer replacement with special characters
-            local temp_content=$(mktemp)
-            local temp_replacement=$(mktemp)
-            echo "$content" > "$temp_content"
-            printf '%s\n%s' "$workflow_ref" "$warning_msg" > "$temp_replacement"
-
-            content=$(perl -e '
-                use strict;
-                use warnings;
-
-                my $ref = $ARGV[0];
-                my $replacement_file = $ARGV[1];
-                my $content_file = $ARGV[2];
-
-                # Read replacement content
-                open(my $fh, "<", $replacement_file) or die $!;
-                my $replacement = do { local $/; <$fh> };
-                close($fh);
-
-                # Read main content
-                open($fh, "<", $content_file) or die $!;
-                my $content = do { local $/; <$fh> };
-                close($fh);
-
-                # Do the replacement - use quotemeta on entire reference
-                my $pattern = quotemeta($ref);
-                $content =~ s/$pattern/$replacement/g;
-
-                print $content;
-            ' "$workflow_ref" "$temp_replacement" "$temp_content")
-
-            rm -f "$temp_content" "$temp_replacement"
+            # Workflow file not found - replace with plain text warning (no ANSI codes)
+            replacement="<!-- WARNING: Workflow not found: workflows/${workflow_path}.md -->"
+            # Log warning to stderr (not into file content)
+            echo "Warning: Workflow not found: workflows/${workflow_path}.md" >&2
         fi
+        
+        # Use temp files for safe replacement
+        local temp_content=$(mktemp)
+        local temp_replacement=$(mktemp)
+        echo "$content" > "$temp_content"
+        echo "$replacement" > "$temp_replacement"
+
+        content=$(perl -e '
+            use strict;
+            use warnings;
+
+            my $ref = $ARGV[0];
+            my $replacement_file = $ARGV[1];
+            my $content_file = $ARGV[2];
+
+            open(my $fh, "<", $replacement_file) or die $!;
+            my $replacement = do { local $/; <$fh> };
+            close($fh);
+            chomp $replacement;
+
+            open($fh, "<", $content_file) or die $!;
+            my $content = do { local $/; <$fh> };
+            close($fh);
+
+            my $pattern = quotemeta($ref);
+            $content =~ s/$pattern/$replacement/g;
+
+            print $content;
+        ' "$workflow_ref" "$temp_replacement" "$temp_content")
+
+        rm -f "$temp_content" "$temp_replacement"
     done <<< "$workflow_refs"
 
     echo "$content"
@@ -749,7 +718,7 @@ process_standards() {
             local search_dir="standards/$base_path"
             get_profile_files "$profile" "$base_dir" "$search_dir" | while read file; do
                 if [[ "$file" == standards/* ]] && [[ "$file" == *.md ]]; then
-                    echo "@agent-os/$file"
+                    echo "@geist/$file"
                 fi
             done
         else
@@ -757,7 +726,7 @@ process_standards() {
             local file_path="standards/${pattern}.md"
             local full_file=$(get_profile_file "$profile" "$file_path" "$base_dir")
             if [[ -f "$full_file" ]]; then
-                echo "@agent-os/$file_path"
+                echo "@geist/$file_path"
             fi
         fi
     done | sort -u
@@ -777,7 +746,7 @@ process_phase_tags() {
         return 0
     fi
 
-    # Find all PHASE tags: {{PHASE X: @agent-os/commands/path/to/file.md}}
+    # Find all PHASE tags: {{PHASE X: @geist/commands/path/to/file.md}}
     local phase_refs=$(echo "$content" | grep -o '{{PHASE [^}]*}}' | sort -u)
 
     if [[ -z "$phase_refs" ]]; then
@@ -792,11 +761,11 @@ process_phase_tags() {
 
         if [[ "$mode" == "embed" ]]; then
             # CASE A: Embed the file content with H1 header
-            # Extract: {{PHASE 1: @agent-os/commands/plan-product/1-product-concept.md}}
+            # Extract: {{PHASE 1: @geist/commands/plan-product/1-product-concept.md}}
             # To get: PHASE 1, plan-product/1-product-concept.md, "Product Concept"
 
             local phase_label=$(echo "$phase_ref" | sed 's/{{//' | sed 's/:.*$//')  # "PHASE 1"
-            local file_ref=$(echo "$phase_ref" | sed 's/.*@agent-os\/commands\///' | sed 's/}}$//')  # "plan-product/1-product-concept.md"
+            local file_ref=$(echo "$phase_ref" | sed 's/.*@geist\/commands\///' | sed 's/}}$//')  # "plan-product/1-product-concept.md"
             local file_name=$(basename "$file_ref" .md)  # "1-product-concept"
 
             # Convert "1-product-concept" to "Product Concept"
@@ -1120,11 +1089,11 @@ check_needs_migration() {
 # Installation Check Functions
 # -----------------------------------------------------------------------------
 
-# Check if Agent OS is installed in project
-is_agent_os_installed() {
+# Check if Geist is installed in project
+is_geist_installed() {
     local project_dir=$1
 
-    if [[ -f "$project_dir/agent-os/config.yml" ]]; then
+    if [[ -f "$project_dir/geist/config.yml" ]]; then
         return 0
     else
         return 1
@@ -1136,7 +1105,7 @@ get_project_config() {
     local project_dir=$1
     local key=$2
 
-    get_yaml_value "$project_dir/agent-os/config.yml" "$key" ""
+    get_yaml_value "$project_dir/geist/config.yml" "$key" ""
 }
 
 # -----------------------------------------------------------------------------
@@ -1206,13 +1175,13 @@ validate_base_installation() {
 # Check if current directory is the base installation directory
 # Note: SCRIPT_DIR should be set by the calling script before calling this function
 check_not_base_installation() {
-    if [[ -f "$PROJECT_DIR/agent-os/config.yml" ]]; then
-        if grep -q "base_install: true" "$PROJECT_DIR/agent-os/config.yml"; then
+    if [[ -f "$PROJECT_DIR/geist/config.yml" ]]; then
+        if grep -q "base_install: true" "$PROJECT_DIR/geist/config.yml"; then
             echo ""
-            print_error "Cannot install Agent OS in base installation directory"
+            print_error "Cannot install Geist in base installation directory"
             echo ""
-            echo "It appears you are in the location of your Agent OS base installation (your home directory)."
-            echo "To install Agent OS in a project, move to your project's root folder:"
+            echo "It appears you are in the location of your Geist base installation (your home directory)."
+            echo "To install Geist in a project, move to your project's root folder:"
             echo ""
             echo "  cd path/to/project"
             echo ""
@@ -1223,9 +1192,9 @@ check_not_base_installation() {
                 script_parent=$(cd "$SCRIPT_DIR/.." 2>/dev/null && pwd 2>/dev/null)
             fi
             if [[ -n "$script_parent" ]] && detect_geist "$script_parent" 2>/dev/null; then
-                echo "  $script_parent/scripts/project-install.sh --profile default --agent-os-commands true"
+                echo "  $script_parent/scripts/project-install.sh --profile default --geist-commands true"
             else
-                echo "  /path/to/geist/scripts/project-install.sh --profile default --agent-os-commands true"
+                echo "  /path/to/geist/scripts/project-install.sh --profile default --geist-commands true"
             fi
             echo ""
             exit 1
@@ -1261,7 +1230,7 @@ load_base_config() {
     BASE_PROFILE=$(get_yaml_value "$BASE_DIR/config.yml" "profile" "default")
     BASE_CLAUDE_CODE_COMMANDS=$(get_yaml_value "$BASE_DIR/config.yml" "claude_code_commands" "true")
     BASE_USE_CLAUDE_CODE_SUBAGENTS=$(get_yaml_value "$BASE_DIR/config.yml" "use_claude_code_subagents" "true")
-    BASE_AGENT_OS_COMMANDS=$(get_yaml_value "$BASE_DIR/config.yml" "agent_os_commands" "false")
+    BASE_GEIST_COMMANDS=$(get_yaml_value "$BASE_DIR/config.yml" "geist_commands" "false")
     BASE_STANDARDS_AS_CLAUDE_CODE_SKILLS=$(get_yaml_value "$BASE_DIR/config.yml" "standards_as_claude_code_skills" "true")
 
     # Check for old config flags to set variables for validation
@@ -1276,7 +1245,7 @@ load_project_config() {
     PROJECT_PROFILE=$(get_project_config "$PROJECT_DIR" "profile")
     PROJECT_CLAUDE_CODE_COMMANDS=$(get_project_config "$PROJECT_DIR" "claude_code_commands")
     PROJECT_USE_CLAUDE_CODE_SUBAGENTS=$(get_project_config "$PROJECT_DIR" "use_claude_code_subagents")
-    PROJECT_AGENT_OS_COMMANDS=$(get_project_config "$PROJECT_DIR" "agent_os_commands")
+    PROJECT_GEIST_COMMANDS=$(get_project_config "$PROJECT_DIR" "geist_commands")
     PROJECT_STANDARDS_AS_CLAUDE_CODE_SKILLS=$(get_project_config "$PROJECT_DIR" "standards_as_claude_code_skills")
 
     # Check for old config flags to set variables for validation
@@ -1289,14 +1258,14 @@ load_project_config() {
 validate_config() {
     local claude_code_commands=$1
     local use_claude_code_subagents=$2
-    local agent_os_commands=$3
+    local geist_commands=$3
     local standards_as_claude_code_skills=$4
     local profile=$5
     local print_warnings=${6:-true}  # Default to true if not provided
 
     # Validate at least one output is enabled
-    if [[ "$claude_code_commands" != "true" ]] && [[ "$agent_os_commands" != "true" ]]; then
-        print_error "At least one of 'claude_code_commands' or 'agent_os_commands' must be true"
+    if [[ "$claude_code_commands" != "true" ]] && [[ "$geist_commands" != "true" ]]; then
+        print_error "At least one of 'claude_code_commands' or 'geist_commands' must be true"
         exit 1
     fi
 
@@ -1336,9 +1305,9 @@ write_project_config() {
     local profile=$2
     local claude_code_commands=$3
     local use_claude_code_subagents=$4
-    local agent_os_commands=$5
+    local geist_commands=$5
     local standards_as_claude_code_skills=$6
-    local dest="$PROJECT_DIR/agent-os/config.yml"
+    local dest="$PROJECT_DIR/geist/config.yml"
 
     local config_content="version: $version
 last_compiled: $(date '+%Y-%m-%d %H:%M:%S')
@@ -1351,7 +1320,7 @@ last_compiled: $(date '+%Y-%m-%d %H:%M:%S')
 profile: $profile
 claude_code_commands: $claude_code_commands
 use_claude_code_subagents: $use_claude_code_subagents
-agent_os_commands: $agent_os_commands
+geist_commands: $geist_commands
 standards_as_claude_code_skills: $standards_as_claude_code_skills"
 
     local result=$(write_file "$config_content" "$dest")
@@ -1457,7 +1426,7 @@ create_standard_skill() {
     local human_name=$(convert_filename_to_human_name "$path_without_standards")
     local human_name_capitalized=$(convert_filename_to_human_name_capitalized "$path_without_standards")
 
-    # Create skill directory (directly in .claude/skills/, not in agent-os subfolder)
+    # Create skill directory (directly in .claude/skills/, not in geist subfolder)
     local skill_dir="$dest_base/.claude/skills/$skill_name"
     ensure_dir "$skill_dir"
 
@@ -1468,8 +1437,8 @@ create_standard_skill() {
         return 1
     fi
 
-    # Prepend agent-os/ to the standards file path for the file reference
-    local standard_file_path_with_prefix="agent-os/$standards_file"
+    # Prepend geist/ to the standards file path for the file reference
+    local standard_file_path_with_prefix="geist/$standards_file"
 
     # Read template and replace placeholders
     local skill_content=$(cat "$template_file")
@@ -1531,7 +1500,7 @@ install_improve_skills_command() {
         return 0
     fi
 
-    local target_dir="$PROJECT_DIR/.claude/commands/agent-os"
+    local target_dir="$PROJECT_DIR/.claude/commands/geist"
     mkdir -p "$target_dir"
 
     # Find the improve-skills command file

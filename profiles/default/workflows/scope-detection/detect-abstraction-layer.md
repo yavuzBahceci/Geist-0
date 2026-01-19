@@ -57,7 +57,7 @@ fi
 ### Step 2: Load Documented Layers from Headquarter
 
 ```bash
-BASEPOINTS_PATH="agent-os/basepoints"
+BASEPOINTS_PATH="geist/basepoints"
 DOCUMENTED_LAYERS=""
 
 if [ -f "$BASEPOINTS_PATH/headquarter.md" ]; then
@@ -88,7 +88,7 @@ fi
 
 ```bash
 # Define keywords that indicate each layer
-# These are specific to Geist/Agent OS architecture
+# These are specific to Geist/Geist architecture
 
 # ROOT layer indicators
 ROOT_KEYWORDS="readme|manifest|changelog|config|license|documentation|root|base|top-level|project|repository"
@@ -207,7 +207,7 @@ echo "💾 Storing detection result..."
 if [ -n "$SPEC_PATH" ]; then
     CACHE_PATH="$SPEC_PATH/implementation/cache"
 else
-    CACHE_PATH="agent-os/output/layer-detection"
+    CACHE_PATH="geist/output/layer-detection"
 fi
 
 mkdir -p "$CACHE_PATH"

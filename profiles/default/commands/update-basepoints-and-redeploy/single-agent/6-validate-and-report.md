@@ -9,8 +9,8 @@ The SIXTH AND FINAL STEP is to validate all updates and generate the comprehensi
 Validate all updated basepoints and re-specialized commands:
 
 ```bash
-CACHE_DIR="agent-os/output/update-basepoints-and-redeploy/cache"
-REPORTS_DIR="agent-os/output/update-basepoints-and-redeploy/reports"
+CACHE_DIR="geist/output/update-basepoints-and-redeploy/cache"
+REPORTS_DIR="geist/output/update-basepoints-and-redeploy/reports"
 
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -202,7 +202,7 @@ $(cat "$REPORTS_DIR/validation-report.md" 2>/dev/null | grep -A 30 "## Summary" 
 $(if [ "$VALIDATION_PASSED" = "true" ]; then
     echo "✅ **Update completed successfully!**"
     echo ""
-    echo "Your agent-os is now synchronized with your codebase changes."
+    echo "Your geist is now synchronized with your codebase changes."
     echo ""
     echo "You can now use the updated commands:"
     echo "- \`/shape-spec\` - Shape new specifications"
@@ -218,7 +218,7 @@ else
     echo ""
     echo "After fixing issues, you can:"
     echo "1. Re-run \`/update-basepoints-and-redeploy\`"
-    echo "2. Or manually fix and run \`/cleanup-agent-os\` to validate"
+    echo "2. Or manually fix and run \`/cleanup-geist\` to validate"
 fi)
 
 ---
@@ -227,7 +227,7 @@ fi)
 
 Backup files were created during this update. To rollback:
 
-1. Find backup files: \`find agent-os -name "*.backup"\`
+1. Find backup files: \`find geist -name "*.backup"\`
 2. Remove the updated file and rename backup
 3. Or delete backups if update is confirmed good
 
@@ -247,7 +247,7 @@ Optionally cleanup backup files after successful validation:
 echo ""
 echo "💡 Tip: Backup files have been preserved."
 echo "   To cleanup after confirming update is good:"
-echo "   find agent-os -name '*.backup' -delete"
+echo "   find geist -name '*.backup' -delete"
 ```
 
 ## Display Final Completion Summary
@@ -271,8 +271,8 @@ Output the final completion message:
 └─────────────────────────────────────────────────────────┘
 
 📋 Reports:
-   • Full report: agent-os/output/update-basepoints-and-redeploy/reports/update-report.md
-   • Validation:  agent-os/output/update-basepoints-and-redeploy/reports/validation-report.md
+   • Full report: geist/output/update-basepoints-and-redeploy/reports/update-report.md
+   • Validation:  geist/output/update-basepoints-and-redeploy/reports/validation-report.md
 
 💾 Tracking updated for next incremental run
 
@@ -280,7 +280,7 @@ Output the final completion message:
 ✅ INCREMENTAL UPDATE COMPLETE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Your agent-os is now synchronized with your latest codebase changes.
+Your geist is now synchronized with your latest codebase changes.
 All core commands have been re-specialized with updated knowledge.
 
 Next time you make changes, run `/update-basepoints-and-redeploy` again
@@ -297,13 +297,13 @@ If validation failed:
 📊 Issues Found: [N]
 
 Please review:
-   • Validation report: agent-os/output/update-basepoints-and-redeploy/reports/validation-report.md
-   • Full report: agent-os/output/update-basepoints-and-redeploy/reports/update-report.md
+   • Validation report: geist/output/update-basepoints-and-redeploy/reports/validation-report.md
+   • Full report: geist/output/update-basepoints-and-redeploy/reports/update-report.md
 
 Options:
 1. Fix issues and re-run `/update-basepoints-and-redeploy`
 2. Rollback using backup files
-3. Run `/cleanup-agent-os` to identify specific issues
+3. Run `/cleanup-geist` to identify specific issues
 ```
 
 {{UNLESS standards_as_claude_code_skills}}

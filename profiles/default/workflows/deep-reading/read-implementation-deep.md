@@ -19,13 +19,13 @@ Check abstraction layer distance to determine if deep reading is needed:
 # Determine spec path and cache path
 SPEC_PATH="{{SPEC_PATH}}"
 if [ -z "$SPEC_PATH" ]; then
-    SPEC_PATH="agent-os/specs/[current-spec]"
+    SPEC_PATH="geist/specs/[current-spec]"
 fi
 
 if [ -n "$SPEC_PATH" ]; then
     CACHE_PATH="$SPEC_PATH/implementation/cache"
 else
-    CACHE_PATH="agent-os/output/deploy-agents/knowledge"
+    CACHE_PATH="geist/output/deploy-agents/knowledge"
 fi
 
 # Load abstraction layer distance calculation
@@ -271,5 +271,5 @@ EOF
 - Must analyze implementation to understand logic and patterns
 - Must use placeholder syntax ({{PLACEHOLDER}}) for project-specific parts that will be replaced during deploy-agents
 - Must be technology-agnostic and work with any basepoint structure
-- **CRITICAL**: All deep reading results must be stored in `agent-os/specs/[current-spec]/implementation/cache/deep-reading/`, not scattered around the codebase
+- **CRITICAL**: All deep reading results must be stored in `geist/specs/[current-spec]/implementation/cache/deep-reading/`, not scattered around the codebase
 - Must cache results to avoid redundant reads

@@ -7,8 +7,8 @@ The FIFTH STEP is to re-specialize all core commands with the updated knowledge:
 Load the merged knowledge and identify what changed:
 
 ```bash
-CACHE_DIR="agent-os/output/update-basepoints-and-redeploy/cache"
-DEPLOY_CACHE="agent-os/output/deploy-agents/cache"
+CACHE_DIR="geist/output/update-basepoints-and-redeploy/cache"
+DEPLOY_CACHE="geist/output/deploy-agents/cache"
 
 # Load merged knowledge
 if [ ! -f "$CACHE_DIR/merged-knowledge.md" ]; then
@@ -103,7 +103,7 @@ for cmd in "${CORE_COMMANDS[@]}"; do
     echo ""
     echo "📜 Re-specializing: $cmd"
     
-    CMD_PATH="agent-os/commands/$cmd"
+    CMD_PATH="geist/commands/$cmd"
     
     if [ ! -d "$CMD_PATH" ]; then
         echo "   ⚠️  Command directory not found: $CMD_PATH"
@@ -165,7 +165,7 @@ if [ "$PATTERNS_CHANGED" = "true" ] || [ "$STANDARDS_CHANGED" = "true" ]; then
     echo "📋 Updating standards with new patterns..."
     
     # Find standard files that need updating
-    STANDARD_FILES=$(find agent-os/standards -name "*.md" -type f 2>/dev/null)
+    STANDARD_FILES=$(find geist/standards -name "*.md" -type f 2>/dev/null)
     
     echo "$STANDARD_FILES" | while read std_file; do
         if [ -z "$std_file" ]; then
@@ -191,7 +191,7 @@ if [ "$FLOWS_CHANGED" = "true" ]; then
     echo "🔄 Updating workflows with new flows..."
     
     # Find workflow files that reference flows
-    WORKFLOW_FILES=$(find agent-os/workflows -name "*.md" -type f 2>/dev/null)
+    WORKFLOW_FILES=$(find geist/workflows -name "*.md" -type f 2>/dev/null)
     
     echo "$WORKFLOW_FILES" | while read wf_file; do
         if [ -z "$wf_file" ]; then
@@ -216,7 +216,7 @@ if [ "$STRATEGIES_CHANGED" = "true" ]; then
     echo "🤖 Updating agents with new strategies..."
     
     # Find agent files
-    AGENT_FILES=$(find agent-os/agents -name "*.md" -type f 2>/dev/null)
+    AGENT_FILES=$(find geist/agents -name "*.md" -type f 2>/dev/null)
     
     echo "$AGENT_FILES" | while read agent_file; do
         if [ -z "$agent_file" ]; then
@@ -282,10 +282,10 @@ All 5 core commands were re-specialized with updated knowledge:
 ## Backup Files
 
 Backup files created for rollback:
-$(find agent-os/commands -name "*.backup" -type d 2>/dev/null | sed 's/^/- /' || echo "- Command backups")
-$(find agent-os/standards -name "*.backup" -type f 2>/dev/null | sed 's/^/- /' || echo "")
-$(find agent-os/workflows -name "*.backup" -type f 2>/dev/null | sed 's/^/- /' || echo "")
-$(find agent-os/agents -name "*.backup" -type f 2>/dev/null | sed 's/^/- /' || echo "")
+$(find geist/commands -name "*.backup" -type d 2>/dev/null | sed 's/^/- /' || echo "- Command backups")
+$(find geist/standards -name "*.backup" -type f 2>/dev/null | sed 's/^/- /' || echo "")
+$(find geist/workflows -name "*.backup" -type f 2>/dev/null | sed 's/^/- /' || echo "")
+$(find geist/agents -name "*.backup" -type f 2>/dev/null | sed 's/^/- /' || echo "")
 
 ## What Changed
 
@@ -345,7 +345,7 @@ Supporting Structures:
 
 💾 Backups created for rollback if needed
 
-📋 Summary: agent-os/output/update-basepoints-and-redeploy/cache/respecialization-summary.md
+📋 Summary: geist/output/update-basepoints-and-redeploy/cache/respecialization-summary.md
 
 NEXT STEP 👉 Run Phase 6: `6-validate-and-report.md`
 ```

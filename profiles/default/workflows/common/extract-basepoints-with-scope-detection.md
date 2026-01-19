@@ -20,7 +20,7 @@ Before attempting extraction, verify that basepoints are available:
 
 ```bash
 # Check if basepoints exist
-if [ -d "agent-os/basepoints" ] && [ -f "agent-os/basepoints/headquarter.md" ]; then
+if [ -d "geist/basepoints" ] && [ -f "geist/basepoints/headquarter.md" ]; then
     BASEPOINTS_AVAILABLE="true"
 else
     BASEPOINTS_AVAILABLE="false"
@@ -36,7 +36,7 @@ Establish the spec path for caching extracted knowledge:
 
 ```bash
 # Determine spec path
-SPEC_PATH="agent-os/specs/[current-spec]"
+SPEC_PATH="geist/specs/[current-spec]"
 ```
 
 ### Step 3: Extract Basepoints Knowledge Automatically

@@ -143,7 +143,7 @@ echo "   Detected $TRADE_OFF_COUNT potential trade-offs"
 ```bash
 echo "🎯 Checking mission/roadmap alignment..."
 
-PRODUCT_PATH="agent-os/product"
+PRODUCT_PATH="geist/product"
 
 # Load mission if available
 if [ -f "$PRODUCT_PATH/mission.md" ]; then

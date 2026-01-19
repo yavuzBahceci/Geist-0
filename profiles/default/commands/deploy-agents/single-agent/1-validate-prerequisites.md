@@ -19,24 +19,24 @@ USER_PREFERENCES_SET=false
 ### 0.1: Load Project Profile
 
 ```bash
-if [ -f "agent-os/config/project-profile.yml" ]; then
+if [ -f "geist/config/project-profile.yml" ]; then
     echo "✅ Loading project profile..."
     
     # Extract key values for specialization hints
-    DETECTED_LANGUAGE=$(grep "language:" agent-os/config/project-profile.yml | head -1 | awk '{print $2}')
-    DETECTED_FRAMEWORK=$(grep "framework:" agent-os/config/project-profile.yml | head -1 | awk '{print $2}')
-    PROJECT_TYPE=$(grep "project_type:" agent-os/config/project-profile.yml | head -1 | awk '{print $2}')
-    SECURITY_LEVEL=$(grep "security_level:" agent-os/config/project-profile.yml | head -1 | awk '{print $2}')
-    COMPLEXITY=$(grep "complexity:" agent-os/config/project-profile.yml | head -1 | awk '{print $2}')
+    DETECTED_LANGUAGE=$(grep "language:" geist/config/project-profile.yml | head -1 | awk '{print $2}')
+    DETECTED_FRAMEWORK=$(grep "framework:" geist/config/project-profile.yml | head -1 | awk '{print $2}')
+    PROJECT_TYPE=$(grep "project_type:" geist/config/project-profile.yml | head -1 | awk '{print $2}')
+    SECURITY_LEVEL=$(grep "security_level:" geist/config/project-profile.yml | head -1 | awk '{print $2}')
+    COMPLEXITY=$(grep "complexity:" geist/config/project-profile.yml | head -1 | awk '{print $2}')
     
     # Extract commands
-    BUILD_CMD=$(grep "build:" agent-os/config/project-profile.yml | head -1 | cut -d'"' -f2)
-    TEST_CMD=$(grep "test:" agent-os/config/project-profile.yml | head -1 | cut -d'"' -f2)
-    LINT_CMD=$(grep "lint:" agent-os/config/project-profile.yml | head -1 | cut -d'"' -f2)
+    BUILD_CMD=$(grep "build:" geist/config/project-profile.yml | head -1 | cut -d'"' -f2)
+    TEST_CMD=$(grep "test:" geist/config/project-profile.yml | head -1 | cut -d'"' -f2)
+    LINT_CMD=$(grep "lint:" geist/config/project-profile.yml | head -1 | cut -d'"' -f2)
     
     # Extract user preferences
-    COMPLIANCE=$(grep -A5 "user_specified:" agent-os/config/project-profile.yml | grep "compliance:" | head -1)
-    HUMAN_REVIEW=$(grep "human_review_level:" agent-os/config/project-profile.yml | head -1 | awk '{print $2}')
+    COMPLIANCE=$(grep -A5 "user_specified:" geist/config/project-profile.yml | grep "compliance:" | head -1)
+    HUMAN_REVIEW=$(grep "human_review_level:" geist/config/project-profile.yml | head -1 | awk '{print $2}')
     
     echo "   Language: $DETECTED_LANGUAGE"
     echo "   Framework: ${DETECTED_FRAMEWORK:-(none)}"
@@ -70,11 +70,11 @@ echo ""
 ### 0.2: Load Enriched Knowledge
 
 ```bash
-if [ -d "agent-os/config/enriched-knowledge" ]; then
+if [ -d "geist/config/enriched-knowledge" ]; then
     echo "✅ Loading enriched knowledge..."
     
     # List available knowledge files
-    for knowledge_file in agent-os/config/enriched-knowledge/*.md; do
+    for knowledge_file in geist/config/enriched-knowledge/*.md; do
         if [ -f "$knowledge_file" ]; then
             filename=$(basename "$knowledge_file")
             echo "   • $filename"
@@ -85,16 +85,16 @@ if [ -d "agent-os/config/enriched-knowledge" ]; then
     echo ""
     
     # Check for critical security issues
-    if [ -f "agent-os/config/enriched-knowledge/security-notes.md" ]; then
-        if grep -q "CRITICAL\|🔴" agent-os/config/enriched-knowledge/security-notes.md 2>/dev/null; then
+    if [ -f "geist/config/enriched-knowledge/security-notes.md" ]; then
+        if grep -q "CRITICAL\|🔴" geist/config/enriched-knowledge/security-notes.md 2>/dev/null; then
             echo "⚠️  CRITICAL security issues found - see security-notes.md"
             echo ""
         fi
     fi
     
     # Check for outdated dependencies
-    if [ -f "agent-os/config/enriched-knowledge/version-analysis.md" ]; then
-        if grep -q "OUTDATED" agent-os/config/enriched-knowledge/version-analysis.md 2>/dev/null; then
+    if [ -f "geist/config/enriched-knowledge/version-analysis.md" ]; then
+        if grep -q "OUTDATED" geist/config/enriched-knowledge/version-analysis.md 2>/dev/null; then
             echo "ℹ️  Outdated dependencies detected - see version-analysis.md"
             echo ""
         fi
@@ -179,22 +179,22 @@ Check if the basepoints folder and required files exist:
 
 ```bash
 # Check if basepoints folder exists
-if [ ! -d "agent-os/basepoints" ]; then
-    echo "❌ Basepoints folder not found: agent-os/basepoints/"
+if [ ! -d "geist/basepoints" ]; then
+    echo "❌ Basepoints folder not found: geist/basepoints/"
     MISSING_BASEPOINTS=true
 else
-    echo "✅ Basepoints folder found: agent-os/basepoints/"
+    echo "✅ Basepoints folder found: geist/basepoints/"
     
     # Check for headquarter.md
-    if [ ! -f "agent-os/basepoints/headquarter.md" ]; then
-        echo "❌ Missing: agent-os/basepoints/headquarter.md"
+    if [ ! -f "geist/basepoints/headquarter.md" ]; then
+        echo "❌ Missing: geist/basepoints/headquarter.md"
         MISSING_BASEPOINTS=true
     else
-        echo "✅ Found: agent-os/basepoints/headquarter.md"
+        echo "✅ Found: geist/basepoints/headquarter.md"
     fi
     
     # Check for at least one module-specific basepoint file
-    BASEPOINT_COUNT=$(find agent-os/basepoints -name "agent-base-*.md" -type f | wc -l | tr -d ' ')
+    BASEPOINT_COUNT=$(find geist/basepoints -name "agent-base-*.md" -type f | wc -l | tr -d ' ')
     if [ "$BASEPOINT_COUNT" -eq 0 ]; then
         echo "❌ No module-specific basepoint files found (looking for agent-base-*.md)"
         MISSING_BASEPOINTS=true
@@ -203,8 +203,8 @@ else
     fi
     
     # Check if basepoint files contain extractable content
-    if [ -f "agent-os/basepoints/headquarter.md" ]; then
-        if ! grep -q -E "(Pattern|Standard|Flow|Strategy|Testing|Test)" agent-os/basepoints/headquarter.md 2>/dev/null; then
+    if [ -f "geist/basepoints/headquarter.md" ]; then
+        if ! grep -q -E "(Pattern|Standard|Flow|Strategy|Testing|Test)" geist/basepoints/headquarter.md 2>/dev/null; then
             echo "⚠️  Warning: headquarter.md may not contain extractable patterns, standards, flows, or strategies"
         fi
     fi
@@ -217,32 +217,32 @@ Check if the product folder and required files exist:
 
 ```bash
 # Check if product folder exists
-if [ ! -d "agent-os/product" ]; then
-    echo "❌ Product folder not found: agent-os/product/"
+if [ ! -d "geist/product" ]; then
+    echo "❌ Product folder not found: geist/product/"
     MISSING_PRODUCT=true
 else
-    echo "✅ Product folder found: agent-os/product/"
+    echo "✅ Product folder found: geist/product/"
     
     # Check for required product files
-    if [ ! -f "agent-os/product/mission.md" ]; then
-        echo "❌ Missing: agent-os/product/mission.md"
+    if [ ! -f "geist/product/mission.md" ]; then
+        echo "❌ Missing: geist/product/mission.md"
         MISSING_PRODUCT=true
     else
-        echo "✅ Found: agent-os/product/mission.md"
+        echo "✅ Found: geist/product/mission.md"
     fi
     
-    if [ ! -f "agent-os/product/roadmap.md" ]; then
-        echo "❌ Missing: agent-os/product/roadmap.md"
+    if [ ! -f "geist/product/roadmap.md" ]; then
+        echo "❌ Missing: geist/product/roadmap.md"
         MISSING_PRODUCT=true
     else
-        echo "✅ Found: agent-os/product/roadmap.md"
+        echo "✅ Found: geist/product/roadmap.md"
     fi
     
-    if [ ! -f "agent-os/product/tech-stack.md" ]; then
-        echo "❌ Missing: agent-os/product/tech-stack.md"
+    if [ ! -f "geist/product/tech-stack.md" ]; then
+        echo "❌ Missing: geist/product/tech-stack.md"
         MISSING_PRODUCT=true
     else
-        echo "✅ Found: agent-os/product/tech-stack.md"
+        echo "✅ Found: geist/product/tech-stack.md"
     fi
 fi
 ```
@@ -274,7 +274,7 @@ Once all prerequisites exist, you can run `/deploy-agents` again.
 👉 Run `/create-basepoints` to generate basepoint documentation from your codebase
 
 Required basepoints:
-- agent-os/basepoints/headquarter.md
+- geist/basepoints/headquarter.md
 - At least one module-specific basepoint file (agent-base-[module-name].md)
 ```
 
@@ -284,9 +284,9 @@ Required basepoints:
 👉 Run `/adapt-to-product` to generate product documentation from existing codebase
 
 Required product files:
-- agent-os/product/mission.md
-- agent-os/product/roadmap.md
-- agent-os/product/tech-stack.md
+- geist/product/mission.md
+- geist/product/roadmap.md
+- geist/product/tech-stack.md
 ```
 
 **WAIT for user to create prerequisites before proceeding.**
@@ -299,12 +299,12 @@ IF all files exist, verify they contain extractable content:
 # Verify basepoint files contain patterns, standards, flows, strategies
 echo "Validating basepoint files contain extractable knowledge..."
 
-if [ -f "agent-os/basepoints/headquarter.md" ]; then
+if [ -f "geist/basepoints/headquarter.md" ]; then
     REQUIRED_SECTIONS=("Pattern" "Standard" "Flow" "Strategy" "Testing" "Test" "Architecture" "Abstraction")
     FOUND_SECTIONS=0
     
     for section in "${REQUIRED_SECTIONS[@]}"; do
-        if grep -qi "$section" agent-os/basepoints/headquarter.md 2>/dev/null; then
+        if grep -qi "$section" geist/basepoints/headquarter.md 2>/dev/null; then
             ((FOUND_SECTIONS++))
         fi
     done
@@ -318,7 +318,7 @@ if [ -f "agent-os/basepoints/headquarter.md" ]; then
 fi
 
 # Verify product files are not empty
-for file in agent-os/product/mission.md agent-os/product/roadmap.md agent-os/product/tech-stack.md; do
+for file in geist/product/mission.md geist/product/roadmap.md geist/product/tech-stack.md; do
     if [ -f "$file" ] && [ ! -s "$file" ]; then
         echo "⚠️  Warning: $file exists but is empty"
     fi
@@ -333,14 +333,14 @@ IF all prerequisites are validated successfully, proceed:
 echo "✅ All prerequisites validated successfully!"
 echo ""
 echo "Basepoints:"
-echo "  - Folder: agent-os/basepoints/"
-echo "  - Headquarter: agent-os/basepoints/headquarter.md"
+echo "  - Folder: geist/basepoints/"
+echo "  - Headquarter: geist/basepoints/headquarter.md"
 echo "  - Module basepoints: [count] found"
 echo ""
 echo "Product files:"
-echo "  - Mission: agent-os/product/mission.md"
-echo "  - Roadmap: agent-os/product/roadmap.md"
-echo "  - Tech Stack: agent-os/product/tech-stack.md"
+echo "  - Mission: geist/product/mission.md"
+echo "  - Roadmap: geist/product/roadmap.md"
+echo "  - Tech Stack: geist/product/tech-stack.md"
 echo ""
 echo "Project Knowledge:"
 echo "  - Profile: ${PROJECT_PROFILE_LOADED:-false}"

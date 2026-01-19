@@ -9,8 +9,8 @@ The FIRST STEP is to detect codebase changes since the last update by following 
 Create the output cache directory structure:
 
 ```bash
-mkdir -p agent-os/output/update-basepoints-and-redeploy/cache
-mkdir -p agent-os/output/update-basepoints-and-redeploy/reports
+mkdir -p geist/output/update-basepoints-and-redeploy/cache
+mkdir -p geist/output/update-basepoints-and-redeploy/reports
 ```
 
 ### 1.2 Detect Changes
@@ -20,8 +20,8 @@ Use the workflow to detect changes. The workflow will:
 1. **Check for git availability** - Prefer git-based detection
 2. **Load previous update reference** - From `cache/last-update-commit.txt` or `cache/last-update-timestamp.txt`
 3. **Detect and categorize changes** - Added, modified, deleted files
-4. **Filter irrelevant files** - Exclude node_modules, .git, agent-os/output, etc.
-5. **Identify product file changes** - Flag if `agent-os/product/*` files changed
+4. **Filter irrelevant files** - Exclude node_modules, .git, geist/output, etc.
+5. **Identify product file changes** - Flag if `geist/product/*` files changed
 
 ### 1.3 Handle First-Run Scenario
 
@@ -39,7 +39,7 @@ If no changes are detected:
 
 ## Expected Outputs
 
-After this phase, the following files should exist in `agent-os/output/update-basepoints-and-redeploy/cache/`:
+After this phase, the following files should exist in `geist/output/update-basepoints-and-redeploy/cache/`:
 
 | File | Description |
 |------|-------------|
@@ -67,7 +67,7 @@ Once change detection is complete, output the following message:
 
 📦 Product Files Changed: [Yes/No]
 
-📋 Summary: agent-os/output/update-basepoints-and-redeploy/cache/change-summary.md
+📋 Summary: geist/output/update-basepoints-and-redeploy/cache/change-summary.md
 
 NEXT STEP 👉 Run Phase 2: `2-identify-affected-basepoints.md`
 ```

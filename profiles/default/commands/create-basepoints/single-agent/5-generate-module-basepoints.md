@@ -28,8 +28,8 @@ Once ALL module basepoints are generated, output:
 ✅ Basepoints created: [number]
 ❌ Failed/Missing: [number] (should be 0)
 
-📁 Basepoints location: agent-os/basepoints/
-📋 Progress report: agent-os/output/create-basepoints/cache/generation-progress.md
+📁 Basepoints location: geist/basepoints/
+📋 Progress report: geist/output/create-basepoints/cache/generation-progress.md
 
 Generated basepoints:
 [List all generated basepoint files]

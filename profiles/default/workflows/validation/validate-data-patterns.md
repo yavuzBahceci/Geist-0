@@ -21,8 +21,8 @@ ISSUES=()
 
 # Load data patterns from basepoints
 DATA_BASEPOINTS=""
-if [ -d "agent-os/basepoints/modules" ]; then
-    DATA_BASEPOINTS=$(find agent-os/basepoints/modules -name "*.md" -exec grep -l -i "model\|schema\|database\|entity\|repository" {} \; 2>/dev/null)
+if [ -d "geist/basepoints/modules" ]; then
+    DATA_BASEPOINTS=$(find geist/basepoints/modules -name "*.md" -exec grep -l -i "model\|schema\|database\|entity\|repository" {} \; 2>/dev/null)
 fi
 ```
 
@@ -198,9 +198,9 @@ validate_performance_patterns() {
 ```bash
 run_data_validation() {
     local target_dir="${1:-.}"
-    local results_file="agent-os/output/validation/data-validation-results.md"
+    local results_file="geist/output/validation/data-validation-results.md"
     
-    mkdir -p agent-os/output/validation
+    mkdir -p geist/output/validation
     
     echo "# Data Pattern Validation Results" > "$results_file"
     echo "" >> "$results_file"
@@ -276,6 +276,6 @@ run_data_validation "$TARGET_DIR"
 ## Integration with Layer Specialists
 
 When `data-specialist` completes implementation, this validation runs automatically. The validation loads patterns from:
-- `agent-os/basepoints/modules/` (data-related modules)
-- `agent-os/product/tech-stack.md` (ORM/database framework rules)
-- `agent-os/standards/global/conventions.md`
+- `geist/basepoints/modules/` (data-related modules)
+- `geist/product/tech-stack.md` (ORM/database framework rules)
+- `geist/standards/global/conventions.md`

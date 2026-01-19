@@ -7,8 +7,8 @@ The FOURTH STEP is to re-extract and merge knowledge from the updated basepoints
 Load the existing merged knowledge from the previous deploy-agents run:
 
 ```bash
-CACHE_DIR="agent-os/output/update-basepoints-and-redeploy/cache"
-DEPLOY_CACHE="agent-os/output/deploy-agents/cache"
+CACHE_DIR="geist/output/update-basepoints-and-redeploy/cache"
+DEPLOY_CACHE="geist/output/deploy-agents/cache"
 
 # Check for existing knowledge cache
 if [ -f "$DEPLOY_CACHE/merged-knowledge.md" ]; then
@@ -116,19 +116,19 @@ if [ "$PRODUCT_CHANGED" = "true" ]; then
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     
     # Extract from product files
-    if [ -f "agent-os/product/mission.md" ]; then
+    if [ -f "geist/product/mission.md" ]; then
         echo "   Extracting from: mission.md"
-        MISSION=$(cat "agent-os/product/mission.md")
+        MISSION=$(cat "geist/product/mission.md")
     fi
     
-    if [ -f "agent-os/product/roadmap.md" ]; then
+    if [ -f "geist/product/roadmap.md" ]; then
         echo "   Extracting from: roadmap.md"
-        ROADMAP=$(cat "agent-os/product/roadmap.md")
+        ROADMAP=$(cat "geist/product/roadmap.md")
     fi
     
-    if [ -f "agent-os/product/tech-stack.md" ]; then
+    if [ -f "geist/product/tech-stack.md" ]; then
         echo "   Extracting from: tech-stack.md"
-        TECH_STACK=$(cat "agent-os/product/tech-stack.md")
+        TECH_STACK=$(cat "geist/product/tech-stack.md")
     fi
     
     # Append product knowledge to extraction
@@ -336,7 +336,7 @@ Once knowledge re-extraction is complete, output the following message:
    - Strategies
    - Testing
 
-📋 Diff: agent-os/output/update-basepoints-and-redeploy/cache/knowledge-diff.md
+📋 Diff: geist/output/update-basepoints-and-redeploy/cache/knowledge-diff.md
 
 NEXT STEP 👉 Run Phase 5: `5-selective-respecialize.md`
 ```

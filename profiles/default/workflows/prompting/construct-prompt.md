@@ -20,15 +20,15 @@ Core workflow called at the START of every command to build an optimized prompt.
 
 ```bash
 # Load basepoints
-HEADQUARTER=$(cat agent-os/basepoints/headquarter.md 2>/dev/null || echo "")
-PROJECT_PROFILE=$(cat agent-os/config/project-profile.yml 2>/dev/null || echo "")
+HEADQUARTER=$(cat geist/basepoints/headquarter.md 2>/dev/null || echo "")
+PROJECT_PROFILE=$(cat geist/config/project-profile.yml 2>/dev/null || echo "")
 
 # Load session learnings
-SUCCESS_PATTERNS=$(cat agent-os/output/session-feedback/patterns/successful.md 2>/dev/null || echo "")
-FAILED_PATTERNS=$(cat agent-os/output/session-feedback/patterns/failed.md 2>/dev/null || echo "")
+SUCCESS_PATTERNS=$(cat geist/output/session-feedback/patterns/successful.md 2>/dev/null || echo "")
+FAILED_PATTERNS=$(cat geist/output/session-feedback/patterns/failed.md 2>/dev/null || echo "")
 
 # Load previous handoff (if exists)
-HANDOFF_CONTEXT=$(cat agent-os/output/handoff/current.md 2>/dev/null || echo "")
+HANDOFF_CONTEXT=$(cat geist/output/handoff/current.md 2>/dev/null || echo "")
 ```
 
 ### Step 2: Build Context Block
@@ -102,7 +102,7 @@ Specify expected output format:
 ## Expected Output
 
 ### File
-- Path: agent-os/specs/[date]-[name]/planning/requirements.md
+- Path: geist/specs/[date]-[name]/planning/requirements.md
 - Format: Markdown with structured sections
 
 ### Structure

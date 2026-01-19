@@ -3,7 +3,7 @@
 ## Core Responsibilities
 
 1. **Set Common Variables**: Initialize common context variables used across command workflows
-2. **Determine Paths**: Establish standard paths for agent-os, basepoints, product, and spec operations
+2. **Determine Paths**: Establish standard paths for geist, basepoints, product, and spec operations
 3. **Set Flags**: Initialize boolean flags for feature detection and state tracking
 4. **Prepare Environment**: Set up environment for command execution
 
@@ -15,10 +15,10 @@ Establish standard paths used throughout command execution:
 
 ```bash
 # Set base paths
-AGENT_OS_PATH="agent-os"
-BASEPOINTS_PATH="$AGENT_OS_PATH/basepoints"
-PRODUCT_PATH="$AGENT_OS_PATH/product"
-CONFIG_PATH="$AGENT_OS_PATH/config"
+GEIST_PATH="geist"
+BASEPOINTS_PATH="$GEIST_PATH/basepoints"
+PRODUCT_PATH="$GEIST_PATH/product"
+CONFIG_PATH="$GEIST_PATH/config"
 ```
 
 ### Step 2: Determine Spec Path (if applicable)
@@ -28,7 +28,7 @@ If working with a spec, determine and set the spec path:
 ```bash
 # Determine spec path (if applicable)
 if [ -n "[current-spec]" ]; then
-    SPEC_PATH="$AGENT_OS_PATH/specs/[current-spec]"
+    SPEC_PATH="$GEIST_PATH/specs/[current-spec]"
     CACHE_PATH="$SPEC_PATH/implementation/cache"
     mkdir -p "$CACHE_PATH"
 else
@@ -95,4 +95,4 @@ This ensures consistent variable naming and resource detection across all comman
 
 - **Placeholder Replacement**: The `[current-spec]` placeholder should be replaced with the actual spec name, or removed if not applicable.
 - **Non-Blocking**: Resource detection does not fail if resources are missing - it only sets flags.
-- **Path Consistency**: Uses standardized path structure that matches agent-os architecture.
+- **Path Consistency**: Uses standardized path structure that matches geist architecture.

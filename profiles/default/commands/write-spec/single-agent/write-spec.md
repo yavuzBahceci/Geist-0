@@ -5,7 +5,7 @@ Now that we've initiated and planned the details for a new spec, we will now pro
 First, load any accumulated knowledge from the previous shape-spec command:
 
 ```bash
-SPEC_PATH="agent-os/specs/[current-spec]"
+SPEC_PATH="geist/specs/[current-spec]"
 CACHE_PATH="$SPEC_PATH/implementation/cache"
 
 # Load accumulated knowledge from shape-spec
@@ -53,11 +53,11 @@ echo "🎯 Applying narrow focus + expand knowledge strategy..."
 
 # Load product knowledge
 PRODUCT_KNOWLEDGE=""
-if [ -f "agent-os/product/mission.md" ]; then
-    PRODUCT_KNOWLEDGE="${PRODUCT_KNOWLEDGE}\n## Mission\n$(cat agent-os/product/mission.md)"
+if [ -f "geist/product/mission.md" ]; then
+    PRODUCT_KNOWLEDGE="${PRODUCT_KNOWLEDGE}\n## Mission\n$(cat geist/product/mission.md)"
 fi
-if [ -f "agent-os/product/tech-stack.md" ]; then
-    PRODUCT_KNOWLEDGE="${PRODUCT_KNOWLEDGE}\n## Tech Stack\n$(cat agent-os/product/tech-stack.md)"
+if [ -f "geist/product/tech-stack.md" ]; then
+    PRODUCT_KNOWLEDGE="${PRODUCT_KNOWLEDGE}\n## Tech Stack\n$(cat geist/product/tech-stack.md)"
 fi
 
 # Combine all knowledge sources (building upon previous)
@@ -118,7 +118,7 @@ If trade-offs or contradictions are detected:
 Before completing, run validation to ensure outputs are correct:
 
 ```bash
-SPEC_PATH="agent-os/specs/[current-spec]"
+SPEC_PATH="geist/specs/[current-spec]"
 COMMAND="write-spec"
 {{workflows/validation/validate-output-exists}}
 {{workflows/validation/validate-knowledge-integration}}
@@ -139,7 +139,7 @@ Generate a checklist of all resources consulted:
 Display the following message to the user:
 
 ```
-The spec has been created at `agent-os/specs/[this-spec]/spec.md`.
+The spec has been created at `geist/specs/[this-spec]/spec.md`.
 
 ✅ Spec document created
 ✅ Basepoints knowledge integrated: [Yes / No basepoints found]

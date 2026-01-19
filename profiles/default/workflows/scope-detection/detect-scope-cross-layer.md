@@ -18,13 +18,13 @@ Load previous scope detection results:
 # Determine spec path and cache path
 SPEC_PATH="{{SPEC_PATH}}"
 if [ -z "$SPEC_PATH" ]; then
-    SPEC_PATH="agent-os/specs/[current-spec]"
+    SPEC_PATH="geist/specs/[current-spec]"
 fi
 
 if [ -n "$SPEC_PATH" ]; then
     CACHE_PATH="$SPEC_PATH/implementation/cache"
 else
-    CACHE_PATH="agent-os/output/deploy-agents/knowledge"
+    CACHE_PATH="geist/output/deploy-agents/knowledge"
 fi
 
 # Load semantic analysis results
@@ -234,4 +234,4 @@ EOF
 - Must extract cross-layer patterns relevant to spec context
 - Must use placeholder syntax ({{PLACEHOLDER}}) for project-specific parts that will be replaced during deploy-agents
 - Must be technology-agnostic and work with any basepoint structure
-- **CRITICAL**: All detection results must be stored in `agent-os/specs/[current-spec]/implementation/cache/scope-detection/`, not scattered around the codebase
+- **CRITICAL**: All detection results must be stored in `geist/specs/[current-spec]/implementation/cache/scope-detection/`, not scattered around the codebase

@@ -21,8 +21,8 @@ ISSUES=()
 
 # Load UI patterns from basepoints
 UI_BASEPOINTS=""
-if [ -d "agent-os/basepoints/modules" ]; then
-    UI_BASEPOINTS=$(find agent-os/basepoints/modules -name "*.md" -exec grep -l -i "ui\|component\|view\|frontend" {} \; 2>/dev/null)
+if [ -d "geist/basepoints/modules" ]; then
+    UI_BASEPOINTS=$(find geist/basepoints/modules -name "*.md" -exec grep -l -i "ui\|component\|view\|frontend" {} \; 2>/dev/null)
 fi
 
 # Extract expected patterns
@@ -54,7 +54,7 @@ validate_component_structure() {
     local issues=""
     
     # Check for common UI patterns based on tech stack
-    TECH_STACK=$(cat agent-os/product/tech-stack.md 2>/dev/null || echo "")
+    TECH_STACK=$(cat geist/product/tech-stack.md 2>/dev/null || echo "")
     
     if echo "$TECH_STACK" | grep -qi "react"; then
         # React-specific checks
@@ -125,7 +125,7 @@ validate_styling_patterns() {
     local issues=""
     
     # Detect styling approach from tech stack
-    if grep -qi "tailwind" agent-os/product/tech-stack.md 2>/dev/null; then
+    if grep -qi "tailwind" geist/product/tech-stack.md 2>/dev/null; then
         # Check for inline styles (should use Tailwind classes)
         INLINE_STYLES=$(find "$dir" -name "*.tsx" -o -name "*.jsx" | xargs grep -l "style={{" 2>/dev/null)
         if [ -n "$INLINE_STYLES" ]; then
@@ -133,7 +133,7 @@ validate_styling_patterns() {
         fi
     fi
     
-    if grep -qi "styled-components\|emotion" agent-os/product/tech-stack.md 2>/dev/null; then
+    if grep -qi "styled-components\|emotion" geist/product/tech-stack.md 2>/dev/null; then
         # Check for proper styled component usage
         :
     fi
@@ -173,9 +173,9 @@ validate_accessibility() {
 ```bash
 run_ui_validation() {
     local target_dir="${1:-.}"
-    local results_file="agent-os/output/validation/ui-validation-results.md"
+    local results_file="geist/output/validation/ui-validation-results.md"
     
-    mkdir -p agent-os/output/validation
+    mkdir -p geist/output/validation
     
     echo "# UI Pattern Validation Results" > "$results_file"
     echo "" >> "$results_file"
@@ -243,6 +243,6 @@ run_ui_validation "$TARGET_DIR"
 ## Integration with Layer Specialists
 
 When `ui-specialist` completes implementation, this validation runs automatically to verify patterns were followed. The validation loads patterns from:
-- `agent-os/basepoints/modules/` (UI-related modules)
-- `agent-os/product/tech-stack.md` (framework-specific rules)
-- `agent-os/standards/global/conventions.md` (naming conventions)
+- `geist/basepoints/modules/` (UI-related modules)
+- `geist/product/tech-stack.md` (framework-specific rules)
+- `geist/standards/global/conventions.md` (naming conventions)

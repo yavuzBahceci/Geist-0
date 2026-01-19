@@ -21,7 +21,7 @@ Present session learnings and prompt effectiveness analysis to user for review.
 ### Step 1: Load Session Feedback
 
 ```bash
-SESSION_FILE="agent-os/output/session-feedback/current-session.md"
+SESSION_FILE="geist/output/session-feedback/current-session.md"
 
 if [ ! -f "$SESSION_FILE" ]; then
     echo "ℹ️ No session feedback found. Skipping learning phase."
@@ -100,7 +100,7 @@ Based on user choice:
 
 ```bash
 # User choice is saved by present-learnings-for-review workflow
-PENDING_FILE="agent-os/output/session-feedback/adaptations/pending.md"
+PENDING_FILE="geist/output/session-feedback/adaptations/pending.md"
 
 if [ -f "$PENDING_FILE" ]; then
     APPROVAL_STATUS=$(grep "Approval Status:" "$PENDING_FILE" | sed 's/.*: \([^ ]*\).*/\1/')
@@ -126,7 +126,7 @@ fi
 
 ## Output
 
-- Adaptations file: `agent-os/output/session-feedback/adaptations/pending.md`
+- Adaptations file: `geist/output/session-feedback/adaptations/pending.md`
 - User approval status (all/select/skip)
 
 ## Critical Safety Requirements

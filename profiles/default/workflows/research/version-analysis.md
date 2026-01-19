@@ -13,7 +13,7 @@ Compare detected dependency versions against latest stable versions, flag outdat
 
 ## Outputs
 
-- `agent-os/config/enriched-knowledge/version-analysis.md`
+- `geist/config/enriched-knowledge/version-analysis.md`
 
 ---
 
@@ -35,7 +35,7 @@ Compare detected dependency versions against latest stable versions, flag outdat
 
 ```bash
 CURRENT_YEAR=$(date +%Y)
-OUTPUT_FILE="agent-os/config/enriched-knowledge/version-analysis.md"
+OUTPUT_FILE="geist/config/enriched-knowledge/version-analysis.md"
 
 cat > "$OUTPUT_FILE" << HEADER_EOF
 # Version Analysis

@@ -2,7 +2,7 @@
 
 ## Core Responsibilities
 
-1. **Find @agent-os/ References**: Scan files for internal references
+1. **Find @geist/ References**: Scan files for internal references
 2. **Resolve References to Paths**: Convert references to actual file paths
 3. **Check Path Existence**: Verify each referenced path exists
 4. **Output Broken References**: List any references that don't resolve
@@ -34,11 +34,11 @@ FILE_COUNT=$(echo "$FILES_TO_CHECK" | wc -w | tr -d ' ')
 echo "   Files to check: $FILE_COUNT"
 ```
 
-### Step 2: Find @agent-os/ References
+### Step 2: Find @geist/ References
 
 ```bash
 echo ""
-echo "📋 Finding @agent-os/ references..."
+echo "📋 Finding @geist/ references..."
 echo ""
 
 ALL_REFERENCES=""
@@ -46,8 +46,8 @@ REFERENCE_COUNT=0
 
 for file in $FILES_TO_CHECK; do
     if [ -f "$file" ]; then
-        # Find @agent-os/ references
-        REFS=$(grep -oE '@agent-os/[^[:space:]]+' "$file" 2>/dev/null | sort -u)
+        # Find @geist/ references
+        REFS=$(grep -oE '@geist/[^[:space:]]+' "$file" 2>/dev/null | sort -u)
         
         if [ -n "$REFS" ]; then
             REF_COUNT=$(echo "$REFS" | wc -l | tr -d ' ')
@@ -92,7 +92,7 @@ for ref in $ALL_REFERENCES; do
     # Skip empty lines
     [ -z "$ref" ] && continue
     
-    # Convert @agent-os/ to actual path
+    # Convert @geist/ to actual path
     ACTUAL_PATH=$(echo "$ref" | sed 's/@//')
     
     # Check if path exists
@@ -192,7 +192,7 @@ exit $EXIT_CODE
 
 ## Important Constraints
 
-- Must find all @agent-os/ references
+- Must find all @geist/ references
 - Must resolve references to actual paths
 - Must classify broken references by severity
 - Must fail only on critical broken references

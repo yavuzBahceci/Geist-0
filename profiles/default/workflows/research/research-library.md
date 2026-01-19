@@ -12,7 +12,7 @@ Research best practices, known issues, security vulnerabilities, and latest vers
 
 ## Outputs
 
-- `agent-os/config/enriched-knowledge/library-research.md`
+- `geist/config/enriched-knowledge/library-research.md`
 
 ---
 
@@ -38,7 +38,7 @@ For each detected technology, perform the following searches:
 
 ```bash
 CURRENT_YEAR=$(date +%Y)
-OUTPUT_FILE="agent-os/config/enriched-knowledge/library-research.md"
+OUTPUT_FILE="geist/config/enriched-knowledge/library-research.md"
 
 cat > "$OUTPUT_FILE" << 'HEADER_EOF'
 # Library Research

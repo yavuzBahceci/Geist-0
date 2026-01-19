@@ -33,7 +33,7 @@ KEY_PATTERNS=$(extract_patterns_from_headquarter "$HEADQUARTER")
 
 ### Step 2: Analyze Each Command
 
-For each command file in `agent-os/commands/`:
+For each command file in `geist/commands/`:
 
 ```bash
 # Check context placement
@@ -108,7 +108,7 @@ Organize suggestions by command and priority:
 
 ## Output
 
-Saves suggestions to: `agent-os/output/deploy-agents/cache/prompt-optimizations.md`
+Saves suggestions to: `geist/output/deploy-agents/cache/prompt-optimizations.md`
 
 ## Usage
 

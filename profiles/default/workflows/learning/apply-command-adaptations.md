@@ -12,7 +12,7 @@ Apply user-approved adaptations to command templates:
 
 ## Inputs
 
-- Pending adaptations file: `agent-os/output/session-feedback/adaptations/pending.md`
+- Pending adaptations file: `geist/output/session-feedback/adaptations/pending.md`
 - User approval status (all/select/skip)
 
 ## Process
@@ -20,8 +20,8 @@ Apply user-approved adaptations to command templates:
 ### Step 1: Load Approved Adaptations
 
 ```bash
-PENDING_FILE="agent-os/output/session-feedback/adaptations/pending.md"
-APPLIED_FILE="agent-os/output/session-feedback/adaptations/applied.md"
+PENDING_FILE="geist/output/session-feedback/adaptations/pending.md"
+APPLIED_FILE="geist/output/session-feedback/adaptations/applied.md"
 
 if [ ! -f "$PENDING_FILE" ]; then
     echo "⚠️ No pending adaptations found."
@@ -42,13 +42,13 @@ echo "📋 Loading approved adaptations..."
 ### Step 2: Create Backup Directory
 
 ```bash
-BACKUP_DIR="agent-os/output/update-basepoints-and-redeploy/backups/$(date +%Y%m%d-%H%M%S)"
+BACKUP_DIR="geist/output/update-basepoints-and-redeploy/backups/$(date +%Y%m%d-%H%M%S)"
 mkdir -p "$BACKUP_DIR"
 
 echo "📦 Creating backup at: $BACKUP_DIR"
 
 # Copy all command files that might be affected
-COMMANDS_DIR="agent-os/commands"
+COMMANDS_DIR="geist/commands"
 find "$COMMANDS_DIR" -name "*.md" -type f | while read cmd_file; do
     # Get relative path for backup structure
     RELATIVE_PATH=$(echo "$cmd_file" | sed "s|$COMMANDS_DIR/||")
@@ -79,7 +79,7 @@ For each approved adaptation:
 ```bash
 # Determine adaptation type and target
 ADAPTATION_TYPE="[Context Addition | Constraint Addition | Warning Addition]"
-TARGET_FILE="agent-os/commands/[command]/[phase].md"
+TARGET_FILE="geist/commands/[command]/[phase].md"
 
 # Find insertion point based on type
 case "$ADAPTATION_TYPE" in
@@ -223,7 +223,7 @@ cat >> "$APPLIED_CHANGES_LOG" << EOF
 To rollback these changes, restore files from backup:
 
 \`\`\`bash
-cp -r $BACKUP_DIR/* agent-os/commands/
+cp -r $BACKUP_DIR/* geist/commands/
 \`\`\`
 EOF
 
@@ -240,7 +240,7 @@ restore_from_backup() {
     local file="$1"
     local backup_dir="$2"
     
-    RELATIVE_PATH=$(echo "$file" | sed "s|agent-os/commands/||")
+    RELATIVE_PATH=$(echo "$file" | sed "s|geist/commands/||")
     BACKUP_FILE="$backup_dir/$RELATIVE_PATH"
     
     if [ -f "$BACKUP_FILE" ]; then
@@ -264,9 +264,9 @@ validate_markdown() {
 
 ## Output
 
-- Applied changes to command files in `agent-os/commands/`
-- Backup directory: `agent-os/output/update-basepoints-and-redeploy/backups/[timestamp]/`
-- Applied log: `agent-os/output/session-feedback/adaptations/applied.md`
+- Applied changes to command files in `geist/commands/`
+- Backup directory: `geist/output/update-basepoints-and-redeploy/backups/[timestamp]/`
+- Applied log: `geist/output/session-feedback/adaptations/applied.md`
 - Changes log: `$BACKUP_DIR/applied-changes.log`
 
 ## Safety Checks
@@ -282,10 +282,10 @@ If adaptations cause issues:
 
 ```bash
 # Find backup directory
-BACKUP_DIR=$(ls -td agent-os/output/update-basepoints-and-redeploy/backups/* | head -1)
+BACKUP_DIR=$(ls -td geist/output/update-basepoints-and-redeploy/backups/* | head -1)
 
 # Restore all files
-cp -r "$BACKUP_DIR"/* agent-os/commands/
+cp -r "$BACKUP_DIR"/* geist/commands/
 
 echo "✅ Rollback complete. Files restored from: $BACKUP_DIR"
 ```

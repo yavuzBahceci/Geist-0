@@ -21,7 +21,7 @@ Perform comprehensive verification to check for problems, gaps, and issues:
 ```bash
 echo "🔍 Running comprehensive final verification..."
 
-SPEC_PATH="agent-os/specs/[current-spec]"
+SPEC_PATH="geist/specs/[current-spec]"
 VERIFICATION_ISSUES=""
 
 # 4.1: Check for Problems and Gaps
@@ -152,9 +152,9 @@ Output the final verification summary:
 
 ## Reports
 
-- Verification Report: `agent-os/specs/[this-spec]/implementation/cache/verification-report.md`
-- Verification Issues: `agent-os/specs/[this-spec]/implementation/cache/verification-issues.md`
-- Implementation Decision: `agent-os/specs/[this-spec]/implementation/cache/implementation-decision.md`
+- Verification Report: `geist/specs/[this-spec]/implementation/cache/verification-report.md`
+- Verification Issues: `geist/specs/[this-spec]/implementation/cache/verification-issues.md`
+- Implementation Decision: `geist/specs/[this-spec]/implementation/cache/implementation-decision.md`
 
 ═══════════════════════════════════════════════════════
 ```

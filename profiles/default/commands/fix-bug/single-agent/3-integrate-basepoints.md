@@ -7,7 +7,7 @@ Extract relevant basepoints knowledge for the issue context.
 Load the issue analysis and library research:
 
 ```bash
-CACHE_PATH="agent-os/output/fix-bug/cache"
+CACHE_PATH="geist/output/fix-bug/cache"
 
 # Load issue analysis
 if [ -f "$CACHE_PATH/issue-analysis.md" ]; then
@@ -65,7 +65,7 @@ for module in $AFFECTED_MODULES; do
     MODULE_NAME=$(basename "$module" | sed 's/\.[^.]*$//')
     
     # Search for basepoints mentioning this module
-    BASEPOINT_MATCHES=$(grep -rl "$MODULE_NAME" agent-os/basepoints/ 2>/dev/null)
+    BASEPOINT_MATCHES=$(grep -rl "$MODULE_NAME" geist/basepoints/ 2>/dev/null)
     
     if [ -n "$BASEPOINT_MATCHES" ]; then
         echo "   Found basepoints for: $MODULE_NAME"
@@ -130,7 +130,7 @@ for keyword in $ERROR_KEYWORDS; do
     fi
     
     # Search basepoints for this keyword
-    MATCHES=$(grep -rl "$keyword" agent-os/basepoints/ 2>/dev/null | head -5)
+    MATCHES=$(grep -rl "$keyword" geist/basepoints/ 2>/dev/null | head -5)
     
     if [ -n "$MATCHES" ]; then
         echo "   Found references for: $keyword"
@@ -222,7 +222,7 @@ echo "   Integration saved to: $CACHE_PATH/basepoints-integration.md"
 ✅ Patterns and standards extracted
 ✅ Similar issues found: [count]
 
-Integration saved to: agent-os/output/fix-bug/cache/basepoints-integration.md
+Integration saved to: geist/output/fix-bug/cache/basepoints-integration.md
 
 NEXT STEP 👉 Proceeding to Phase 4: Code Analysis
 ```

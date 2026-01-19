@@ -15,14 +15,14 @@
 Load the required product files:
 
 ```bash
-if [ ! -f "agent-os/product/mission.md" ] || [ ! -f "agent-os/product/roadmap.md" ] || [ ! -f "agent-os/product/tech-stack.md" ]; then
+if [ ! -f "geist/product/mission.md" ] || [ ! -f "geist/product/roadmap.md" ] || [ ! -f "geist/product/tech-stack.md" ]; then
     echo "❌ Product files not found. Cannot generate headquarter."
     exit 1
 fi
 
-MISSION_CONTENT=$(cat agent-os/product/mission.md)
-ROADMAP_CONTENT=$(cat agent-os/product/roadmap.md)
-TECH_STACK_CONTENT=$(cat agent-os/product/tech-stack.md)
+MISSION_CONTENT=$(cat geist/product/mission.md)
+ROADMAP_CONTENT=$(cat geist/product/roadmap.md)
+TECH_STACK_CONTENT=$(cat geist/product/tech-stack.md)
 ```
 
 ### Step 2: Load Detected Layers
@@ -34,8 +34,8 @@ Load the detected abstraction layers from cache.
 Analyze the generated basepoint structure to understand module relationships:
 
 ```bash
-TOP_LEVEL_BASEPOINTS=$(find agent-os/basepoints -mindepth 1 -maxdepth 1 -name "agent-base-*.md" | sort)
-MODULE_COUNT=$(find agent-os/basepoints -name "agent-base-*.md" | wc -l)
+TOP_LEVEL_BASEPOINTS=$(find geist/basepoints -mindepth 1 -maxdepth 1 -name "agent-base-*.md" | sort)
+MODULE_COUNT=$(find geist/basepoints -name "agent-base-*.md" | wc -l)
 ```
 
 ### Step 4: Generate Headquarter Content
@@ -67,4 +67,4 @@ Verify the headquarter file was generated correctly and contains all required se
 - Must include detected abstraction layers
 - Must document overall architecture and module relationships
 - Must provide navigation to all basepoint files
-- Must be placed at root of basepoints folder (`agent-os/basepoints/headquarter.md`)
+- Must be placed at root of basepoints folder (`geist/basepoints/headquarter.md`)

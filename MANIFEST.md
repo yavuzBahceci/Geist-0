@@ -156,8 +156,8 @@ A single AI has no self. But a well-documented codebase—regardless of what kin
                      # + Cleans irrelevant tech, expands relevant patterns
 /create-basepoints   # Documents YOUR patterns and architecture
 /deploy-agents       # Configures for YOUR specific project
-                     # → Navigates to /cleanup-agent-os when done
-/cleanup-agent-os    # Validates deployment, ensures completeness
+                     # → Navigates to /cleanup-geist when done
+/cleanup-geist       # Validates deployment, ensures completeness
 
 # Then just build
 /shape-spec "Add payment processing"
@@ -210,7 +210,7 @@ cd your-project
 /adapt-to-product
 /create-basepoints  
 /deploy-agents       # → guides you to cleanup
-/cleanup-agent-os    # validates deployment
+/cleanup-geist       # validates deployment
 
 # You're ready
 ```

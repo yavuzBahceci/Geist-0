@@ -293,10 +293,10 @@ test_progressive() {
     source profiles/default/workflows/detection/detect-project-profile.md
     
     # Verify profile created
-    assert_file_exists "agent-os/config/project-profile.yml"
+    assert_file_exists "geist/config/project-profile.yml"
     
     # Simulate create-basepoints loading profile
-    PROFILE_EXISTS=$([ -f "agent-os/config/project-profile.yml" ] && echo "true")
+    PROFILE_EXISTS=$([ -f "geist/config/project-profile.yml" ] && echo "true")
     assert_equals "$PROFILE_EXISTS" "true"
 }
 ```

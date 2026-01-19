@@ -13,7 +13,7 @@ Research architecture patterns, project structure conventions, and testing strat
 
 ## Outputs
 
-- `agent-os/config/enriched-knowledge/stack-best-practices.md`
+- `geist/config/enriched-knowledge/stack-best-practices.md`
 
 ---
 
@@ -37,7 +37,7 @@ Research architecture patterns, project structure conventions, and testing strat
 
 ```bash
 CURRENT_YEAR=$(date +%Y)
-OUTPUT_FILE="agent-os/config/enriched-knowledge/stack-best-practices.md"
+OUTPUT_FILE="geist/config/enriched-knowledge/stack-best-practices.md"
 
 # Build a stack description string
 STACK_PARTS=""

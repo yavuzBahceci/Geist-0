@@ -109,7 +109,7 @@ Generate the issue analysis document:
 ```bash
 echo "📝 Creating issue analysis document..."
 
-CACHE_PATH="agent-os/output/fix-bug/cache"
+CACHE_PATH="geist/output/fix-bug/cache"
 mkdir -p "$CACHE_PATH"
 
 cat > "$CACHE_PATH/issue-analysis.md" << 'ANALYSIS_EOF'
@@ -166,7 +166,7 @@ echo "   Analysis saved to: $CACHE_PATH/issue-analysis.md"
 ✅ Affected libraries identified: [count]
 ✅ Affected modules identified: [count]
 
-Analysis saved to: agent-os/output/fix-bug/cache/issue-analysis.md
+Analysis saved to: geist/output/fix-bug/cache/issue-analysis.md
 
 NEXT STEP 👉 Proceeding to Phase 2: Library Research
 ```

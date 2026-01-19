@@ -1,8 +1,8 @@
-Now that product files (mission, tech-stack, roadmap) have been created, run the product-focused cleanup workflow to simplify and enhance agent-os files based on the detected product scope.
+Now that product files (mission, tech-stack, roadmap) have been created, run the product-focused cleanup workflow to simplify and enhance geist files based on the detected product scope.
 
 ## Core Responsibilities
 
-1. **Run Cleanup Workflow**: Execute the product-focused cleanup workflow to process agent-os files
+1. **Run Cleanup Workflow**: Execute the product-focused cleanup workflow to process geist files
 2. **Review Results**: Present the cleanup report to the user for review
 3. **Proceed to Next Phase**: Guide user to the final phase
 
@@ -34,9 +34,9 @@ Once the cleanup workflow is complete, output the following message:
    Web search queries generated
 
 📁 Reports Generated:
-   - agent-os/output/product-cleanup/detected-scope.yml
-   - agent-os/output/product-cleanup/search-queries.md
-   - agent-os/output/product-cleanup/cleanup-report.md
+   - geist/output/product-cleanup/detected-scope.yml
+   - geist/output/product-cleanup/search-queries.md
+   - geist/output/product-cleanup/cleanup-report.md
 
 NEXT STEP 👉 Proceeding to Phase 8: Navigate to Next Command
 ```

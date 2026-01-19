@@ -1,5 +1,19 @@
 # Present Human Decision
 
+---
+
+## ⚠️ CRITICAL: USER INTERACTION REQUIRED
+
+**This workflow presents decisions to the user and requires their response.** You MUST:
+1. Display all detected issues clearly
+2. Present the AI recommendation
+3. Show all decision options
+4. **STOP and WAIT** for the user to make a decision
+5. Do NOT proceed until the user provides their decision
+6. Do NOT assume the user accepts the recommendation
+
+---
+
 ## Core Responsibilities
 
 1. **Load Trade-offs and Contradictions**: Read detected issues from cache

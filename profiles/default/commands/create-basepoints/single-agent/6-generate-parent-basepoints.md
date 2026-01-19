@@ -13,7 +13,7 @@ Once parent basepoints are generated, output:
 
 ✅ Parent basepoints created: [number] files
 ✅ Hierarchy levels: [number] levels
-✅ Root-level basepoint: agent-os/basepoints/agent-base-[root-name].md
+✅ Root-level basepoint: geist/basepoints/agent-base-[root-name].md
 
 Parent basepoints:
 [List all parent basepoint files]

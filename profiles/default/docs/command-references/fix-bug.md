@@ -10,7 +10,7 @@ The `fix-bug` command is a comprehensive error/issue analysis and fixing command
 
 ## Prerequisites
 
-- Deployed Agent OS (for basepoints integration)
+- Deployed Geist (for basepoints integration)
 - Bug report, error log, or feedback description
 
 ## Input Formats
@@ -31,17 +31,17 @@ The `fix-bug` command is a comprehensive error/issue analysis and fixing command
 ## Outputs
 
 ### On Success
-- `agent-os/output/fix-bug/cache/issue-analysis.md`
-- `agent-os/output/fix-bug/cache/library-research.md`
-- `agent-os/output/fix-bug/cache/basepoints-integration.md`
-- `agent-os/output/fix-bug/cache/code-analysis.md`
-- `agent-os/output/fix-bug/cache/knowledge-synthesis.md`
-- `agent-os/output/fix-bug/cache/fix-report.md`
+- `geist/output/fix-bug/cache/issue-analysis.md`
+- `geist/output/fix-bug/cache/library-research.md`
+- `geist/output/fix-bug/cache/basepoints-integration.md`
+- `geist/output/fix-bug/cache/code-analysis.md`
+- `geist/output/fix-bug/cache/knowledge-synthesis.md`
+- `geist/output/fix-bug/cache/fix-report.md`
 - Code changes that resolve the issue
 
 ### On Stop Condition (3 Worsening Results)
 - All analysis files above
-- `agent-os/output/fix-bug/cache/guidance-request.md`
+- `geist/output/fix-bug/cache/guidance-request.md`
 
 ## Phases
 

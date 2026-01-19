@@ -16,7 +16,7 @@ Before attempting extraction, verify that library basepoints are available:
 
 ```bash
 # Define library basepoints path
-LIBRARY_BASEPOINTS_PATH="agent-os/basepoints/libraries"
+LIBRARY_BASEPOINTS_PATH="geist/basepoints/libraries"
 
 # Check if library basepoints exist
 if [ -d "$LIBRARY_BASEPOINTS_PATH" ]; then
@@ -46,7 +46,7 @@ if [ -n "$SPEC_PATH" ]; then
     CACHE_PATH="$SPEC_PATH/implementation/cache"
 else
     # Fallback for non-spec contexts
-    CACHE_PATH="agent-os/output/library-basepoints-extraction"
+    CACHE_PATH="geist/output/library-basepoints-extraction"
 fi
 
 # Create cache directory
@@ -60,7 +60,7 @@ Define the supported library categories:
 
 ```bash
 # Define library categories
-# These match the folder structure under agent-os/basepoints/libraries/
+# These match the folder structure under geist/basepoints/libraries/
 LIBRARY_CATEGORIES="data domain util infrastructure framework"
 
 echo "📚 Library categories: $LIBRARY_CATEGORIES"
@@ -187,7 +187,7 @@ cat > "$CACHE_PATH/library-basepoints-knowledge.md" << 'LIBRARY_KNOWLEDGE_EOF'
 
 ## Extraction Metadata
 - **Extracted**: $(date)
-- **Source**: agent-os/basepoints/libraries/
+- **Source**: geist/basepoints/libraries/
 - **Library Basepoints Available**: $LIBRARY_BASEPOINTS_AVAILABLE
 - **Library Count**: $LIBRARY_COUNT
 

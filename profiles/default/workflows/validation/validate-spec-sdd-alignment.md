@@ -359,5 +359,5 @@ This workflow validates specs against Spec-Driven Development (SDD) best practic
 - All SDD validation checks are structure-based, not technology-specific
 - No hardcoded technology-specific references in default templates
 - Validation maintains technology-agnostic state throughout **in default profile templates**
-- **After Specialization:** When templates are compiled to `agent-os/workflows/`, workflows can and should become technology-specific based on the project's actual stack
+- **After Specialization:** When templates are compiled to `geist/workflows/`, workflows can and should become technology-specific based on the project's actual stack
 - **Command Outputs:** Specs, tasks, and implementations should reflect the project's actual technology stack

@@ -7,16 +7,16 @@ Combine all research outputs, remove duplicates, prioritize actionable insights,
 ## Inputs
 
 Research files from:
-- `agent-os/config/enriched-knowledge/library-research.md`
-- `agent-os/config/enriched-knowledge/stack-best-practices.md`
-- `agent-os/config/enriched-knowledge/domain-knowledge.md`
-- `agent-os/config/enriched-knowledge/version-analysis.md`
-- `agent-os/config/enriched-knowledge/security-notes.md`
+- `geist/config/enriched-knowledge/library-research.md`
+- `geist/config/enriched-knowledge/stack-best-practices.md`
+- `geist/config/enriched-knowledge/domain-knowledge.md`
+- `geist/config/enriched-knowledge/version-analysis.md`
+- `geist/config/enriched-knowledge/security-notes.md`
 
 ## Outputs
 
 - Updates to individual research files (deduplication)
-- `agent-os/config/enriched-knowledge/README.md` - Summary index
+- `geist/config/enriched-knowledge/README.md` - Summary index
 
 ---
 
@@ -25,7 +25,7 @@ Research files from:
 ### Step 1: Create Summary Index
 
 ```bash
-KNOWLEDGE_DIR="agent-os/config/enriched-knowledge"
+KNOWLEDGE_DIR="geist/config/enriched-knowledge"
 SUMMARY_FILE="$KNOWLEDGE_DIR/README.md"
 
 cat > "$SUMMARY_FILE" << HEADER_EOF

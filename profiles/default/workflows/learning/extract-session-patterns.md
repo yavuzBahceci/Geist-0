@@ -11,16 +11,16 @@ Extract patterns from session implementation data to identify:
 
 ## Inputs
 
-- Session file: `agent-os/output/session-feedback/current-session.md`
-- Raw patterns file: `agent-os/output/session-feedback/patterns/raw-patterns.txt`
+- Session file: `geist/output/session-feedback/current-session.md`
+- Raw patterns file: `geist/output/session-feedback/patterns/raw-patterns.txt`
 
 ## Process
 
 ### Step 1: Read All Implementations from Session
 
 ```bash
-SESSION_FILE="agent-os/output/session-feedback/current-session.md"
-PATTERNS_DIR="agent-os/output/session-feedback/patterns"
+SESSION_FILE="geist/output/session-feedback/current-session.md"
+PATTERNS_DIR="geist/output/session-feedback/patterns"
 
 # Read session file
 if [ ! -f "$SESSION_FILE" ]; then
@@ -193,8 +193,8 @@ $FAILED_COUNT anti-pattern(s) identified\\
 
 ## Output
 
-- Successful patterns: `agent-os/output/session-feedback/patterns/successful.md`
-- Failed patterns: `agent-os/output/session-feedback/patterns/failed.md`
+- Successful patterns: `geist/output/session-feedback/patterns/successful.md`
+- Failed patterns: `geist/output/session-feedback/patterns/failed.md`
 - Updated session file with pattern summary
 
 ## Thresholds

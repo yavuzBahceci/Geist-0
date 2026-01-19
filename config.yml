@@ -3,12 +3,12 @@ base_install: true
 
 
 # CONFIGURATION
-# Configure defaults for the tools you use and how Agent OS should compile commands for your projects.
+# Configure defaults for the tools you use and how Geist should compile commands for your projects.
 
 
 # ================================================
 # Do you use Claude Code?
-# Set to true to install commands in your project's .claude/commands/agent-os/ folder
+# Set to true to install commands in your project's .claude/commands/geist/ folder
 #
 # Override this default when running project-install.sh by using the flag --claude-code-commands=true/false
 # ================================================
@@ -17,16 +17,16 @@ claude_code_commands: false
 
 # ================================================
 # Do you use other coding tools (Cursor, Windsurf, etc.)?
-# Set to true to install commands in your project's agent-os/commands/ folder
+# Set to true to install commands in your project's geist/commands/ folder
 #
-# Override this default when running project-install.sh by using the flag --agent-os-commands true/false
+# Override this default when running project-install.sh by using the flag --geist-commands true/false
 # ================================================
-agent_os_commands: true
+geist_commands: true
 
 
 # ================================================
 # Do you want Claude Code to use subagents?
-# Set to true to install agents in .claude/agents/agent-os/ and have commands delegate to them
+# Set to true to install agents in .claude/agents/geist/ and have commands delegate to them
 # Requires claude_code_commands: true
 #
 # Override this default when running project-install.sh by using the flag --use-claude-code-subagents true/false

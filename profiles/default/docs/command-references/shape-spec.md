@@ -21,7 +21,7 @@
 │   └────────────────────────────────┘                                         │
 │                    │                                                         │
 │                    ▼                                                         │
-│   Output: agent-os/specs/YYYY-MM-DD-feature-name/                            │
+│   Output: geist/specs/YYYY-MM-DD-feature-name/                            │
 │           ├── planning/requirements.md                                       │
 │           └── implementation/cache/basepoints-knowledge.md                   │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -75,7 +75,7 @@
 │  Step 2: Create Folder Structure                                             │
 │  ─────────────────────────────────                                           │
 │                                                                              │
-│     agent-os/specs/                                                          │
+│     geist/specs/                                                          │
 │     └── 2026-01-18-feature-name/     ◀── Date-prefixed folder               │
 │         ├── planning/                                                        │
 │         │   ├── initialization.md    ◀── Raw feature description            │
@@ -180,7 +180,7 @@
 │  ──────                              ───────                                 │
 │                                                                              │
 │  ┌──────────────────┐                ┌──────────────────────────────────┐    │
-│  │ Feature          │                │ agent-os/specs/YYYY-MM-DD-name/  │    │
+│  │ Feature          │                │ geist/specs/YYYY-MM-DD-name/  │    │
 │  │ Description      │───────────────▶│                                  │    │
 │  │ (from user)      │                │ ├── planning/                    │    │
 │  └──────────────────┘                │ │   ├── initialization.md        │    │
@@ -229,7 +229,7 @@
 │  ┌────────────────────────────────────────────────────────────────────┐      │
 │  │ AGENT RESPONSE:                                                    │      │
 │  │                                                                    │      │
-│  │ ✅ Spec folder created: agent-os/specs/2026-01-18-user-auth/       │      │
+│  │ ✅ Spec folder created: geist/specs/2026-01-18-user-auth/       │      │
 │  │                                                                    │      │
 │  │ Based on your idea for user authentication, I have some questions: │      │
 │  │                                                                    │      │
@@ -246,7 +246,7 @@
 │  │ • Session middleware pattern in middleware/auth.ts                 │      │
 │  │                                                                    │      │
 │  │ **Visual Assets:**                                                 │      │
-│  │ Place mockups in: agent-os/specs/2026-01-18-user-auth/planning/    │      │
+│  │ Place mockups in: geist/specs/2026-01-18-user-auth/planning/    │      │
 │  │                   visuals/                                         │      │
 │  └────────────────────────────────────────────────────────────────────┘      │
 │                                                                              │
@@ -257,7 +257,7 @@
 │  │                                                                    │      │
 │  │ Spec shaping complete!                                             │      │
 │  │                                                                    │      │
-│  │ ✅ Spec folder: agent-os/specs/2026-01-18-user-auth/               │      │
+│  │ ✅ Spec folder: geist/specs/2026-01-18-user-auth/               │      │
 │  │ ✅ Requirements gathered                                           │      │
 │  │ ✅ Basepoints knowledge extracted: Yes                             │      │
 │  │ ✅ Detected layer: BACKEND                                         │      │

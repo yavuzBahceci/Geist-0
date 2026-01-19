@@ -23,17 +23,17 @@ This command accepts input in the following formats:
 
 Follow each of these phases IN SEQUENCE:
 
-{{PHASE 1: @agent-os/commands/fix-bug/1-analyze-issue.md}}
+{{PHASE 1: @geist/commands/fix-bug/1-analyze-issue.md}}
 
-{{PHASE 2: @agent-os/commands/fix-bug/2-research-libraries.md}}
+{{PHASE 2: @geist/commands/fix-bug/2-research-libraries.md}}
 
-{{PHASE 3: @agent-os/commands/fix-bug/3-integrate-basepoints.md}}
+{{PHASE 3: @geist/commands/fix-bug/3-integrate-basepoints.md}}
 
-{{PHASE 4: @agent-os/commands/fix-bug/4-analyze-code.md}}
+{{PHASE 4: @geist/commands/fix-bug/4-analyze-code.md}}
 
-{{PHASE 5: @agent-os/commands/fix-bug/5-synthesize-knowledge.md}}
+{{PHASE 5: @geist/commands/fix-bug/5-synthesize-knowledge.md}}
 
-{{PHASE 6: @agent-os/commands/fix-bug/6-implement-fix.md}}
+{{PHASE 6: @geist/commands/fix-bug/6-implement-fix.md}}
 
 ## Important Notes
 

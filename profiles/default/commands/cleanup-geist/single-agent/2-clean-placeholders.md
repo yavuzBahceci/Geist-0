@@ -15,8 +15,8 @@ Load placeholder validation results:
 
 ```bash
 # Load validation cache
-VALIDATION_CACHE="agent-os/.cleanup-cache/validation"
-CLEANUP_CACHE="agent-os/.cleanup-cache"
+VALIDATION_CACHE="geist/.cleanup-cache/validation"
+CLEANUP_CACHE="geist/.cleanup-cache"
 DRY_RUN="${DRY_RUN:-false}"
 
 # Load placeholder detection results
@@ -43,15 +43,15 @@ Load project-specific knowledge needed for placeholder replacement:
 
 ```bash
 # Load basepoints knowledge if available
-if [ "$BASEPOINTS_AVAILABLE" = "true" ] && [ -f "agent-os/basepoints/headquarter.md" ]; then
+if [ "$BASEPOINTS_AVAILABLE" = "true" ] && [ -f "geist/basepoints/headquarter.md" ]; then
     # Extract basepoints path pattern
-    BASEPOINT_FILE_PATTERN=$(find agent-os/basepoints -name "agent-base-*.md" -type f | head -1 | xargs basename | sed 's/agent-base-//' | sed 's/\.md//')
+    BASEPOINT_FILE_PATTERN=$(find geist/basepoints -name "agent-base-*.md" -type f | head -1 | xargs basename | sed 's/agent-base-//' | sed 's/\.md//')
     if [ -z "$BASEPOINT_FILE_PATTERN" ]; then
         BASEPOINT_FILE_PATTERN="agent-base-*.md"
     fi
     
     # Extract abstraction layers
-    ABSTRACTION_LAYERS=$(find agent-os/basepoints -type d -mindepth 1 -maxdepth 2 | sed 's|agent-os/basepoints/||' | cut -d'/' -f1 | sort -u | tr '\n' ',' | sed 's/,$//')
+    ABSTRACTION_LAYERS=$(find geist/basepoints -type d -mindepth 1 -maxdepth 2 | sed 's|geist/basepoints/||' | cut -d'/' -f1 | sort -u | tr '\n' ',' | sed 's/,$//')
     
     echo "✅ Loaded basepoints knowledge"
 else
@@ -61,8 +61,8 @@ else
 fi
 
 # Load product knowledge if available
-if [ "$PRODUCT_AVAILABLE" = "true" ] && [ -f "agent-os/product/tech-stack.md" ]; then
-    TECH_STACK=$(cat agent-os/product/tech-stack.md)
+if [ "$PRODUCT_AVAILABLE" = "true" ] && [ -f "geist/product/tech-stack.md" ]; then
+    TECH_STACK=$(cat geist/product/tech-stack.md)
     echo "✅ Loaded product knowledge"
 else
     TECH_STACK=""
@@ -93,7 +93,7 @@ while read file_path; do
     
     # Replace common basepoints placeholders
     if echo "$FILE_CONTENT" | grep -q "{{BASEPOINTS_PATH}}"; then
-        FILE_CONTENT=$(echo "$FILE_CONTENT" | sed "s|{{BASEPOINTS_PATH}}|agent-os/basepoints|g")
+        FILE_CONTENT=$(echo "$FILE_CONTENT" | sed "s|{{BASEPOINTS_PATH}}|geist/basepoints|g")
         MODIFIED=true
         PLACEHOLDERS_CLEANED=$((PLACEHOLDERS_CLEANED + 1))
     fi
@@ -152,5 +152,5 @@ fi
 - Must replace placeholders with project-specific content using deploy-agents logic
 - Must support dry-run mode to preview changes
 - Must track what was fixed for cleanup report
-- **CRITICAL**: All cleanup cache files must be stored in `agent-os/.cleanup-cache/` (temporary, cleaned up after cleanup completes)
+- **CRITICAL**: All cleanup cache files must be stored in `geist/.cleanup-cache/` (temporary, cleaned up after cleanup completes)
 - Must use placeholder syntax ({{PLACEHOLDER}}) for project-specific parts that will be replaced during deploy-agents

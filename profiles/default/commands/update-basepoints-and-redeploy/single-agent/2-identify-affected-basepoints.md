@@ -7,7 +7,7 @@ The SECOND STEP is to identify which basepoints are affected by the detected cha
 Load the changed files list from Phase 1:
 
 ```bash
-CACHE_DIR="agent-os/output/update-basepoints-and-redeploy/cache"
+CACHE_DIR="geist/output/update-basepoints-and-redeploy/cache"
 
 if [ ! -f "$CACHE_DIR/changed-files.txt" ]; then
     echo "❌ ERROR: Changed files list not found."
@@ -36,7 +36,7 @@ Apply mapping rules to determine which basepoints are affected:
 | `profiles/default/agents/*` | `basepoints/profiles/default/agents/agent-base-agents.md` |
 | `profiles/default/*` | `basepoints/profiles/default/agent-base-default.md` |
 | `profiles/*` | `basepoints/profiles/agent-base-profiles.md` |
-| `agent-os/product/*` | _(flag for knowledge re-extraction only)_ |
+| `geist/product/*` | _(flag for knowledge re-extraction only)_ |
 | `*` (root files) | `basepoints/agent-base-self.md` |
 
 **Mapping Logic:**
@@ -58,36 +58,36 @@ echo "$CHANGED_FILES" | while read changed_file; do
     # Determine affected basepoint based on path
     case "$changed_file" in
         scripts/*)
-            echo "agent-os/basepoints/scripts/agent-base-scripts.md" >> "$CACHE_DIR/affected-basepoints.txt"
+            echo "geist/basepoints/scripts/agent-base-scripts.md" >> "$CACHE_DIR/affected-basepoints.txt"
             ;;
         profiles/default/commands/*)
-            echo "agent-os/basepoints/profiles/default/commands/agent-base-commands.md" >> "$CACHE_DIR/affected-basepoints.txt"
+            echo "geist/basepoints/profiles/default/commands/agent-base-commands.md" >> "$CACHE_DIR/affected-basepoints.txt"
             ;;
         profiles/default/workflows/*)
-            echo "agent-os/basepoints/profiles/default/workflows/agent-base-workflows.md" >> "$CACHE_DIR/affected-basepoints.txt"
+            echo "geist/basepoints/profiles/default/workflows/agent-base-workflows.md" >> "$CACHE_DIR/affected-basepoints.txt"
             ;;
         profiles/default/standards/*)
-            echo "agent-os/basepoints/profiles/default/standards/agent-base-standards.md" >> "$CACHE_DIR/affected-basepoints.txt"
+            echo "geist/basepoints/profiles/default/standards/agent-base-standards.md" >> "$CACHE_DIR/affected-basepoints.txt"
             ;;
         profiles/default/agents/*)
-            echo "agent-os/basepoints/profiles/default/agents/agent-base-agents.md" >> "$CACHE_DIR/affected-basepoints.txt"
+            echo "geist/basepoints/profiles/default/agents/agent-base-agents.md" >> "$CACHE_DIR/affected-basepoints.txt"
             ;;
         profiles/default/*)
-            echo "agent-os/basepoints/profiles/default/agent-base-default.md" >> "$CACHE_DIR/affected-basepoints.txt"
+            echo "geist/basepoints/profiles/default/agent-base-default.md" >> "$CACHE_DIR/affected-basepoints.txt"
             ;;
         profiles/*)
-            echo "agent-os/basepoints/profiles/agent-base-profiles.md" >> "$CACHE_DIR/affected-basepoints.txt"
+            echo "geist/basepoints/profiles/agent-base-profiles.md" >> "$CACHE_DIR/affected-basepoints.txt"
             ;;
-        agent-os/product/*)
+        geist/product/*)
             # Product files don't have basepoints, but flag for knowledge re-extraction
             echo "PRODUCT_CHANGE:$changed_file" >> "$CACHE_DIR/product-changes-detail.txt"
             ;;
-        agent-os/*)
-            # Ignore other agent-os files (output, specs, etc.)
+        geist/*)
+            # Ignore other geist files (output, specs, etc.)
             ;;
         *)
             # Root-level files affect root basepoint
-            echo "agent-os/basepoints/agent-base-self.md" >> "$CACHE_DIR/affected-basepoints.txt"
+            echo "geist/basepoints/agent-base-self.md" >> "$CACHE_DIR/affected-basepoints.txt"
             ;;
     esac
 done
@@ -116,7 +116,7 @@ while read basepoint; do
     PARENT_DIR=$(dirname "$basepoint")
     
     # Walk up the tree to find parent basepoints
-    while [ "$PARENT_DIR" != "agent-os/basepoints" ] && [ "$PARENT_DIR" != "." ]; do
+    while [ "$PARENT_DIR" != "geist/basepoints" ] && [ "$PARENT_DIR" != "." ]; do
         PARENT_NAME=$(basename "$PARENT_DIR")
         PARENT_BASEPOINT="$PARENT_DIR/agent-base-$PARENT_NAME.md"
         
@@ -134,7 +134,7 @@ mv "$CACHE_DIR/all-affected-basepoints.txt" "$CACHE_DIR/affected-basepoints.txt"
 
 # Always add headquarter if any basepoint is affected
 if [ -s "$CACHE_DIR/affected-basepoints.txt" ]; then
-    echo "agent-os/basepoints/headquarter.md" >> "$CACHE_DIR/affected-basepoints.txt"
+    echo "geist/basepoints/headquarter.md" >> "$CACHE_DIR/affected-basepoints.txt"
 fi
 ```
 
@@ -217,7 +217,7 @@ Once basepoint identification is complete, output the following message:
 
 📦 Knowledge Re-extraction: [Required/Not required]
 
-📋 Summary: agent-os/output/update-basepoints-and-redeploy/cache/affected-basepoints-summary.md
+📋 Summary: geist/output/update-basepoints-and-redeploy/cache/affected-basepoints-summary.md
 
 NEXT STEP 👉 Run Phase 3: `3-update-basepoints.md`
 ```

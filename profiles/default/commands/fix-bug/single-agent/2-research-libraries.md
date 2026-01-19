@@ -7,7 +7,7 @@ Deep-dive research on libraries related to the issue.
 Load the issue analysis from Phase 1:
 
 ```bash
-CACHE_PATH="agent-os/output/fix-bug/cache"
+CACHE_PATH="geist/output/fix-bug/cache"
 
 if [ -f "$CACHE_PATH/issue-analysis.md" ]; then
     ISSUE_ANALYSIS=$(cat "$CACHE_PATH/issue-analysis.md")
@@ -193,7 +193,7 @@ echo "   Research saved to: $CACHE_PATH/library-research.md"
 ✅ Known issues identified
 ✅ Error scenarios analyzed
 
-Research saved to: agent-os/output/fix-bug/cache/library-research.md
+Research saved to: geist/output/fix-bug/cache/library-research.md
 
 NEXT STEP 👉 Proceeding to Phase 3: Basepoints Integration
 ```

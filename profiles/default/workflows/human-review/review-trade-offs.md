@@ -1,5 +1,18 @@
 # Human Review for Trade-offs
 
+---
+
+## ⚠️ NOTE: This workflow may require user interaction
+
+If trade-offs or contradictions are detected, this workflow will:
+1. Present all issues to the user
+2. **STOP and WAIT** for the user to make decisions
+3. Log the user's decisions for future reference
+
+If no issues are detected, the workflow proceeds automatically.
+
+---
+
 ## Core Responsibilities
 
 1. **Orchestrate Trade-off Detection**: Trigger detection workflows for trade-offs and contradictions
@@ -33,9 +46,9 @@ REVIEW_TRIGGERED="false"
 ### Step 2: Run Trade-off Detection
 
 ```bash
-# Determine workflow base path (agent-os when installed, profiles/default for template)
-if [ -d "agent-os/workflows" ]; then
-    WORKFLOWS_BASE="agent-os/workflows"
+# Determine workflow base path (geist when installed, profiles/default for template)
+if [ -d "geist/workflows" ]; then
+    WORKFLOWS_BASE="geist/workflows"
 else
     WORKFLOWS_BASE="profiles/default/workflows"
 fi
@@ -384,5 +397,5 @@ This workflow has been enhanced with Spec-Driven Development (SDD) best practice
 - All SDD trade-off detection is structure-based, not technology-specific
 - No hardcoded technology-specific references in default templates
 - Detection maintains technology-agnostic state throughout **in default profile templates**
-- **After Specialization:** When templates are compiled to `agent-os/workflows/`, workflows can and should become technology-specific based on the project's actual stack
+- **After Specialization:** When templates are compiled to `geist/workflows/`, workflows can and should become technology-specific based on the project's actual stack
 - **Command Outputs:** Specs, tasks, and implementations should reflect the project's actual technology stack

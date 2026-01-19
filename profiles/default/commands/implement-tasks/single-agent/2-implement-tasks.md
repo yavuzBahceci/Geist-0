@@ -5,7 +5,7 @@ Now that you have the task group(s) to be implemented, proceed with implementati
 First, load any accumulated knowledge from previous commands (shape-spec, write-spec, create-tasks):
 
 ```bash
-SPEC_PATH="agent-os/specs/[current-spec]"
+SPEC_PATH="geist/specs/[current-spec]"
 CACHE_PATH="$SPEC_PATH/implementation/cache"
 
 # Load accumulated knowledge from previous commands
@@ -18,7 +18,38 @@ else
 fi
 ```
 
-## Step 2: Extract Comprehensive Knowledge
+## Step 2: Load Specialist Context (if assigned)
+
+Check if specialists were assigned to this task group in orchestration.yml:
+
+```bash
+ORCHESTRATION_FILE="$SPEC_PATH/orchestration.yml"
+SPECIALIST_CONTEXT=""
+
+if [ -f "$ORCHESTRATION_FILE" ]; then
+    # Extract assigned specialists for this task group (supports multiple)
+    ASSIGNED_SPECIALISTS=$(grep -A3 "name: $TASK_GROUP_NAME" "$ORCHESTRATION_FILE" | \
+        grep "specialists:" | \
+        sed 's/.*specialists: \[//' | sed 's/\]//' | tr -d ' ')
+    
+    if [ -n "$ASSIGNED_SPECIALISTS" ]; then
+        echo "✅ Loading specialist context for: $ASSIGNED_SPECIALISTS"
+        
+        # Load context from each assigned specialist
+        IFS=',' read -ra SPECIALISTS_ARRAY <<< "$ASSIGNED_SPECIALISTS"
+        for specialist in "${SPECIALISTS_ARRAY[@]}"; do
+            SPECIALIST_FILE="geist/agents/specialists/${specialist}.md"
+            if [ -f "$SPECIALIST_FILE" ]; then
+                SPECIALIST_CONTENT=$(cat "$SPECIALIST_FILE")
+                SPECIALIST_CONTEXT="${SPECIALIST_CONTEXT}\n\n## Context from ${specialist}\n${SPECIALIST_CONTENT}"
+                echo "   ✅ Loaded: $specialist"
+            fi
+        done
+    fi
+fi
+```
+
+## Step 3: Extract Comprehensive Knowledge
 
 Extract knowledge from all sources to inform implementation:
 
@@ -44,11 +75,11 @@ echo "📝 Creating comprehensive implementation prompt..."
 
 # Load product knowledge
 PRODUCT_KNOWLEDGE=""
-if [ -f "agent-os/product/mission.md" ]; then
-    PRODUCT_KNOWLEDGE="${PRODUCT_KNOWLEDGE}\n## Mission\n$(cat agent-os/product/mission.md)"
+if [ -f "geist/product/mission.md" ]; then
+    PRODUCT_KNOWLEDGE="${PRODUCT_KNOWLEDGE}\n## Mission\n$(cat geist/product/mission.md)"
 fi
-if [ -f "agent-os/product/tech-stack.md" ]; then
-    PRODUCT_KNOWLEDGE="${PRODUCT_KNOWLEDGE}\n## Tech Stack\n$(cat agent-os/product/tech-stack.md)"
+if [ -f "geist/product/tech-stack.md" ]; then
+    PRODUCT_KNOWLEDGE="${PRODUCT_KNOWLEDGE}\n## Tech Stack\n$(cat geist/product/tech-stack.md)"
 fi
 
 # Create comprehensive implementation prompt
@@ -85,6 +116,9 @@ $PRODUCT_KNOWLEDGE
 
 ## Detected Abstraction Layer
 $DETECTED_LAYER
+
+## Specialist Knowledge (if assigned)
+$SPECIALIST_CONTEXT
 
 ## Implementation Approach Decision
 
@@ -184,7 +218,7 @@ Display a summary of what was implemented.
 IF all tasks are now marked as done (with `- [x]`) in tasks.md, display this message to user:
 
 ```
-All tasks have been implemented: `agent-os/specs/[this-spec]/tasks.md`.
+All tasks have been implemented: `geist/specs/[this-spec]/tasks.md`.
 
 NEXT STEP 👉 Run `3-verify-implementation.md` to verify the implementation.
 ```
@@ -202,7 +236,7 @@ If not, please specify which task group(s) to implement next.
 After each task group is implemented, run validation:
 
 ```bash
-SPEC_PATH="agent-os/specs/[current-spec]"
+SPEC_PATH="geist/specs/[current-spec]"
 COMMAND="implement-tasks"
 {{workflows/validation/validate-output-exists}}
 {{workflows/validation/validate-knowledge-integration}}

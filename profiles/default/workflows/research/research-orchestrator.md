@@ -6,12 +6,12 @@ Main orchestrator for web research. Loads detected tech stack, determines resear
 
 ## Inputs
 
-- `agent-os/config/project-profile.yml` - Detected project profile
+- `geist/config/project-profile.yml` - Detected project profile
 - `RESEARCH_DEPTH` - minimal, standard, or comprehensive (default: standard)
 
 ## Outputs
 
-- `agent-os/config/enriched-knowledge/` directory with research results
+- `geist/config/enriched-knowledge/` directory with research results
 
 ---
 
@@ -24,18 +24,18 @@ echo "🔬 Starting knowledge enrichment research..."
 echo ""
 
 # Create enriched-knowledge directory
-mkdir -p agent-os/config/enriched-knowledge
+mkdir -p geist/config/enriched-knowledge
 
 # Load project profile
-if [ -f "agent-os/config/project-profile.yml" ]; then
+if [ -f "geist/config/project-profile.yml" ]; then
     echo "📂 Loading project profile..."
     
     # Extract key values (simplified parsing)
-    DETECTED_LANGUAGE=$(grep "language:" agent-os/config/project-profile.yml | head -1 | awk '{print $2}')
-    DETECTED_FRAMEWORK=$(grep "framework:" agent-os/config/project-profile.yml | head -1 | awk '{print $2}')
-    DETECTED_DATABASE=$(grep "database:" agent-os/config/project-profile.yml | head -1 | awk '{print $2}')
-    PROJECT_TYPE=$(grep "project_type:" agent-os/config/project-profile.yml | head -1 | awk '{print $2}')
-    SECURITY_LEVEL=$(grep "security_level:" agent-os/config/project-profile.yml | head -1 | awk '{print $2}')
+    DETECTED_LANGUAGE=$(grep "language:" geist/config/project-profile.yml | head -1 | awk '{print $2}')
+    DETECTED_FRAMEWORK=$(grep "framework:" geist/config/project-profile.yml | head -1 | awk '{print $2}')
+    DETECTED_DATABASE=$(grep "database:" geist/config/project-profile.yml | head -1 | awk '{print $2}')
+    PROJECT_TYPE=$(grep "project_type:" geist/config/project-profile.yml | head -1 | awk '{print $2}')
+    SECURITY_LEVEL=$(grep "security_level:" geist/config/project-profile.yml | head -1 | awk '{print $2}')
     
     echo "   Language: $DETECTED_LANGUAGE"
     echo "   Framework: ${DETECTED_FRAMEWORK:-(none)}"
@@ -161,10 +161,10 @@ echo "════════════════════════�
 echo "  RESEARCH COMPLETE"
 echo "═══════════════════════════════════════════════════════"
 echo ""
-echo "📁 Enriched knowledge saved to: agent-os/config/enriched-knowledge/"
+echo "📁 Enriched knowledge saved to: geist/config/enriched-knowledge/"
 echo ""
 echo "Files generated:"
-ls -la agent-os/config/enriched-knowledge/ 2>/dev/null | grep ".md" | awk '{print "   • " $NF}'
+ls -la geist/config/enriched-knowledge/ 2>/dev/null | grep ".md" | awk '{print "   • " $NF}'
 echo ""
 echo "Research areas completed: $(echo $RESEARCH_COMPLETED | sed 's/,$//' | tr ',' ', ')"
 echo ""

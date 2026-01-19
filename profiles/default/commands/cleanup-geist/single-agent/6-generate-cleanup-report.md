@@ -15,7 +15,7 @@ Gather statistics from all cleanup phases:
 
 ```bash
 # Load cleanup cache
-CLEANUP_CACHE="agent-os/.cleanup-cache"
+CLEANUP_CACHE="geist/.cleanup-cache"
 VALIDATION_CACHE="$CLEANUP_CACHE/validation"
 KNOWLEDGE_VERIFICATION_CACHE="$CLEANUP_CACHE/knowledge-verification"
 DRY_RUN="${DRY_RUN:-false}"
@@ -42,9 +42,9 @@ Determine where to store the cleanup report:
 
 ```bash
 # Check if running within spec context
-if [ -d "agent-os/specs" ] && [ -n "$(find agent-os/specs -mindepth 1 -maxdepth 1 -type d | head -1)" ]; then
+if [ -d "geist/specs" ] && [ -n "$(find geist/specs -mindepth 1 -maxdepth 1 -type d | head -1)" ]; then
     # Find most recent spec directory
-    LATEST_SPEC=$(find agent-os/specs -mindepth 1 -maxdepth 1 -type d | sort -r | head -1)
+    LATEST_SPEC=$(find geist/specs -mindepth 1 -maxdepth 1 -type d | sort -r | head -1)
     REPORT_PATH="$LATEST_SPEC/implementation/cache/cleanup"
     mkdir -p "$REPORT_PATH"
     echo "📁 Storing cleanup report in spec context: $REPORT_PATH"
@@ -148,11 +148,11 @@ fi)
 $(if [ "$DRY_RUN" = "true" ]; then
     echo "This was a DRY-RUN. To apply these changes, run the cleanup command again without dry-run mode."
 else
-    echo "✅ Cleanup complete! Your agent-os has been cleaned and fixed."
+    echo "✅ Cleanup complete! Your geist has been cleaned and fixed."
     echo ""
     echo "You can now:"
     echo "1. Run validation again to verify all issues are resolved"
-    echo "2. Use your cleaned agent-os commands"
+    echo "2. Use your cleaned geist commands"
 fi)
 EOF
 
@@ -187,6 +187,6 @@ fi
 - Must store report in appropriate location (spec context or cleanup cache)
 - Must clean up temporary files after report generation (unless dry-run)
 - **CRITICAL**: 
-  - If run within spec context: Store report in `agent-os/specs/[current-spec]/implementation/cache/cleanup/`
-  - If run standalone: Store report in `agent-os/.cleanup-cache/report/` (temporary, can be cleaned up)
+  - If run within spec context: Store report in `geist/specs/[current-spec]/implementation/cache/cleanup/`
+  - If run standalone: Store report in `geist/.cleanup-cache/report/` (temporary, can be cleaned up)
 - Must use placeholder syntax ({{PLACEHOLDER}}) for project-specific parts that will be replaced during deploy-agents

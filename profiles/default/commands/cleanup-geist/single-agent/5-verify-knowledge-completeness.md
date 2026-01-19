@@ -16,14 +16,14 @@ Check that basepoints cover all important aspects of the codebase:
 
 ```bash
 # Create knowledge verification cache
-CLEANUP_CACHE="agent-os/.cleanup-cache"
+CLEANUP_CACHE="geist/.cleanup-cache"
 KNOWLEDGE_VERIFICATION_CACHE="$CLEANUP_CACHE/knowledge-verification"
 mkdir -p "$KNOWLEDGE_VERIFICATION_CACHE"
 
 echo "🔍 Verifying basepoints completeness..."
 
 # Check basepoints structure
-if [ ! -d "agent-os/basepoints" ]; then
+if [ ! -d "geist/basepoints" ]; then
     echo "❌ Basepoints directory not found"
     MISSING_BASEPOINTS=true
 else
@@ -31,11 +31,11 @@ else
     MISSING_BASEPOINTS=false
     
     # Count basepoint files
-    BASEPOINT_FILES=$(find agent-os/basepoints -name "agent-base-*.md" -type f | wc -l | tr -d ' ')
+    BASEPOINT_FILES=$(find geist/basepoints -name "agent-base-*.md" -type f | wc -l | tr -d ' ')
     echo "  - Module basepoints found: $BASEPOINT_FILES"
     
     # Check for headquarter.md
-    if [ -f "agent-os/basepoints/headquarter.md" ]; then
+    if [ -f "geist/basepoints/headquarter.md" ]; then
         echo "  ✅ Headquarter basepoint found"
         
         # Verify headquarter contains required sections
@@ -43,7 +43,7 @@ else
         MISSING_SECTIONS=()
         
         for section in "${REQUIRED_SECTIONS[@]}"; do
-            if ! grep -qi "$section" agent-os/basepoints/headquarter.md 2>/dev/null; then
+            if ! grep -qi "$section" geist/basepoints/headquarter.md 2>/dev/null; then
                 MISSING_SECTIONS+=("$section")
             fi
         done
@@ -64,7 +64,7 @@ else
     fi
     
     # Check for basepoints in different abstraction layers
-    LAYER_COUNT=$(find agent-os/basepoints -type d -mindepth 1 -maxdepth 1 | wc -l | tr -d ' ')
+    LAYER_COUNT=$(find geist/basepoints -type d -mindepth 1 -maxdepth 1 | wc -l | tr -d ' ')
     if [ "$LAYER_COUNT" -eq 0 ] && [ "$BASEPOINT_FILES" -gt 0 ]; then
         echo "  ⚠️  Warning: Basepoints may not be organized by abstraction layers"
     else
@@ -81,7 +81,7 @@ Check that product files contain all required information:
 echo ""
 echo "🔍 Verifying product knowledge completeness..."
 
-if [ ! -d "agent-os/product" ]; then
+if [ ! -d "geist/product" ]; then
     echo "❌ Product directory not found"
     MISSING_PRODUCT=true
 else
@@ -94,27 +94,27 @@ else
     INCOMPLETE_PRODUCT_FILES=()
     
     for file in "${PRODUCT_FILES[@]}"; do
-        if [ ! -f "agent-os/product/$file" ]; then
+        if [ ! -f "geist/product/$file" ]; then
             MISSING_PRODUCT_FILES+=("$file")
-            echo "  ❌ Missing: agent-os/product/$file"
+            echo "  ❌ Missing: geist/product/$file"
         else
             # Check if file has substantial content (more than just headers)
-            CONTENT_LINES=$(grep -v '^#' agent-os/product/$file | grep -v '^$' | wc -l | tr -d ' ')
+            CONTENT_LINES=$(grep -v '^#' geist/product/$file | grep -v '^$' | wc -l | tr -d ' ')
             if [ "$CONTENT_LINES" -lt 5 ]; then
                 INCOMPLETE_PRODUCT_FILES+=("$file")
-                echo "  ⚠️  Warning: agent-os/product/$file exists but may be incomplete ($CONTENT_LINES content lines)"
+                echo "  ⚠️  Warning: geist/product/$file exists but may be incomplete ($CONTENT_LINES content lines)"
             else
-                echo "  ✅ agent-os/product/$file (complete, $CONTENT_LINES content lines)"
+                echo "  ✅ geist/product/$file (complete, $CONTENT_LINES content lines)"
             fi
         fi
     done
     
     # Verify mission.md contains key elements
-    if [ -f "agent-os/product/mission.md" ]; then
+    if [ -f "geist/product/mission.md" ]; then
         MISSION_KEYWORDS=("purpose" "vision" "goal" "objective" "target" "user")
         FOUND_KEYWORDS=0
         for keyword in "${MISSION_KEYWORDS[@]}"; do
-            if grep -qi "$keyword" agent-os/product/mission.md 2>/dev/null; then
+            if grep -qi "$keyword" geist/product/mission.md 2>/dev/null; then
                 ((FOUND_KEYWORDS++))
             fi
         done
@@ -124,18 +124,18 @@ else
     fi
     
     # Verify roadmap.md contains phases or features
-    if [ -f "agent-os/product/roadmap.md" ]; then
-        if ! grep -qiE "(phase|feature|milestone|roadmap|plan)" agent-os/product/roadmap.md 2>/dev/null; then
+    if [ -f "geist/product/roadmap.md" ]; then
+        if ! grep -qiE "(phase|feature|milestone|roadmap|plan)" geist/product/roadmap.md 2>/dev/null; then
             echo "  ⚠️  Warning: roadmap.md may not contain development phases or features"
         fi
     fi
     
     # Verify tech-stack.md contains technology information
-    if [ -f "agent-os/product/tech-stack.md" ]; then
+    if [ -f "geist/product/tech-stack.md" ]; then
         TECH_KEYWORDS=("language" "framework" "library" "database" "tool" "stack")
         FOUND_TECH=0
         for keyword in "${TECH_KEYWORDS[@]}"; do
-            if grep -qi "$keyword" agent-os/product/tech-stack.md 2>/dev/null; then
+            if grep -qi "$keyword" geist/product/tech-stack.md 2>/dev/null; then
                 ((FOUND_TECH++))
             fi
         done
@@ -155,7 +155,7 @@ echo ""
 echo "🔍 Detecting missing information..."
 
 # Analyze project structure to identify potential missing basepoints
-if [ -d "agent-os/basepoints" ] && [ -d "." ]; then
+if [ -d "geist/basepoints" ] && [ -d "." ]; then
     # Get project source directories (common patterns)
     SOURCE_DIRS=()
     [ -d "src" ] && SOURCE_DIRS+=("src")
@@ -171,7 +171,7 @@ if [ -d "agent-os/basepoints" ] && [ -d "." ]; then
         for dir in "${SOURCE_DIRS[@]}"; do
             # Check if there's a corresponding basepoint
             BASEPOINT_FOUND=false
-            if find agent-os/basepoints -path "*$dir*" -name "agent-base-*.md" | grep -q .; then
+            if find geist/basepoints -path "*$dir*" -name "agent-base-*.md" | grep -q .; then
                 BASEPOINT_FOUND=true
             fi
             
@@ -191,9 +191,9 @@ MISSING_PATTERNS=()
 
 for pattern in "${COMMON_PATTERNS[@]}"; do
     # Check if pattern exists in codebase
-    if find . -type f -name "*$pattern*" -not -path "./agent-os/*" -not -path "./.git/*" | head -1 | grep -q .; then
+    if find . -type f -name "*$pattern*" -not -path "./geist/*" -not -path "./.git/*" | head -1 | grep -q .; then
         # Check if pattern is documented in basepoints
-        if ! find agent-os/basepoints -name "*.md" -exec grep -l -i "$pattern" {} \; | grep -q .; then
+        if ! find geist/basepoints -name "*.md" -exec grep -l -i "$pattern" {} \; | grep -q .; then
             MISSING_PATTERNS+=("$pattern")
         fi
     fi
@@ -214,12 +214,12 @@ echo "🔍 Analyzing knowledge coverage..."
 
 # Calculate coverage metrics
 TOTAL_BASEPOINTS=$BASEPOINT_FILES
-if [ -f "agent-os/basepoints/headquarter.md" ]; then
+if [ -f "geist/basepoints/headquarter.md" ]; then
     TOTAL_BASEPOINTS=$((TOTAL_BASEPOINTS + 1))
 fi
 
 # Estimate project complexity (rough heuristic)
-PROJECT_FILES=$(find . -type f -name "*.js" -o -name "*.ts" -o -name "*.py" -o -name "*.rb" -o -name "*.java" -o -name "*.go" | grep -v node_modules | grep -v ".git" | grep -v "agent-os" | wc -l | tr -d ' ')
+PROJECT_FILES=$(find . -type f -name "*.js" -o -name "*.ts" -o -name "*.py" -o -name "*.rb" -o -name "*.java" -o -name "*.go" | grep -v node_modules | grep -v ".git" | grep -v "geist" | wc -l | tr -d ' ')
 
 if [ "$PROJECT_FILES" -gt 0 ]; then
     COVERAGE_RATIO=$(echo "scale=2; $TOTAL_BASEPOINTS * 100 / ($PROJECT_FILES / 10 + 1)" | bc 2>/dev/null || echo "0")
@@ -252,7 +252,7 @@ cat > "$KNOWLEDGE_VERIFICATION_CACHE/knowledge-gap-report.json" << EOF
   "basepoints": {
     "exists": $([ "$MISSING_BASEPOINTS" = "false" ] && echo "true" || echo "false"),
     "file_count": $BASEPOINT_FILES,
-    "headquarter_exists": $([ -f "agent-os/basepoints/headquarter.md" ] && echo "true" || echo "false"),
+    "headquarter_exists": $([ -f "geist/basepoints/headquarter.md" ] && echo "true" || echo "false"),
     "missing_sections": $(if [ ${#MISSING_SECTIONS[@]} -gt 0 ]; then echo "\"${MISSING_SECTIONS[*]}\""; else echo "[]"; fi),
     "layer_count": $LAYER_COUNT
   },
@@ -287,7 +287,7 @@ fi)
 ## Basepoints Analysis
 
 - **Basepoints Directory:** $([ "$MISSING_BASEPOINTS" = "false" ] && echo "✅ Found" || echo "❌ Missing")
-- **Headquarter Basepoint:** $([ -f "agent-os/basepoints/headquarter.md" ] && echo "✅ Found" || echo "❌ Missing")
+- **Headquarter Basepoint:** $([ -f "geist/basepoints/headquarter.md" ] && echo "✅ Found" || echo "❌ Missing")
 - **Module Basepoints:** $BASEPOINT_FILES file(s) found
 - **Abstraction Layers:** $LAYER_COUNT layer(s) covered
 $(if [ ${#MISSING_SECTIONS[@]} -gt 0 ]; then
@@ -370,6 +370,6 @@ fi
 - Must detect missing information by analyzing project structure
 - Must perform coverage analysis to ensure adequate knowledge extraction
 - Must generate comprehensive knowledge gap report
-- **CRITICAL**: All verification reports must be stored in `agent-os/.cleanup-cache/knowledge-verification/`
+- **CRITICAL**: All verification reports must be stored in `geist/.cleanup-cache/knowledge-verification/`
 - Must provide clear recommendations for fixing missing or incomplete knowledge
 - Must identify if critical knowledge is missing (basepoints or product files) vs. incomplete knowledge (missing sections)

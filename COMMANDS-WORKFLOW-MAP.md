@@ -35,9 +35,9 @@ This document provides a comprehensive visual map of all commands and their work
 │  └──────────────────┘    └──────────────────┘    └──────────────────┘               │
 │         │                        │                        │                          │
 │         ▼                        ▼                        ▼                          │
-│  agent-os/product/        agent-os/basepoints/     agent-os/commands/               │
-│  • mission.md             • headquarter.md         agent-os/workflows/               │
-│  • roadmap.md             • agent-base-*.md        agent-os/standards/               │
+│  geist/product/        geist/basepoints/     geist/commands/               │
+│  • mission.md             • headquarter.md         geist/workflows/               │
+│  • roadmap.md             • agent-base-*.md        geist/standards/               │
 │  • tech-stack.md          • libraries/                                               │
 └─────────────────────────────────────────────────────────────────────────────────────┘
 
@@ -65,7 +65,7 @@ This document provides a comprehensive visual map of all commands and their work
 │  └─────────────────────────────┘   └─────────────────┘   └─────────────────┘        │
 │              │                              │                     │                  │
 │              ▼                              ▼                     ▼                  │
-│  Updated basepoints              Cleaned agent-os         Bug fixes with            │
+│  Updated basepoints              Cleaned geist            Bug fixes with            │
 │  Re-specialized commands         Verified knowledge       knowledge synthesis       │
 └─────────────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -187,7 +187,7 @@ Phase 1: Setup & Detection
 │                                │                                                     │
 │                                ▼                                                     │
 │                  ┌─────────────────────────────┐                                    │
-│                  │ agent-os/config/            │                                    │
+│                  │ geist/config/            │                                    │
 │                  │ project-profile.yml         │                                    │
 │                  └─────────────────────────────┘                                    │
 └─────────────────────────────────────────────────────────────────────────────────────┘
@@ -211,7 +211,7 @@ Phase 2: Web Research
 │                                │                                                     │
 │                                ▼                                                     │
 │                  ┌─────────────────────────────┐                                    │
-│                  │ agent-os/config/            │                                    │
+│                  │ geist/config/            │                                    │
 │                  │ enriched-knowledge/         │                                    │
 │                  │ • library-research.md       │                                    │
 │                  │ • stack-best-practices.md   │                                    │
@@ -237,7 +237,7 @@ Phase 3-5: Create Product Docs
 │                                │                                                     │
 │                                ▼                                                     │
 │                  ┌─────────────────────────────┐                                    │
-│                  │ agent-os/product/           │                                    │
+│                  │ geist/product/           │                                    │
 │                  │ • mission.md                │                                    │
 │                  │ • roadmap.md                │                                    │
 │                  │ • tech-stack.md             │                                    │
@@ -263,7 +263,7 @@ Phase 7: Product-Focused Cleanup
 │    └───────────┬───────────────┘                                                    │
 │                ▼                                                                     │
 │  ┌─────────────────────────────┐                                                    │
-│  │ agent-os/output/            │                                                    │
+│  │ geist/output/            │                                                    │
 │  │ product-cleanup/            │                                                    │
 │  │ • detected-scope.yml        │                                                    │
 │  │ • cleanup-report.md         │                                                    │
@@ -309,7 +309,7 @@ Phase 3: Mirror Project Structure
 ┌─────────────────────────────────────────────────────────────────────────────────────┐
 │  ┌─────────────────────────────────┐                                                │
 │  │ {{workflows/codebase-analysis/  │     Creates:                                   │
-│  │   mirror-project-structure}}    │───▶ agent-os/basepoints/                       │
+│  │   mirror-project-structure}}    │───▶ geist/basepoints/                       │
 │  └─────────────────────────────────┘     └── [mirrors project structure]            │
 └─────────────────────────────────────────────────────────────────────────────────────┘
 
@@ -330,7 +330,7 @@ Phase 5: Generate Module Basepoints
 ┌─────────────────────────────────────────────────────────────────────────────────────┐
 │  ┌─────────────────────────────────┐                                                │
 │  │ {{workflows/codebase-analysis/  │     Creates:                                   │
-│  │   generate-module-basepoints}}  │───▶ agent-os/basepoints/                       │
+│  │   generate-module-basepoints}}  │───▶ geist/basepoints/                       │
 │  └─────────────────────────────────┘     └── [layer]/[module]/                      │
 │                                              └── agent-base-[module].md             │
 │                                                                                      │
@@ -355,7 +355,7 @@ Phase 7: Generate Headquarter
 ┌─────────────────────────────────────────────────────────────────────────────────────┐
 │  ┌─────────────────────────────────┐                                                │
 │  │ {{workflows/codebase-analysis/  │     Creates:                                   │
-│  │   generate-headquarter}}        │───▶ agent-os/basepoints/headquarter.md         │
+│  │   generate-headquarter}}        │───▶ geist/basepoints/headquarter.md         │
 │  └─────────────────────────────────┘                                                │
 │                                          Contains:                                   │
 │                                          • Project overview                          │
@@ -382,7 +382,7 @@ Phase 8: Generate Library Basepoints ◀── NEW
 │                                │                                                     │
 │                                ▼                                                     │
 │                  ┌─────────────────────────────┐                                    │
-│                  │ agent-os/basepoints/        │                                    │
+│                  │ geist/basepoints/        │                                    │
 │                  │ libraries/                  │                                    │
 │                  │ ├── data/                   │                                    │
 │                  │ ├── domain/                 │                                    │
@@ -429,7 +429,7 @@ Phase 2: Extract Basepoints Knowledge
 │  │   automatic}}                   │     • Standards                                │
 │  └─────────────────────────────────┘     • Flows                                    │
 │                                                                                      │
-│  Output: agent-os/output/deploy-agents/knowledge/basepoints-knowledge.json          │
+│  Output: geist/output/deploy-agents/knowledge/basepoints-knowledge.json          │
 └─────────────────────────────────────────────────────────────────────────────────────┘
 
 Phase 3-4: Extract & Merge Knowledge
@@ -441,7 +441,7 @@ Phase 3-4: Extract & Merge Knowledge
 │  └─────────────────────────────────┘     • Product knowledge                        │
 │                                          • Enriched knowledge                        │
 │                                                                                      │
-│  Output: agent-os/output/deploy-agents/knowledge/merged-knowledge.json              │
+│  Output: geist/output/deploy-agents/knowledge/merged-knowledge.json              │
 └─────────────────────────────────────────────────────────────────────────────────────┘
 
 Phase 5-7: Specialize Commands
@@ -499,7 +499,7 @@ Phase 12-13: Optimize Prompts
 │  └─────────────────────────────────┘                                                │
 └─────────────────────────────────────────────────────────────────────────────────────┘
 
-OUTPUT: Specialized agent-os/ ready for development
+OUTPUT: Specialized geist/ ready for development
 ═══════════════════════════════════════════════════
 ```
 
@@ -518,7 +518,7 @@ Phase 1: Initialize Spec
 ════════════════════════
 ┌─────────────────────────────────────────────────────────────────────────────────────┐
 │  Creates:                                                                            │
-│  agent-os/specs/[spec-name]/                                                         │
+│  geist/specs/[spec-name]/                                                         │
 │  ├── planning/                                                                       │
 │  │   ├── initialization.md                                                           │
 │  │   └── visuals/                                                                    │
@@ -572,7 +572,7 @@ Phase 3: Research Spec
 │  └─────────────────────────────────┘     • Suggest reusable patterns                │
 │                                          • Reference historical decisions           │
 │                                                                                      │
-│  Output: agent-os/specs/[spec]/planning/requirements.md                             │
+│  Output: geist/specs/[spec]/planning/requirements.md                             │
 └─────────────────────────────────────────────────────────────────────────────────────┘
 
 Phase 4-5: Validate & Accumulate ◀── NEW
@@ -591,7 +591,7 @@ Phase 4-5: Validate & Accumulate ◀── NEW
 │  │   accumulate-knowledge}}        │───▶ for write-spec to use                      │
 │  └─────────────────────────────────┘                                                │
 │                                                                                      │
-│  Output: agent-os/specs/[spec]/implementation/cache/accumulated-knowledge.md        │
+│  Output: geist/specs/[spec]/implementation/cache/accumulated-knowledge.md        │
 └─────────────────────────────────────────────────────────────────────────────────────┘
 
 OUTPUT: requirements.md + accumulated knowledge
@@ -645,7 +645,7 @@ Step 3: Write Specification
 │  └─────────────────────────────────┘     • Reference basepoints standards           │
 │                                          • Suggest existing code                     │
 │                                                                                      │
-│  Output: agent-os/specs/[spec]/spec.md                                              │
+│  Output: geist/specs/[spec]/spec.md                                              │
 └─────────────────────────────────────────────────────────────────────────────────────┘
 
 Step 4: Review Trade-offs
@@ -715,7 +715,7 @@ Step 4: Create Tasks List
 │  └─────────────────────────────────┘     • Include implementation hints             │
 │                                          • Reference patterns                        │
 │                                                                                      │
-│  Output: agent-os/specs/[spec]/tasks.md                                             │
+│  Output: geist/specs/[spec]/tasks.md                                             │
 └─────────────────────────────────────────────────────────────────────────────────────┘
 
 Step 7: Accumulate Knowledge
@@ -764,7 +764,7 @@ Step 3: Generate Prompts
 ════════════════════════
 ┌─────────────────────────────────────────────────────────────────────────────────────┐
 │  For each task group, creates:                                                       │
-│  agent-os/specs/[spec]/implementation/prompts/[N]-[task-group].md                   │
+│  geist/specs/[spec]/implementation/prompts/[N]-[task-group].md                   │
 │                                                                                      │
 │  Each prompt includes: ◀── ENHANCED                                                  │
 │  ┌─────────────────────────────────────────────────────────────────────────────┐    │
@@ -917,7 +917,7 @@ Phase 1: Analyze Issue
 │  • Error message, stack trace, error code                                            │
 │  • Affected libraries and modules                                                    │
 │                                                                                      │
-│  Output: agent-os/output/fix-bug/cache/issue-analysis.md                            │
+│  Output: geist/output/fix-bug/cache/issue-analysis.md                            │
 └─────────────────────────────────────────────────────────────────────────────────────┘
 
 Phase 2: Research Libraries
@@ -928,7 +928,7 @@ Phase 2: Research Libraries
 │  • Research known issues and bug patterns                                            │
 │  • Research error scenarios                                                          │
 │                                                                                      │
-│  Output: agent-os/output/fix-bug/cache/library-research.md                          │
+│  Output: geist/output/fix-bug/cache/library-research.md                          │
 └─────────────────────────────────────────────────────────────────────────────────────┘
 
 Phase 3: Integrate Basepoints
@@ -944,7 +944,7 @@ Phase 3: Integrate Basepoints
 │  • Extract relevant patterns and standards                                           │
 │  • Identify similar issues                                                           │
 │                                                                                      │
-│  Output: agent-os/output/fix-bug/cache/basepoints-integration.md                    │
+│  Output: geist/output/fix-bug/cache/basepoints-integration.md                    │
 └─────────────────────────────────────────────────────────────────────────────────────┘
 
 Phase 4: Analyze Code
@@ -955,7 +955,7 @@ Phase 4: Analyze Code
 │  • Analyze code patterns and flows                                                   │
 │  • Trace execution paths                                                             │
 │                                                                                      │
-│  Output: agent-os/output/fix-bug/cache/code-analysis.md                             │
+│  Output: geist/output/fix-bug/cache/code-analysis.md                             │
 └─────────────────────────────────────────────────────────────────────────────────────┘
 
 Phase 5: Synthesize Knowledge
@@ -972,7 +972,7 @@ Phase 5: Synthesize Knowledge
 │  • Prioritized fix approaches                                                        │
 │  • Fix implementation context                                                        │
 │                                                                                      │
-│  Output: agent-os/output/fix-bug/cache/knowledge-synthesis.md                       │
+│  Output: geist/output/fix-bug/cache/knowledge-synthesis.md                       │
 └─────────────────────────────────────────────────────────────────────────────────────┘
 
 Phase 6: Implement Fix (Iterative)
@@ -1008,7 +1008,7 @@ OUTPUT: fix-report.md (success) OR guidance-request.md (needs help)
 
 ### 3. Maintenance Commands
 
-#### cleanup-agent-os
+#### cleanup-geist
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────┐
@@ -1046,7 +1046,7 @@ Phase 4: Fix Broken References
 ══════════════════════════════
 ┌─────────────────────────────────────────────────────────────────────────────────────┐
 │  ┌─────────────────────────────────┐                                                │
-│  │ {{workflows/validation/         │     Fixes @agent-os/                           │
+│  │ {{workflows/validation/         │     Fixes @geist/                           │
 │  │   validate-references}}         │───▶ references                                 │
 │  └─────────────────────────────────┘                                                │
 └─────────────────────────────────────────────────────────────────────────────────────┘
@@ -1061,7 +1061,7 @@ Phase 5: Verify Knowledge Completeness
 │  └─────────────────────────────────┘     • Coverage analysis                        │
 └─────────────────────────────────────────────────────────────────────────────────────┘
 
-OUTPUT: Cleaned agent-os/ + cleanup report
+OUTPUT: Cleaned geist/ + cleanup report
 ══════════════════════════════════════════
 ```
 
@@ -1159,7 +1159,7 @@ Each command:
 │                              OUTPUT LOCATIONS                                        │
 └─────────────────────────────────────────────────────────────────────────────────────┘
 
-agent-os/
+geist/
 ├── basepoints/                          # Created by: create-basepoints
 │   ├── headquarter.md
 │   ├── [layer]/[module]/agent-base-*.md

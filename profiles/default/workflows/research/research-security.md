@@ -13,7 +13,7 @@ Research security vulnerabilities (CVEs), security advisories, and security best
 
 ## Outputs
 
-- `agent-os/config/enriched-knowledge/security-notes.md`
+- `geist/config/enriched-knowledge/security-notes.md`
 
 ---
 
@@ -37,7 +37,7 @@ Research security vulnerabilities (CVEs), security advisories, and security best
 
 ```bash
 CURRENT_YEAR=$(date +%Y)
-OUTPUT_FILE="agent-os/config/enriched-knowledge/security-notes.md"
+OUTPUT_FILE="geist/config/enriched-knowledge/security-notes.md"
 
 cat > "$OUTPUT_FILE" << HEADER_EOF
 # Security Notes

@@ -5,7 +5,7 @@
 1. **Orchestrate All Validation Utilities**: Combine all validation utilities into single workflow
 2. **Generate Comprehensive Reports**: Generate comprehensive validation reports with categorized findings
 3. **Create Validation Summary**: Create validation summary with counts of issues per category
-4. **Support Multiple Contexts**: Support validation of both profiles/default (template) and installed agent-os (specialized)
+4. **Support Multiple Contexts**: Support validation of both profiles/default (template) and installed geist (specialized)
 5. **Store Results**: Store validation results in spec's implementation/cache/
 
 ## Workflow
@@ -23,8 +23,8 @@ if [ -d "profiles/default" ] && [ "$(pwd)" = *"/profiles/default"* ]; then
     VALIDATION_CONTEXT="profiles/default"
     SCAN_PATH="profiles/default"
 else
-    VALIDATION_CONTEXT="installed-agent-os"
-    SCAN_PATH="agent-os"
+    VALIDATION_CONTEXT="installed-geist"
+    SCAN_PATH="geist"
 fi
 
 # Create cache directory
@@ -68,16 +68,16 @@ Run layer-specific validations based on detected abstraction layers:
 
 ```bash
 # Check if layer specialists exist (indicates layers were detected)
-SPECIALIST_REGISTRY="agent-os/agents/specialists/registry.yml"
+SPECIALIST_REGISTRY="geist/agents/specialists/registry.yml"
 LAYER_VALIDATIONS_RUN=0
 
-if [ -f "$SPECIALIST_REGISTRY" ] || [ -f "agent-os/basepoints/headquarter.md" ]; then
+if [ -f "$SPECIALIST_REGISTRY" ] || [ -f "geist/basepoints/headquarter.md" ]; then
     echo "6️⃣ Running layer-specific validations..."
     
     # Detect which layers exist in the project
     DETECTED_LAYERS=""
-    if [ -f "agent-os/basepoints/headquarter.md" ]; then
-        DETECTED_LAYERS=$(grep -A 50 "Detected Abstraction Layers" agent-os/basepoints/headquarter.md | \
+    if [ -f "geist/basepoints/headquarter.md" ]; then
+        DETECTED_LAYERS=$(grep -A 50 "Detected Abstraction Layers" geist/basepoints/headquarter.md | \
             grep -E "^\| \*\*[A-Z]+" | \
             sed 's/.*\*\*\([A-Z_]*\)\*\*.*/\1/' | \
             tr '[:upper:]' '[:lower:]')
@@ -161,16 +161,16 @@ UI_VALIDATION_TOTAL=0
 API_VALIDATION_TOTAL=0
 DATA_VALIDATION_TOTAL=0
 
-if [ -f "agent-os/output/validation/ui-validation-results.md" ]; then
-    UI_VALIDATION_TOTAL=$(grep -c "❌\|⚠️" agent-os/output/validation/ui-validation-results.md 2>/dev/null || echo 0)
+if [ -f "geist/output/validation/ui-validation-results.md" ]; then
+    UI_VALIDATION_TOTAL=$(grep -c "❌\|⚠️" geist/output/validation/ui-validation-results.md 2>/dev/null || echo 0)
 fi
 
-if [ -f "agent-os/output/validation/api-validation-results.md" ]; then
-    API_VALIDATION_TOTAL=$(grep -c "❌\|⚠️\|🚨" agent-os/output/validation/api-validation-results.md 2>/dev/null || echo 0)
+if [ -f "geist/output/validation/api-validation-results.md" ]; then
+    API_VALIDATION_TOTAL=$(grep -c "❌\|⚠️\|🚨" geist/output/validation/api-validation-results.md 2>/dev/null || echo 0)
 fi
 
-if [ -f "agent-os/output/validation/data-validation-results.md" ]; then
-    DATA_VALIDATION_TOTAL=$(grep -c "❌\|⚠️\|🚨" agent-os/output/validation/data-validation-results.md 2>/dev/null || echo 0)
+if [ -f "geist/output/validation/data-validation-results.md" ]; then
+    DATA_VALIDATION_TOTAL=$(grep -c "❌\|⚠️\|🚨" geist/output/validation/data-validation-results.md 2>/dev/null || echo 0)
 fi
 
 LAYER_VALIDATION_TOTAL=$((UI_VALIDATION_TOTAL + API_VALIDATION_TOTAL + DATA_VALIDATION_TOTAL))
@@ -225,15 +225,15 @@ cat > "$CACHE_PATH/comprehensive-validation-report.json" << EOF
   "layer_validations": {
     "ui_layer": {
       "total": $UI_VALIDATION_TOTAL,
-      "report_file": "agent-os/output/validation/ui-validation-results.md"
+      "report_file": "geist/output/validation/ui-validation-results.md"
     },
     "api_layer": {
       "total": $API_VALIDATION_TOTAL,
-      "report_file": "agent-os/output/validation/api-validation-results.md"
+      "report_file": "geist/output/validation/api-validation-results.md"
     },
     "data_layer": {
       "total": $DATA_VALIDATION_TOTAL,
-      "report_file": "agent-os/output/validation/data-validation-results.md"
+      "report_file": "geist/output/validation/data-validation-results.md"
     }
   }
 }
@@ -283,7 +283,7 @@ cat > "$CACHE_PATH/comprehensive-validation-summary.md" << EOF
 - **UI Layer Issues:** $UI_VALIDATION_TOTAL
 - **API Layer Issues:** $API_VALIDATION_TOTAL
 - **Data Layer Issues:** $DATA_VALIDATION_TOTAL
-- **Reports:** See \`agent-os/output/validation/\` for layer reports
+- **Reports:** See \`geist/output/validation/\` for layer reports
 
 ## Detailed Reports
 
@@ -319,7 +319,7 @@ echo "📁 Reports stored in: $CACHE_PATH/"
 - Must combine all validation utilities into single workflow
 - Must generate comprehensive validation reports with categorized findings
 - Must create validation summary with counts of issues per category
-- Must support validation of both profiles/default (template) and installed agent-os (specialized)
+- Must support validation of both profiles/default (template) and installed geist (specialized)
 - Must store validation results in spec's implementation/cache/
-- **CRITICAL**: All reports must be stored in `agent-os/specs/[current-spec]/implementation/cache/validation/` when running within a spec command, not scattered around the codebase
+- **CRITICAL**: All reports must be stored in `geist/specs/[current-spec]/implementation/cache/validation/` when running within a spec command, not scattered around the codebase
 - Must use placeholder syntax ({{PLACEHOLDER}}) for project-specific parts that will be replaced during deploy-agents

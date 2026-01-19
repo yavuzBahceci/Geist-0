@@ -17,7 +17,7 @@ Check if basepoints folder exists and contains basepoint files:
 
 ```bash
 # Define paths
-BASEPOINTS_PATH="agent-os/basepoints"
+BASEPOINTS_PATH="geist/basepoints"
 BASEPOINT_FILE_PATTERN="agent-base-*.md"
 
 # Check if basepoints folder exists
@@ -61,7 +61,7 @@ if [ -n "$SPEC_PATH" ]; then
     CACHE_PATH="$SPEC_PATH/implementation/cache"
 else
     # Fallback for non-spec contexts (e.g., deploy-agents)
-    CACHE_PATH="agent-os/output/basepoints-extraction"
+    CACHE_PATH="geist/output/basepoints-extraction"
 fi
 
 # Create cache directory
@@ -241,7 +241,7 @@ cat > "$CACHE_PATH/basepoints-knowledge.md" << 'KNOWLEDGE_EOF'
 
 ## Extraction Metadata
 - **Extracted**: $(date)
-- **Source**: agent-os/basepoints/
+- **Source**: geist/basepoints/
 - **Basepoints Available**: $BASEPOINTS_AVAILABLE
 
 ---
@@ -337,12 +337,12 @@ done
 cat >> "$CACHE_PATH/resources-consulted.md" << 'RESOURCES_EOF'
 
 ## Product Files
-- [ ] `agent-os/product/mission.md` (check separately)
-- [ ] `agent-os/product/roadmap.md` (check separately)
-- [ ] `agent-os/product/tech-stack.md` (check separately)
+- [ ] `geist/product/mission.md` (check separately)
+- [ ] `geist/product/roadmap.md` (check separately)
+- [ ] `geist/product/tech-stack.md` (check separately)
 
 ## Standards
-- [ ] `agent-os/standards/global/*.md` (check separately)
+- [ ] `geist/standards/global/*.md` (check separately)
 
 ---
 

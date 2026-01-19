@@ -15,8 +15,8 @@
 Load the list of module folders from cache:
 
 ```bash
-if [ -f "agent-os/output/create-basepoints/cache/module-folders.txt" ]; then
-    MODULE_FOLDERS=$(cat agent-os/output/create-basepoints/cache/module-folders.txt | grep -v "^#" | grep -v "^$")
+if [ -f "geist/output/create-basepoints/cache/module-folders.txt" ]; then
+    MODULE_FOLDERS=$(cat geist/output/create-basepoints/cache/module-folders.txt | grep -v "^#" | grep -v "^$")
 else
     echo "❌ Module folders list not found. Run previous phases first."
     exit 1
@@ -29,7 +29,7 @@ For each module folder, create basepoints for ALL parent directories up to root:
 
 ```bash
 # Create temporary file to collect all parent directories
-TEMP_PARENT_DIRS="agent-os/output/create-basepoints/cache/temp-parent-dirs.txt"
+TEMP_PARENT_DIRS="geist/output/create-basepoints/cache/temp-parent-dirs.txt"
 > "$TEMP_PARENT_DIRS"  # Clear file
 
 echo "$MODULE_FOLDERS" | while read module_dir; do
@@ -68,7 +68,7 @@ echo "$MODULE_FOLDERS" | while read module_dir; do
 done
 
 # Remove duplicates and sort (deepest first, then root)
-sort -u "$TEMP_PARENT_DIRS" | sort -r > agent-os/output/create-basepoints/cache/parent-folders.txt
+sort -u "$TEMP_PARENT_DIRS" | sort -r > geist/output/create-basepoints/cache/parent-folders.txt
 
 # Clean up temp file
 rm -f "$TEMP_PARENT_DIRS"
@@ -79,17 +79,17 @@ rm -f "$TEMP_PARENT_DIRS"
 Generate basepoints for all identified parent directories, starting from deepest and moving up:
 
 ```bash
-cat agent-os/output/create-basepoints/cache/parent-folders.txt | while read parent_dir; do
+cat geist/output/create-basepoints/cache/parent-folders.txt | while read parent_dir; do
     if [ -z "$parent_dir" ]; then
         continue
     fi
     
     # Determine basepoint directory and name
     if [ -z "$parent_dir" ] || [ "$parent_dir" = "." ]; then
-        BASEPOINT_DIR="agent-os/basepoints"
+        BASEPOINT_DIR="geist/basepoints"
         PARENT_NAME="root"
     else
-        BASEPOINT_DIR="agent-os/basepoints/$parent_dir"
+        BASEPOINT_DIR="geist/basepoints/$parent_dir"
         PARENT_NAME=$(basename "$parent_dir")
     fi
     
@@ -116,14 +116,14 @@ After all parent basepoints are created, generate root-level basepoint that aggr
 ```bash
 # Get project root name (from current directory or config)
 PROJECT_ROOT_NAME=$(basename "$(pwd)" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9-]/-/g')
-ROOT_BASEPOINT="agent-os/basepoints/agent-base-$PROJECT_ROOT_NAME.md"
+ROOT_BASEPOINT="geist/basepoints/agent-base-$PROJECT_ROOT_NAME.md"
 
 # Skip if root basepoint already exists
 if [ -f "$ROOT_BASEPOINT" ]; then
     echo "ℹ️  Root basepoint already exists: $ROOT_BASEPOINT"
 else
     # Find all top-level modules (direct children of basepoints folder)
-    TOP_LEVEL_MODULES=$(find agent-os/basepoints -maxdepth 2 -name "agent-base-*.md" -type f | grep -v "/.*/" | sed 's|agent-os/basepoints/||' | sed 's|/agent-base-.*\.md||' | sort -u)
+    TOP_LEVEL_MODULES=$(find geist/basepoints -maxdepth 2 -name "agent-base-*.md" -type f | grep -v "/.*/" | sed 's|geist/basepoints/||' | sed 's|/agent-base-.*\.md||' | sort -u)
     
     # Generate root basepoint by aggregating from all top-level modules
     # This follows the same pattern as parent basepoints but aggregates from all top-level children
@@ -157,9 +157,9 @@ aggregate_from_children() {
     
     # Find all child basepoints (direct children in this directory)
     if [ -z "$parent_dir" ] || [ "$parent_dir" = "." ]; then
-        CHILD_BASEPOINTS=$(find agent-os/basepoints -maxdepth 1 -name "agent-base-*.md" -type f | grep -v "headquarter.md")
+        CHILD_BASEPOINTS=$(find geist/basepoints -maxdepth 1 -name "agent-base-*.md" -type f | grep -v "headquarter.md")
     else
-        CHILD_BASEPOINTS=$(find "agent-os/basepoints/$parent_dir" -maxdepth 1 -name "agent-base-*.md" -type f)
+        CHILD_BASEPOINTS=$(find "geist/basepoints/$parent_dir" -maxdepth 1 -name "agent-base-*.md" -type f)
     fi
     
     # Aggregate patterns, standards, flows, strategies, testing from each child
@@ -177,22 +177,22 @@ Verify all basepoints were generated and hierarchy is maintained:
 
 ```bash
 # Check that root-level basepoint exists
-if [ ! -f "agent-os/basepoints/agent-base-$PROJECT_ROOT_NAME.md" ]; then
+if [ ! -f "geist/basepoints/agent-base-$PROJECT_ROOT_NAME.md" ]; then
     echo "⚠️  Warning: Root-level basepoint not found"
 fi
 
 # Verify all parent folders have basepoints
-cat agent-os/output/create-basepoints/cache/parent-folders.txt | while read parent_dir; do
+cat geist/output/create-basepoints/cache/parent-folders.txt | while read parent_dir; do
     if [ -z "$parent_dir" ]; then
         continue
     fi
     
     if [ "$parent_dir" = "." ]; then
         PARENT_NAME="$PROJECT_ROOT_NAME"
-        BASEPOINT_FILE="agent-os/basepoints/agent-base-$PARENT_NAME.md"
+        BASEPOINT_FILE="geist/basepoints/agent-base-$PARENT_NAME.md"
     else
         PARENT_NAME=$(basename "$parent_dir")
-        BASEPOINT_FILE="agent-os/basepoints/$parent_dir/agent-base-$PARENT_NAME.md"
+        BASEPOINT_FILE="geist/basepoints/$parent_dir/agent-base-$PARENT_NAME.md"
     fi
     
     if [ ! -f "$BASEPOINT_FILE" ]; then

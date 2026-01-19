@@ -6,6 +6,16 @@ Provide minimal question templates for information that cannot be automatically 
 
 ---
 
+## ⚠️ CRITICAL: USER INTERACTION REQUIRED
+
+**This workflow requires user responses.** You MUST:
+1. Present the questions clearly to the user
+2. **STOP and WAIT** for the user to respond
+3. Do NOT use defaults without asking the user first
+4. Do NOT proceed until the user provides answers
+
+---
+
 ## Questions That MUST Be Asked
 
 These questions gather information that cannot be detected from code:
@@ -182,7 +192,7 @@ After questions are answered, update the project profile:
 ```bash
 # Update project profile with user answers
 update_profile_with_answers() {
-    PROFILE_FILE="agent-os/config/project-profile.yml"
+    PROFILE_FILE="geist/config/project-profile.yml"
     
     if [ -f "$PROFILE_FILE" ]; then
         # Update user_specified section

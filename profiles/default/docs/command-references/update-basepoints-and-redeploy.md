@@ -1,6 +1,6 @@
 # /update-basepoints-and-redeploy Command Reference
 
-> **Purpose**: Incrementally update basepoints after codebase changes and re-specialize agent-os
+> **Purpose**: Incrementally update basepoints after codebase changes and re-specialize geist
 
 ---
 
@@ -21,7 +21,7 @@
 │   └────────────────────────────────┘                                         │
 │                    │                                                         │
 │                    ▼                                                         │
-│   Output: Updated basepoints + re-specialized agent-os                       │
+│   Output: Updated basepoints + re-specialized geist                       │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -396,4 +396,4 @@
 
 ---
 
-*See also: [create-basepoints](./create-basepoints.md) | [deploy-agents](./deploy-agents.md) | [cleanup-agent-os](./cleanup-agent-os.md)*
+*See also: [create-basepoints](./create-basepoints.md) | [deploy-agents](./deploy-agents.md) | [cleanup-geist](./cleanup-geist.md)*

@@ -7,7 +7,7 @@ Combine all knowledge sources into comprehensive analysis.
 Load all analysis from previous phases:
 
 ```bash
-CACHE_PATH="agent-os/output/fix-bug/cache"
+CACHE_PATH="geist/output/fix-bug/cache"
 
 echo "📖 Loading all previous analysis..."
 
@@ -244,7 +244,7 @@ echo "   Synthesis saved to: $CACHE_PATH/knowledge-synthesis.md"
 ✅ Fix approaches prioritized
 ✅ Implementation guidance prepared
 
-Synthesis saved to: agent-os/output/fix-bug/cache/knowledge-synthesis.md
+Synthesis saved to: geist/output/fix-bug/cache/knowledge-synthesis.md
 
 NEXT STEP 👉 Proceeding to Phase 6: Implement Fix
 ```

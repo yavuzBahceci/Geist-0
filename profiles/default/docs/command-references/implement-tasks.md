@@ -67,7 +67,7 @@
 │  │ Step 1: Load Tasks File                                             │     │
 │  │ ─────────────────────────────────                                   │     │
 │  │                                                                     │     │
-│  │  Read: agent-os/specs/[spec-name]/tasks.md                          │     │
+│  │  Read: geist/specs/[spec-name]/tasks.md                          │     │
 │  │                                                                     │     │
 │  │  ┌────────────────────────────────────────────────────────────┐     │     │
 │  │  │ ## Task Group 1: OAuth Setup                               │     │     │

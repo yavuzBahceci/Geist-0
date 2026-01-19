@@ -16,14 +16,14 @@
 CORE_VALIDATORS=(
     "validate-output-exists"      # Check required files exist
     "validate-knowledge-integration"  # Check knowledge cache
-    "validate-references"         # Check @agent-os/ references resolve
+    "validate-references"         # Check @geist/ references resolve
 )
 
 # Description of each core validator
 declare -A VALIDATOR_DESCRIPTIONS
 VALIDATOR_DESCRIPTIONS["validate-output-exists"]="Checks that all required output files exist and have content"
 VALIDATOR_DESCRIPTIONS["validate-knowledge-integration"]="Verifies basepoints knowledge was extracted and used"
-VALIDATOR_DESCRIPTIONS["validate-references"]="Ensures all @agent-os/ references resolve to existing paths"
+VALIDATOR_DESCRIPTIONS["validate-references"]="Ensures all @geist/ references resolve to existing paths"
 ```
 
 ## Project Validators Placeholder
@@ -74,9 +74,9 @@ run_all_validators() {
     echo "📋 Running Core Validators..."
     echo ""
     
-    # Determine workflow base path (agent-os when installed, profiles/default for template)
-    if [ -d "agent-os/workflows" ]; then
-        WORKFLOWS_BASE="agent-os/workflows"
+    # Determine workflow base path (geist when installed, profiles/default for template)
+    if [ -d "geist/workflows" ]; then
+        WORKFLOWS_BASE="geist/workflows"
     else
         WORKFLOWS_BASE="profiles/default/workflows"
     fi
@@ -192,9 +192,9 @@ run_validators_for_context() {
     SPEC_PATH="$1"
     CONTEXT="$2"
     
-    # Determine workflow base path (agent-os when installed, profiles/default for template)
-    if [ -d "agent-os/workflows" ]; then
-        WORKFLOWS_BASE="agent-os/workflows"
+    # Determine workflow base path (geist when installed, profiles/default for template)
+    if [ -d "geist/workflows" ]; then
+        WORKFLOWS_BASE="geist/workflows"
     else
         WORKFLOWS_BASE="profiles/default/workflows"
     fi

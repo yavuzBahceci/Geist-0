@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document defines the schema for `agent-os/config/project-profile.yml`, which stores auto-detected and user-confirmed project configuration. This profile is generated during `/adapt-to-product` and used by subsequent commands.
+This document defines the schema for `geist/config/project-profile.yml`, which stores auto-detected and user-confirmed project configuration. This profile is generated during `/adapt-to-product` and used by subsequent commands.
 
 ---
 
@@ -10,7 +10,7 @@ This document defines the schema for `agent-os/config/project-profile.yml`, whic
 
 ```yaml
 # Project Profile Schema
-# Location: agent-os/config/project-profile.yml
+# Location: geist/config/project-profile.yml
 
 gathered:
   # Auto-detected from codebase analysis

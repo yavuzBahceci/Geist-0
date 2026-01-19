@@ -1,6 +1,6 @@
-# /cleanup-agent-os Command Reference
+# /cleanup-geist Command Reference
 
-> **Purpose**: Clean up and verify knowledge completeness in deployed Agent OS
+> **Purpose**: Clean up and verify knowledge completeness in deployed Geist
 
 ---
 
@@ -8,9 +8,9 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                           /cleanup-agent-os                                  │
+│                           /cleanup-geist                                  │
 │                                                                              │
-│   Your deployed agent-os/                                                    │
+│   Your deployed geist/                                                    │
 │                    │                                                         │
 │                    ▼                                                         │
 │   ┌────────────────────────────────┐                                         │
@@ -21,7 +21,7 @@
 │   └────────────────────────────────┘                                         │
 │                    │                                                         │
 │                    ▼                                                         │
-│   Output: Clean agent-os + verification report                               │
+│   Output: Clean geist + verification report                               │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -69,7 +69,7 @@
 │  │                                                                     │     │
 │  │  {{PROJECT_BUILD_COMMAND}}      →    npm run build                  │     │
 │  │  {{PROJECT_TEST_COMMAND}}       →    npm test                       │     │
-│  │  {{BASEPOINTS_PATH}}            →    agent-os/basepoints            │     │
+│  │  {{BASEPOINTS_PATH}}            →    geist/basepoints            │     │
 │  │  {{workflows/validation/...}}   →    (actual workflow content)      │     │
 │  │                                                                     │     │
 │  │  Any remaining {{...}} placeholders are flagged and resolved        │     │
@@ -98,9 +98,9 @@
 │  │  BEFORE                              AFTER                          │     │
 │  │  ──────                              ─────                          │     │
 │  │                                                                     │     │
-│  │  @agent-os/commands/old-path/   →    @agent-os/commands/new-path/   │     │
-│  │  @agent-os/workflows/missing/   →    (removed or fixed)             │     │
-│  │  @agent-os/standards/wrong/     →    @agent-os/standards/correct/   │     │
+│  │  @geist/commands/old-path/   →    @geist/commands/new-path/   │     │
+│  │  @geist/workflows/missing/   →    (removed or fixed)             │     │
+│  │  @geist/standards/wrong/     →    @geist/standards/correct/   │     │
 │  └─────────────────────────────────────────────────────────────────────┘     │
 │                                                                              │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -121,10 +121,10 @@
 │  │ Step 1: Check Deployment                                            │     │
 │  │ ─────────────────────────────────                                   │     │
 │  │                                                                     │     │
-│  │  Verifies agent-os/ exists with required structure:                 │     │
+│  │  Verifies geist/ exists with required structure:                 │     │
 │  │                                                                     │     │
 │  │  ┌────────────────────────────────────────────────────────────┐     │     │
-│  │  │ agent-os/                                                  │     │     │
+│  │  │ geist/                                                  │     │     │
 │  │  │ ├── commands/      ✓ Required                              │     │     │
 │  │  │ ├── workflows/     ✓ Required                              │     │     │
 │  │  │ ├── standards/     ✓ Required                              │     │     │
@@ -165,7 +165,7 @@
 │  │  Scans all files for remaining {{...}} placeholders:                │     │
 │  │                                                                     │     │
 │  │  ┌────────────────────────────────────────────────────────────┐     │     │
-│  │  │ Scanning: agent-os/commands/shape-spec/shape-spec.md       │     │     │
+│  │  │ Scanning: geist/commands/shape-spec/shape-spec.md       │     │     │
 │  │  │                                                            │     │     │
 │  │  │ Found: {{PROJECT_BUILD_COMMAND}} on line 45                │     │     │
 │  │  │ Action: Replace with "npm run build" (from project-profile)│     │     │
@@ -216,15 +216,15 @@
 │  │ Phase 4: Fix Broken References                                      │     │
 │  │ ─────────────────────────────────                                   │     │
 │  │                                                                     │     │
-│  │  Scans for @agent-os/ references and validates:                     │     │
+│  │  Scans for @geist/ references and validates:                     │     │
 │  │                                                                     │     │
 │  │  ┌────────────────────────────────────────────────────────────┐     │     │
 │  │  │ Reference                          Status                  │     │     │
 │  │  │ ─────────────────────────────────────────────────────────  │     │     │
-│  │  │ @agent-os/commands/shape-spec/     ✅ Valid                │     │     │
-│  │  │ @agent-os/workflows/old-name/      ❌ Broken → Fixed       │     │     │
-│  │  │ @agent-os/standards/missing/       ❌ Broken → Removed     │     │     │
-│  │  │ @agent-os/basepoints/headquarter   ✅ Valid                │     │     │
+│  │  │ @geist/commands/shape-spec/     ✅ Valid                │     │     │
+│  │  │ @geist/workflows/old-name/      ❌ Broken → Fixed       │     │     │
+│  │  │ @geist/standards/missing/       ❌ Broken → Removed     │     │     │
+│  │  │ @geist/basepoints/headquarter   ✅ Valid                │     │     │
 │  │  └────────────────────────────────────────────────────────────┘     │     │
 │  └─────────────────────────────────────────────────────────────────────┘     │
 │                                      │                                       │
@@ -281,7 +281,7 @@
 │  │ ─────────────────────────────────                                   │     │
 │  │                                                                     │     │
 │  │  ┌────────────────────────────────────────────────────────────┐     │     │
-│  │  │ # Agent OS Cleanup Report                                  │     │     │
+│  │  │ # Geist Cleanup Report                                  │     │     │
 │  │  │                                                            │     │     │
 │  │  │ ## Statistics                                              │     │     │
 │  │  │ - Files scanned: 156                                       │     │     │
@@ -296,7 +296,7 @@
 │  │  │ - Standards: Complete                                      │     │     │
 │  │  │                                                            │     │     │
 │  │  │ ## Recommendations                                         │     │     │
-│  │  │ - ✅ Agent OS is ready for use                             │     │     │
+│  │  │ - ✅ Geist is ready for use                             │     │     │
 │  │  │ - Consider running /update-basepoints-and-redeploy         │     │     │
 │  │  │   after significant code changes                           │     │     │
 │  │  │                                                            │     │     │
@@ -326,7 +326,7 @@
 │  ──────                              ───────                                 │
 │                                                                              │
 │  ┌──────────────────────┐            ┌──────────────────────────────────┐    │
-│  │ Deployed agent-os/   │            │ Cleaned agent-os/                │    │
+│  │ Deployed geist/   │            │ Cleaned geist/                │    │
 │  │                      │───────────▶│                                  │    │
 │  │ • commands/          │            │ • No remaining {{...}}           │    │
 │  │ • workflows/         │            │ • No broken references           │    │
@@ -355,11 +355,11 @@
 │                        WHEN TO RUN THIS COMMAND                              │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│  Run /cleanup-agent-os when:                                                 │
+│  Run /cleanup-geist when:                                                 │
 │                                                                              │
 │  ┌─────────────────────────────────────────────────────────────────────┐     │
 │  │ ✅ After running /deploy-agents                                     │     │
-│  │ ✅ After manual edits to agent-os/ files                            │     │
+│  │ ✅ After manual edits to geist/ files                            │     │
 │  │ ✅ When you suspect broken references                               │     │
 │  │ ✅ To verify knowledge completeness                                 │     │
 │  │ ✅ Before starting a new project phase                              │     │

@@ -56,7 +56,7 @@ Geist maintains two complementary knowledge systems for library information:
 ### Location
 
 ```
-agent-os/config/enriched-knowledge/
+geist/config/enriched-knowledge/
 ├── library-research.md      # Generic best practices for detected libraries
 ├── stack-best-practices.md  # Architecture patterns for your stack
 ├── security-notes.md        # Security vulnerabilities (CVEs)
@@ -101,7 +101,7 @@ agent-os/config/enriched-knowledge/
 ### Location
 
 ```
-agent-os/basepoints/libraries/
+geist/basepoints/libraries/
 ├── README.md                    # Index of all library basepoints
 ├── data/                        # Data access libraries
 │   └── [library].md

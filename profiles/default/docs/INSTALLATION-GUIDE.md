@@ -1,6 +1,6 @@
 # Installation Guide
 
-This guide walks you through installing and setting up Geist in your project, from initial installation to fully specialized Agent OS.
+This guide walks you through installing and setting up Geist in your project, from initial installation to fully specialized Geist.
 
 ---
 
@@ -47,14 +47,14 @@ git clone <repository-url> ~/geist
 # 2. Navigate to your project
 cd /path/to/your/project
 
-# 3. Install Agent OS
-~/geist/scripts/project-install.sh --profile default --agent-os-commands true
+# 3. Install Geist
+~/geist/scripts/project-install.sh --profile default --geist-commands true
 
 # 4. Run specialization commands (in Cursor IDE or terminal)
 /adapt-to-product   # Detects and extracts product info
 /create-basepoints  # Creates codebase documentation
 /deploy-agents      # Specializes templates
-/cleanup-agent-os   # Verifies completeness
+/cleanup-geist   # Verifies completeness
 
 # 5. Ready! Start using development commands
 /shape-spec "My new feature"
@@ -88,7 +88,7 @@ cd /path/to/your/project
 ### Step 3: Run Installation Script
 
 ```bash
-~/geist/scripts/project-install.sh --profile default --agent-os-commands true
+~/geist/scripts/project-install.sh --profile default --geist-commands true
 ```
 
 **Options**:
@@ -96,14 +96,14 @@ cd /path/to/your/project
 | Option | Description | Default |
 |--------|-------------|---------|
 | `--profile` | Profile to use | `default` |
-| `--agent-os-commands` | Install as `/` commands | `false` |
+| `--geist-commands` | Install as `/` commands | `false` |
 | `--dry-run` | Preview without installing | `false` |
 
 **What gets installed**:
 
 ```
 your-project/
-└── agent-os/
+└── geist/
     ├── commands/      # Abstract commands (will be specialized)
     ├── workflows/     # Abstract workflows (will be specialized)
     ├── standards/     # Global standards
@@ -117,7 +117,7 @@ your-project/
 Check that the installation completed:
 
 ```bash
-ls -la agent-os/
+ls -la geist/
 ```
 
 You should see:
@@ -131,7 +131,7 @@ You should see:
 
 ## Post-Installation Setup
 
-After installation, you need to **specialize** your Agent OS to match your project.
+After installation, you need to **specialize** your Geist to match your project.
 
 ### Phase 1: Product Definition
 
@@ -182,11 +182,11 @@ Run one of these commands (use `adapt-to-product` for existing projects):
    ```
 
 **Outputs created**:
-- `agent-os/product/mission.md`
-- `agent-os/product/roadmap.md`
-- `agent-os/product/tech-stack.md`
-- `agent-os/config/project-profile.yml`
-- `agent-os/config/enriched-knowledge/`
+- `geist/product/mission.md`
+- `geist/product/roadmap.md`
+- `geist/product/tech-stack.md`
+- `geist/config/project-profile.yml`
+- `geist/config/enriched-knowledge/`
 
 ### Phase 2: Basepoints Creation
 
@@ -204,8 +204,8 @@ Run one of these commands (use `adapt-to-product` for existing projects):
 6. Creates project overview (headquarter.md)
 
 **Outputs created**:
-- `agent-os/basepoints/headquarter.md`
-- `agent-os/basepoints/[layer]/[module]/agent-base-[module].md`
+- `geist/basepoints/headquarter.md`
+- `geist/basepoints/[layer]/[module]/agent-base-[module].md`
 
 ### Phase 3: Specialization
 
@@ -234,7 +234,7 @@ Run one of these commands (use `adapt-to-product` for existing projects):
 ### Phase 4: Cleanup & Verification
 
 ```bash
-/cleanup-agent-os
+/cleanup-geist
 ```
 
 **What happens**:
@@ -260,23 +260,23 @@ Run one of these commands (use `adapt-to-product` for existing projects):
 
 ```bash
 # Check structure
-ls -la agent-os/
+ls -la geist/
 
 # Check product files
-ls -la agent-os/product/
+ls -la geist/product/
 
 # Check basepoints
-ls -la agent-os/basepoints/
+ls -la geist/basepoints/
 
 # Check config
-cat agent-os/config/project-profile.yml
+cat geist/config/project-profile.yml
 ```
 
 ### Verify Specialization Success
 
 ```bash
 # Check for remaining placeholders
-grep -r "{{" agent-os/commands/ | head -20
+grep -r "{{" geist/commands/ | head -20
 
 # Should return empty or only valid workflow references
 ```
@@ -284,7 +284,7 @@ grep -r "{{" agent-os/commands/ | head -20
 ### Run Cleanup Verification
 
 ```bash
-/cleanup-agent-os
+/cleanup-geist
 ```
 
 Expected output:
@@ -321,7 +321,7 @@ Expected output:
 ~/geist/scripts/project-install.sh --profile default
 ```
 
-**Problem**: `Cannot install Agent OS in base installation directory`
+**Problem**: `Cannot install Geist in base installation directory`
 
 **Solution**: You're in the Geist repo, not your project:
 ```bash
@@ -336,7 +336,7 @@ cd /path/to/your/project
 **Solution**:
 1. Check if config files exist (package.json, Cargo.toml, etc.)
 2. Override in confirmation prompt
-3. Manually update `agent-os/config/project-profile.yml`
+3. Manually update `geist/config/project-profile.yml`
 
 **Problem**: Commands not detected
 
@@ -350,14 +350,14 @@ cd /path/to/your/project
 **Problem**: Placeholders remain after deploy-agents
 
 **Solution**:
-1. Run `/cleanup-agent-os`
+1. Run `/cleanup-geist`
 2. Check validation report for issues
 3. Re-run `/deploy-agents`
 
 **Problem**: Validation commands not working
 
 **Solution**:
-1. Check `agent-os/standards/global/validation-commands.md`
+1. Check `geist/standards/global/validation-commands.md`
 2. Verify commands work manually
 3. Update with correct commands
 
@@ -366,7 +366,7 @@ cd /path/to/your/project
 **Problem**: Missing basepoints for some modules
 
 **Solution**:
-1. Run `/cleanup-agent-os` for verification
+1. Run `/cleanup-geist` for verification
 2. Review knowledge gap report
 3. Re-run `/create-basepoints` if needed
 
@@ -393,7 +393,7 @@ A: Yes! Clone Geist once, install in each project separately.
 
 **Q: Does Geist modify my source code?**
 
-A: No. Geist creates and modifies only files in `agent-os/` folder.
+A: No. Geist creates and modifies only files in `geist/` folder.
 
 ### Detection
 
@@ -415,13 +415,13 @@ A: Override during confirmation, or edit `project-profile.yml` and re-run `/depl
 
 A: `{{PLACEHOLDER}}` syntax marks project-specific content that gets replaced during specialization.
 
-**Q: Why run cleanup-agent-os?**
+**Q: Why run cleanup-geist?**
 
 A: To verify knowledge completeness and clean any remaining issues.
 
 **Q: How do I know specialization worked?**
 
-A: Run `/cleanup-agent-os` and check the verification report.
+A: Run `/cleanup-geist` and check the verification report.
 
 ### Commands
 
@@ -433,7 +433,7 @@ A:
 
 **Q: Do I need to run commands in order?**
 
-A: Yes. Follow: `adapt-to-product` → `create-basepoints` → `deploy-agents` → `cleanup-agent-os`
+A: Yes. Follow: `adapt-to-product` → `create-basepoints` → `deploy-agents` → `cleanup-geist`
 
 **Q: Can I skip commands?**
 
@@ -454,7 +454,7 @@ After successful installation and verification:
    - [Command Flows](COMMAND-FLOWS.md) - Detailed command documentation
    - [Profile README](../README.md) - Complete profile documentation
 
-3. **Keep Agent OS updated**:
+3. **Keep Geist updated**:
    ```bash
    # After making codebase changes
    /update-basepoints-and-redeploy

@@ -19,8 +19,8 @@ Load unnecessary logic validation results:
 
 ```bash
 # Load validation cache
-VALIDATION_CACHE="agent-os/.cleanup-cache/validation"
-CLEANUP_CACHE="agent-os/.cleanup-cache"
+VALIDATION_CACHE="geist/.cleanup-cache/validation"
+CLEANUP_CACHE="geist/.cleanup-cache"
 DRY_RUN="${DRY_RUN:-false}"
 
 # Load unnecessary logic detection results
@@ -102,8 +102,8 @@ After specialization, many conditional blocks are no longer needed. Remove resol
 # Initialize tracking
 CONDITIONALS_REMOVED=0
 
-# Scan all agent-os command files for {{IF}}/{{UNLESS}} blocks
-FILES_TO_SCAN=$(find agent-os/commands agent-os/workflows -name "*.md" -type f 2>/dev/null)
+# Scan all geist command files for {{IF}}/{{UNLESS}} blocks
+FILES_TO_SCAN=$(find geist/commands geist/workflows -name "*.md" -type f 2>/dev/null)
 
 echo "$FILES_TO_SCAN" | while read file_path; do
     if [ -z "$file_path" ] || [ ! -f "$file_path" ]; then
@@ -121,7 +121,7 @@ echo "$FILES_TO_SCAN" | while read file_path; do
     # For {{IF}} blocks: If condition is always true after specialization, remove tags, keep content
     if echo "$FILE_CONTENT" | grep -qE '\{\{IF[[:space:]]+[a-z_]+\}\}'; then
         # Extract project profile to determine resolved flags
-        PROJECT_PROFILE=$(cat agent-os/config/project-profile.yml 2>/dev/null || echo "")
+        PROJECT_PROFILE=$(cat geist/config/project-profile.yml 2>/dev/null || echo "")
         
         # Check each conditional flag
         for flag in use_claude_code_subagents standards_as_claude_code_skills compiled_single_command; do
@@ -183,8 +183,8 @@ Replace generic examples and patterns with project-specific ones from basepoints
 PATTERNS_CONVERTED=0
 
 # Load basepoints for project-specific patterns
-HEADQUARTER=$(cat agent-os/basepoints/headquarter.md 2>/dev/null || echo "")
-PROJECT_PROFILE=$(cat agent-os/config/project-profile.yml 2>/dev/null || echo "")
+HEADQUARTER=$(cat geist/basepoints/headquarter.md 2>/dev/null || echo "")
+PROJECT_PROFILE=$(cat geist/config/project-profile.yml 2>/dev/null || echo "")
 
 # Extract project-specific patterns from basepoints
 if [ -n "$HEADQUARTER" ]; then
@@ -198,7 +198,7 @@ if [ -n "$HEADQUARTER" ]; then
 fi
 
 # Scan for generic patterns in commands
-FILES_TO_SCAN=$(find agent-os/commands agent-os/workflows -name "*.md" -type f 2>/dev/null)
+FILES_TO_SCAN=$(find geist/commands geist/workflows -name "*.md" -type f 2>/dev/null)
 
 echo "$FILES_TO_SCAN" | while read file_path; do
     if [ -z "$file_path" ] || [ ! -f "$file_path" ]; then
@@ -225,9 +225,9 @@ echo "$FILES_TO_SCAN" | while read file_path; do
     # Replace "generic implementer" or "default" references with project-specific agents
     if echo "$FILE_CONTENT" | grep -qE "generic implementer|default implementer|fallback.*generic"; then
         # Replace with project-specific agent names from specialist registry
-        if [ -f "agent-os/agents/specialists/registry.yml" ]; then
+        if [ -f "geist/agents/specialists/registry.yml" ]; then
             # Extract first specialist as default
-            FIRST_SPECIALIST=$(grep -E "^[[:space:]]*[a-z]+:" agent-os/agents/specialists/registry.yml 2>/dev/null | head -1 | cut -d: -f1 | tr -d ' ')
+            FIRST_SPECIALIST=$(grep -E "^[[:space:]]*[a-z]+:" geist/agents/specialists/registry.yml 2>/dev/null | head -1 | cut -d: -f1 | tr -d ' ')
             if [ -n "$FIRST_SPECIALIST" ]; then
                 FILE_CONTENT=$(echo "$FILE_CONTENT" | sed "s/generic implementer/${FIRST_SPECIALIST}-specialist/g" | \
                     sed "s/default implementer/${FIRST_SPECIALIST}-specialist/g")
@@ -272,7 +272,7 @@ Simplify patterns that can be abstracted without losing functionality:
 PATTERNS_ABSTRACTED=0
 
 # Scan for redundant patterns that can be simplified
-FILES_TO_SCAN=$(find agent-os/commands agent-os/workflows -name "*.md" -type f 2>/dev/null)
+FILES_TO_SCAN=$(find geist/commands geist/workflows -name "*.md" -type f 2>/dev/null)
 
 echo "$FILES_TO_SCAN" | while read file_path; do
     if [ -z "$file_path" ] || [ ! -f "$file_path" ]; then
@@ -325,8 +325,8 @@ done
 Remove all references to "profiles/default" from specialized commands:
 
 ```bash
-# Find all files in agent-os/commands that reference profiles/default
-FILES_WITH_PROFILES_DEFAULT=$(find agent-os/commands -name "*.md" -type f -exec grep -l "profiles/default\|profiles\.default\|@profiles/default" {} \; 2>/dev/null)
+# Find all files in geist/commands that reference profiles/default
+FILES_WITH_PROFILES_DEFAULT=$(find geist/commands -name "*.md" -type f -exec grep -l "profiles/default\|profiles\.default\|@profiles/default" {} \; 2>/dev/null)
 
 if [ -n "$FILES_WITH_PROFILES_DEFAULT" ]; then
     echo "$FILES_WITH_PROFILES_DEFAULT" | while read file_path; do
@@ -338,9 +338,9 @@ if [ -n "$FILES_WITH_PROFILES_DEFAULT" ]; then
         ORIGINAL_CONTENT="$FILE_CONTENT"
         
         # Remove profiles/default references
-        FILE_CONTENT=$(echo "$FILE_CONTENT" | sed "s|profiles/default|agent-os|g")
-        FILE_CONTENT=$(echo "$FILE_CONTENT" | sed "s|profiles\.self|agent-os|g")
-        FILE_CONTENT=$(echo "$FILE_CONTENT" | sed "s|@profiles/default|@agent-os|g")
+        FILE_CONTENT=$(echo "$FILE_CONTENT" | sed "s|profiles/default|geist|g")
+        FILE_CONTENT=$(echo "$FILE_CONTENT" | sed "s|profiles\.self|geist|g")
+        FILE_CONTENT=$(echo "$FILE_CONTENT" | sed "s|@profiles/default|@geist|g")
         
         if [ "$FILE_CONTENT" != "$ORIGINAL_CONTENT" ]; then
             if [ "$DRY_RUN" = "true" ]; then
@@ -380,5 +380,5 @@ fi
 - Must remove profiles/default references from specialized commands
 - Must support dry-run mode to preview changes
 - Must track what was converted, abstracted, or removed for cleanup report
-- **CRITICAL**: All cleanup cache files must be stored in `agent-os/.cleanup-cache/` (temporary, cleaned up after cleanup completes)
+- **CRITICAL**: All cleanup cache files must be stored in `geist/.cleanup-cache/` (temporary, cleaned up after cleanup completes)
 - Must preserve functionality while simplifying - only remove what's truly unnecessary after specialization

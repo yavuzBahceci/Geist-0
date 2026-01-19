@@ -54,7 +54,7 @@ Analyze the spec text to extract semantic concepts:
 ```bash
 echo "🔍 Extracting semantic concepts..."
 
-# Define layer indicator keywords for this project type (Geist/Agent OS)
+# Define layer indicator keywords for this project type (Geist/Geist)
 # These map concepts to abstraction layers
 declare -A LAYER_INDICATORS
 LAYER_INDICATORS["ROOT"]="readme|manifest|changelog|config|documentation|license"
@@ -93,7 +93,7 @@ Map extracted concepts to abstraction layers:
 echo "🎯 Mapping concepts to abstraction layers..."
 
 # Load abstraction layers from headquarter.md if available
-BASEPOINTS_PATH="agent-os/basepoints"
+BASEPOINTS_PATH="geist/basepoints"
 DETECTED_LAYERS=""
 
 if [ -f "$BASEPOINTS_PATH/headquarter.md" ]; then

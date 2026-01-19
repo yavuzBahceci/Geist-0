@@ -82,7 +82,7 @@ Load basepoint information for matching:
 ```bash
 echo "📁 Loading basepoint modules..."
 
-BASEPOINTS_PATH="agent-os/basepoints"
+BASEPOINTS_PATH="geist/basepoints"
 BASEPOINT_FILE_PATTERN="agent-base-*.md"
 
 # Check if basepoints exist

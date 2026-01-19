@@ -11,7 +11,7 @@
 
 ### Step 1: Determine Context and Paths
 
-Determine whether we're validating profiles/default (template) or installed agent-os (specialized):
+Determine whether we're validating profiles/default (template) or installed geist (specialized):
 
 ```bash
 # Determine spec path
@@ -23,8 +23,8 @@ if [ -d "profiles/default" ] && [ "$(pwd)" = *"/profiles/default"* ]; then
     SCAN_PATH="profiles/default"
     CACHE_PATH="$SPEC_PATH/implementation/cache/validation"
 else
-    VALIDATION_CONTEXT="installed-agent-os"
-    SCAN_PATH="agent-os"
+    VALIDATION_CONTEXT="installed-geist"
+    SCAN_PATH="geist"
     CACHE_PATH="$SPEC_PATH/implementation/cache/validation"
 fi
 
@@ -32,32 +32,32 @@ fi
 mkdir -p "$CACHE_PATH"
 ```
 
-### Step 2: Extract Actual Project Structure (if validating installed agent-os)
+### Step 2: Extract Actual Project Structure (if validating installed geist)
 
-If validating installed agent-os, extract actual project structure from basepoints:
+If validating installed geist, extract actual project structure from basepoints:
 
 ```bash
 # Initialize results
 STRUCTURE_ALIGNMENT_ISSUES=""
 
-if [ "$VALIDATION_CONTEXT" = "installed-agent-os" ]; then
+if [ "$VALIDATION_CONTEXT" = "installed-geist" ]; then
     # Extract actual project structure from basepoints
-    if [ -d "agent-os/basepoints" ] && [ -f "agent-os/basepoints/headquarter.md" ]; then
+    if [ -d "geist/basepoints" ] && [ -f "geist/basepoints/headquarter.md" ]; then
         # Extract abstraction layers
-        ACTUAL_LAYERS=$(find agent-os/basepoints -type d -mindepth 1 -maxdepth 2 | sed 's|agent-os/basepoints/||' | cut -d'/' -f1 | sort -u)
+        ACTUAL_LAYERS=$(find geist/basepoints -type d -mindepth 1 -maxdepth 2 | sed 's|geist/basepoints/||' | cut -d'/' -f1 | sort -u)
         
         # Extract module hierarchy
-        ACTUAL_MODULES=$(find agent-os/basepoints -name "agent-base-*.md" -type f | sed 's|agent-os/basepoints/||' | sed 's|/agent-base-.*\.md||')
+        ACTUAL_MODULES=$(find geist/basepoints -name "agent-base-*.md" -type f | sed 's|geist/basepoints/||' | sed 's|/agent-base-.*\.md||')
         
         # Extract project folder structure (from headquarter.md if available)
-        if [ -f "agent-os/basepoints/headquarter.md" ]; then
-            HEADQUARTER_CONTENT=$(cat agent-os/basepoints/headquarter.md)
+        if [ -f "geist/basepoints/headquarter.md" ]; then
+            HEADQUARTER_CONTENT=$(cat geist/basepoints/headquarter.md)
             # Extract project structure section if present
             PROJECT_STRUCTURE_SECTION=$(echo "$HEADQUARTER_CONTENT" | grep -A 50 -i "project.*structure\|folder.*structure" || echo "")
         fi
         
         # Determine project complexity
-        MODULE_COUNT=$(find agent-os/basepoints -name "agent-base-*.md" -type f | wc -l | tr -d ' ')
+        MODULE_COUNT=$(find geist/basepoints -name "agent-base-*.md" -type f | wc -l | tr -d ' ')
         LAYER_COUNT=$(echo "$ACTUAL_LAYERS" | wc -l | tr -d ' ')
         
         # Calculate complexity
@@ -92,7 +92,7 @@ fi
 Check that specialized commands reference actual project structure:
 
 ```bash
-if [ "$VALIDATION_CONTEXT" = "installed-agent-os" ] && [ -n "$ACTUAL_LAYERS" ]; then
+if [ "$VALIDATION_CONTEXT" = "installed-geist" ] && [ -n "$ACTUAL_LAYERS" ]; then
     # Find command files to check
     COMMAND_FILES=$(find "$SCAN_PATH/commands" -name "*.md" -type f 2>/dev/null)
     
@@ -131,7 +131,7 @@ fi
 Check that project complexity assessment correctly adapts command structure:
 
 ```bash
-if [ "$VALIDATION_CONTEXT" = "installed-agent-os" ] && [ -n "$PROJECT_COMPLEXITY" ]; then
+if [ "$VALIDATION_CONTEXT" = "installed-geist" ] && [ -n "$PROJECT_COMPLEXITY" ]; then
     # Check command files for complexity-appropriate structure
     COMMAND_FILES=$(find "$SCAN_PATH/commands" -name "*.md" -type f 2>/dev/null)
     
@@ -166,7 +166,7 @@ fi
 Check that module hierarchy from basepoints is correctly referenced:
 
 ```bash
-if [ "$VALIDATION_CONTEXT" = "installed-agent-os" ] && [ -n "$ACTUAL_MODULES" ]; then
+if [ "$VALIDATION_CONTEXT" = "installed-geist" ] && [ -n "$ACTUAL_MODULES" ]; then
     # Check if commands reference actual module hierarchy
     COMMAND_FILES=$(find "$SCAN_PATH/commands" -name "*.md" -type f 2>/dev/null)
     
@@ -333,5 +333,5 @@ echo "✅ Project structure alignment validation complete. Report stored in $CAC
 - Must check that project complexity assessment correctly adapts command structure
 - Must validate command checkpoints match project complexity (simple/moderate/complex)
 - Must verify module hierarchy from basepoints is correctly referenced
-- **CRITICAL**: All reports must be stored in `agent-os/specs/[current-spec]/implementation/cache/validation/` when running within a spec command, not scattered around the codebase
+- **CRITICAL**: All reports must be stored in `geist/specs/[current-spec]/implementation/cache/validation/` when running within a spec command, not scattered around the codebase
 - Must use placeholder syntax ({{PLACEHOLDER}}) for project-specific parts that will be replaced during deploy-agents

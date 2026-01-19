@@ -15,7 +15,7 @@ After structure is mirrored and task list is created, **PRESENT THE TASK LIST TO
 
 The following modules were detected and will have basepoints generated:
 
-[Display full content of agent-os/output/create-basepoints/cache/basepoints-task-list.md]
+[Display full content of geist/output/create-basepoints/cache/basepoints-task-list.md]
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ⚠️  VERIFICATION CHECKPOINT
@@ -46,10 +46,10 @@ Once structure is mirrored AND user approves the task list, output:
 ✅ Project structure mirrored to basepoints folder!
 ✅ Task list approved by user!
 
-**Created structure**: agent-os/basepoints/
+**Created structure**: geist/basepoints/
 **Module folders identified**: [number] folders
 **Excluded folders**: [list of excluded patterns]
-**Task list**: agent-os/output/create-basepoints/cache/basepoints-task-list.md
+**Task list**: geist/output/create-basepoints/cache/basepoints-task-list.md
 
 Structure is ready for codebase analysis.
 

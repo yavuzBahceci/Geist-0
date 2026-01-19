@@ -15,7 +15,7 @@
 Scan the project root to identify top-level directories:
 
 ```bash
-find . -maxdepth 1 -type d ! -name ".*" ! -name "node_modules" ! -name "vendor" ! -name "build" ! -name "dist" ! -name ".next" ! -name "agent-os" ! -name "basepoints" | sort
+find . -maxdepth 1 -type d ! -name ".*" ! -name "node_modules" ! -name "vendor" ! -name "build" ! -name "dist" ! -name ".next" ! -name "geist" ! -name "basepoints" | sort
 ```
 
 Analyze for common patterns:
@@ -60,8 +60,8 @@ done
 Create summary of detected abstraction layers:
 
 ```bash
-mkdir -p agent-os/output/create-basepoints/cache
-cat > agent-os/output/create-basepoints/cache/detected-layers.md << EOF
+mkdir -p geist/output/create-basepoints/cache
+cat > geist/output/create-basepoints/cache/detected-layers.md << EOF
 # Detected Abstraction Layers
 
 ## Architecture Type

@@ -64,10 +64,10 @@ Create handoff markdown file:
 
 ```bash
 # Create handoff directory if it doesn't exist
-mkdir -p agent-os/output/handoff
+mkdir -p geist/output/handoff
 
 # Save handoff context
-cat > agent-os/output/handoff/current.md << EOF
+cat > geist/output/handoff/current.md << EOF
 [Handoff document content]
 EOF
 
@@ -98,7 +98,7 @@ The workflow automatically:
 # Handoff: shape-spec → write-spec
 
 ## Completed
-- Requirements documented in `agent-os/specs/[date]-[name]/planning/requirements.md`
+- Requirements documented in `geist/specs/[date]-[name]/planning/requirements.md`
 - Key features identified: [feature list]
 - Constraints established: [constraint list]
 
@@ -120,7 +120,7 @@ The workflow automatically:
 # Handoff: write-spec → create-tasks
 
 ## Completed
-- Detailed specification in `agent-os/specs/[date]-[name]/spec.md`
+- Detailed specification in `geist/specs/[date]-[name]/spec.md`
 - Architecture defined: [components, layers]
 - Interfaces documented: [APIs, contracts]
 
@@ -142,7 +142,7 @@ The workflow automatically:
 # Handoff: create-tasks → implement-tasks
 
 ## Completed
-- Tasks listed in `agent-os/specs/[date]-[name]/tasks.md`
+- Tasks listed in `geist/specs/[date]-[name]/tasks.md`
 - Dependencies mapped: [dependency graph]
 - Complexity estimated: [per task group]
 

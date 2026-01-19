@@ -13,10 +13,10 @@
 Read and understand all inputs and THINK HARD:
 ```bash
 # Read the requirements document
-cat agent-os/specs/[current-spec]/planning/requirements.md
+cat geist/specs/[current-spec]/planning/requirements.md
 
 # Check for visual assets
-ls -la agent-os/specs/[current-spec]/planning/visuals/ 2>/dev/null | grep -v "^total" | grep -v "^d"
+ls -la geist/specs/[current-spec]/planning/visuals/ 2>/dev/null | grep -v "^total" | grep -v "^d"
 ```
 
 Parse and analyze:
@@ -31,7 +31,7 @@ Before creating specifications, load basepoints knowledge and search the codebas
 
 ```bash
 # Determine spec path
-SPEC_PATH="agent-os/specs/[current-spec]"
+SPEC_PATH="geist/specs/[current-spec]"
 
 # Load extracted basepoints knowledge if available
 if [ -f "$SPEC_PATH/implementation/cache/basepoints-knowledge.json" ]; then
@@ -98,7 +98,7 @@ Before creating the specification, validate that requirements meet SDD completen
 
 ```bash
 # SDD Spec Completeness Validation
-SPEC_PATH="agent-os/specs/[current-spec]"
+SPEC_PATH="geist/specs/[current-spec]"
 REQUIREMENTS_FILE="$SPEC_PATH/planning/requirements.md"
 
 if [ -f "$REQUIREMENTS_FILE" ]; then
@@ -225,7 +225,7 @@ If a checkpoint is needed, present it to the user and wait for their confirmatio
 
 ### Step 7: Create Core Specification (SDD-aligned)
 
-Write the main specification to `agent-os/specs/[current-spec]/spec.md`.
+Write the main specification to `geist/specs/[current-spec]/spec.md`.
 
 DO NOT write actual code in the spec.md document. Just describe the requirements clearly and concisely.
 
@@ -313,7 +313,7 @@ This workflow has been enhanced with Spec-Driven Development (SDD) best practice
 - All SDD validation checks are structure-based, not technology-specific in default templates
 - No hardcoded technology-specific SDD tool references in default templates
 - Validation maintains technology-agnostic state throughout **in default profile templates**
-- **After Specialization:** When templates are compiled to `agent-os/workflows/`, workflows can and should become technology-specific based on the project's actual stack
+- **After Specialization:** When templates are compiled to `geist/workflows/`, workflows can and should become technology-specific based on the project's actual stack
 - **Command Outputs:** Specs, tasks, and implementations should reflect the project's actual technology stack
 
 **Workflow Steps Enhanced:**
