@@ -97,6 +97,68 @@ sort -u "$CACHE_DIR/affected-basepoints.txt" > "$CACHE_DIR/affected-basepoints-u
 mv "$CACHE_DIR/affected-basepoints-unique.txt" "$CACHE_DIR/affected-basepoints.txt"
 ```
 
+### 2.2.5 Flag Modules for Libraries Used Refresh
+
+For source files that changed, flag their module basepoints for `## Libraries Used` section updates:
+
+```bash
+# Initialize modules for library refresh list
+> "$CACHE_DIR/modules-for-library-refresh.txt"
+
+# Process each changed file - flag source files for Libraries Used refresh
+echo "$CHANGED_FILES" | while read changed_file; do
+    if [ -z "$changed_file" ]; then
+        continue
+    fi
+    
+    # Normalize path
+    changed_file=$(echo "$changed_file" | sed 's|^\./||')
+    
+    # Check if this is a source file that might have import changes
+    case "$changed_file" in
+        *.ts|*.js|*.tsx|*.jsx|*.py|*.go|*.rs|*.swift|*.dart|*.kt|*.java|*.cs|*.rb|*.php|*.vue|*.svelte)
+            # This is a source file - flag its module basepoint for Libraries Used refresh
+            
+            # Determine the module basepoint for this file
+            # Extract the module path from the file path
+            FILE_DIR=$(dirname "$changed_file")
+            
+            # Find the corresponding basepoint
+            # Map source path to basepoint path
+            case "$changed_file" in
+                profiles/default/commands/*)
+                    BASEPOINT="geist/basepoints/profiles/default/commands/agent-base-commands.md"
+                    ;;
+                profiles/default/workflows/*)
+                    BASEPOINT="geist/basepoints/profiles/default/workflows/agent-base-workflows.md"
+                    ;;
+                profiles/default/*)
+                    BASEPOINT="geist/basepoints/profiles/default/agent-base-default.md"
+                    ;;
+                scripts/*)
+                    BASEPOINT="geist/basepoints/scripts/agent-base-scripts.md"
+                    ;;
+                *)
+                    # For other source files, try to find matching basepoint
+                    BASEPOINT="geist/basepoints/agent-base-self.md"
+                    ;;
+            esac
+            
+            echo "$BASEPOINT" >> "$CACHE_DIR/modules-for-library-refresh.txt"
+            ;;
+    esac
+done
+
+# Remove duplicates from modules for library refresh
+if [ -f "$CACHE_DIR/modules-for-library-refresh.txt" ]; then
+    sort -u "$CACHE_DIR/modules-for-library-refresh.txt" > "$CACHE_DIR/modules-for-library-refresh-unique.txt"
+    mv "$CACHE_DIR/modules-for-library-refresh-unique.txt" "$CACHE_DIR/modules-for-library-refresh.txt"
+fi
+
+MODULES_FOR_REFRESH=$(wc -l < "$CACHE_DIR/modules-for-library-refresh.txt" 2>/dev/null | tr -d ' ')
+echo "📚 Modules flagged for Libraries Used refresh: $MODULES_FOR_REFRESH"
+```
+
 ### 2.3 Calculate Parent Chain
 
 For each affected basepoint, identify parent basepoints that also need updating:
@@ -197,6 +259,7 @@ After this phase, the following files should exist:
 | `affected-basepoints.txt` | List of basepoints to update |
 | `affected-basepoints-summary.md` | Human-readable summary |
 | `requires-knowledge-reextraction.txt` | Flag for knowledge re-extraction |
+| `modules-for-library-refresh.txt` | Modules needing `## Libraries Used` refresh |
 
 ## Display confirmation and next step
 
@@ -211,6 +274,7 @@ Once basepoint identification is complete, output the following message:
    Changed files:       [N]
    Affected basepoints: [N]
    Product changes:     [Yes/No]
+   Modules for Libraries Used refresh: [N]
 
 📋 Affected Basepoints:
    [List of affected basepoint paths]

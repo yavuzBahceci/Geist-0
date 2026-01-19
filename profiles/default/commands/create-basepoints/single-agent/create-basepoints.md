@@ -16,8 +16,8 @@ Instructions to follow in sequence:
 
 {{PHASE 6: @geist/commands/create-basepoints/6-generate-parent-basepoints.md}}
 
-{{PHASE 7: @geist/commands/create-basepoints/7-generate-headquarter.md}}
+{{PHASE 7: @geist/commands/create-basepoints/7-generate-library-basepoints.md}}
 
-{{PHASE 8: @geist/commands/create-basepoints/8-generate-library-basepoints.md}}
+{{PHASE 8: @geist/commands/create-basepoints/8-generate-headquarter.md}}
 
 {{PHASE 9: @geist/commands/create-basepoints/9-navigate-to-next-command.md}}

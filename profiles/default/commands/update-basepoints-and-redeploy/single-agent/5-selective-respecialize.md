@@ -1,4 +1,27 @@
-The FIFTH STEP is to re-specialize all core commands with the updated knowledge:
+The FIFTH STEP is to update Standards and Agents based on the updated knowledge.
+
+**IMPORTANT:** Commands and Workflows are STATIC and are NEVER modified after installation.
+Only Standards and Agents are updated based on code changes.
+
+## Key Principle
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  STATIC (Never change after installation)                        │
+│  ─────────────────────────────────────────                       │
+│  Commands   - Reference @geist/standards, @geist/agents          │
+│  Workflows  - Reusable building blocks                           │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│  DYNAMIC (Updated based on code changes)                         │
+│  ──────────────────────────────────────                          │
+│  Basepoints - Patterns, flows, Libraries Used from code          │
+│  Standards  - Coding rules derived from basepoints               │
+│  Agents     - Expertise from basepoints + standards              │
+│              (can be created, updated, or removed)               │
+└─────────────────────────────────────────────────────────────────┘
+```
 
 ## Phase 5 Actions
 
@@ -8,7 +31,6 @@ Load the merged knowledge and identify what changed:
 
 ```bash
 CACHE_DIR="geist/output/update-basepoints-and-redeploy/cache"
-DEPLOY_CACHE="geist/output/deploy-agents/cache"
 
 # Load merged knowledge
 if [ ! -f "$CACHE_DIR/merged-knowledge.md" ]; then
@@ -17,237 +39,166 @@ if [ ! -f "$CACHE_DIR/merged-knowledge.md" ]; then
     exit 1
 fi
 
-MERGED_KNOWLEDGE=$(cat "$CACHE_DIR/merged-knowledge.md")
+# Load change flags from previous phases
+PATTERNS_CHANGED=$(cat "$CACHE_DIR/patterns-changed.txt" 2>/dev/null || echo "false")
+STANDARDS_CHANGED=$(cat "$CACHE_DIR/standards-changed.txt" 2>/dev/null || echo "false")
+FLOWS_CHANGED=$(cat "$CACHE_DIR/flows-changed.txt" 2>/dev/null || echo "false")
+STRATEGIES_CHANGED=$(cat "$CACHE_DIR/strategies-changed.txt" 2>/dev/null || echo "false")
+LIBRARY_USAGE_CHANGED=$(cat "$CACHE_DIR/library-usage-changed.txt" 2>/dev/null || echo "false")
 
-# Load knowledge diff to understand what changed
-KNOWLEDGE_DIFF=$(cat "$CACHE_DIR/knowledge-diff.md" 2>/dev/null || echo "")
+# Record phase start time for tracking updates
+date +%s > "$CACHE_DIR/phase-5-start-time.txt"
 
-echo "📋 Loaded merged knowledge for re-specialization"
+echo "📋 Loaded knowledge change flags"
+echo "   Patterns changed: $PATTERNS_CHANGED"
+echo "   Standards changed: $STANDARDS_CHANGED"
+echo "   Flows changed: $FLOWS_CHANGED"
+echo "   Strategies changed: $STRATEGIES_CHANGED"
+echo "   Library usage changed: $LIBRARY_USAGE_CHANGED"
 ```
 
-### 5.2 Identify Changed Knowledge Categories
+### 5.2 Update Standards from Basepoints
 
-Determine which knowledge categories changed:
+Update Standards based on basepoint pattern changes:
 
 ```bash
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "🔍 ANALYZING KNOWLEDGE CHANGES"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-
-# Check each category for changes
-PATTERNS_CHANGED=false
-STANDARDS_CHANGED=false
-FLOWS_CHANGED=false
-STRATEGIES_CHANGED=false
-TESTING_CHANGED=false
-
-# Analyze knowledge diff
-if echo "$KNOWLEDGE_DIFF" | grep -qi "patterns.*updated"; then
-    PATTERNS_CHANGED=true
-    echo "   ✏️  Patterns: CHANGED"
-else
-    echo "   ✅ Patterns: unchanged"
-fi
-
-if echo "$KNOWLEDGE_DIFF" | grep -qi "standards.*updated"; then
-    STANDARDS_CHANGED=true
-    echo "   ✏️  Standards: CHANGED"
-else
-    echo "   ✅ Standards: unchanged"
-fi
-
-if echo "$KNOWLEDGE_DIFF" | grep -qi "flows.*updated"; then
-    FLOWS_CHANGED=true
-    echo "   ✏️  Flows: CHANGED"
-else
-    echo "   ✅ Flows: unchanged"
-fi
-
-if echo "$KNOWLEDGE_DIFF" | grep -qi "strategies.*updated"; then
-    STRATEGIES_CHANGED=true
-    echo "   ✏️  Strategies: CHANGED"
-else
-    echo "   ✅ Strategies: unchanged"
-fi
-
-if echo "$KNOWLEDGE_DIFF" | grep -qi "testing.*updated"; then
-    TESTING_CHANGED=true
-    echo "   ✏️  Testing: CHANGED"
-else
-    echo "   ✅ Testing: unchanged"
-fi
-```
-
-### 5.3 Re-specialize Core Commands
-
-Re-specialize ALL 5 core commands with updated knowledge:
-
-```bash
-echo ""
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "🔄 RE-SPECIALIZING CORE COMMANDS"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-
-CORE_COMMANDS=(
-    "shape-spec"
-    "write-spec"
-    "create-tasks"
-    "implement-tasks"
-    "orchestrate-tasks"
-)
-
-RESPECIALIZED_COUNT=0
-
-for cmd in "${CORE_COMMANDS[@]}"; do
-    echo ""
-    echo "📜 Re-specializing: $cmd"
-    
-    CMD_PATH="geist/commands/$cmd"
-    
-    if [ ! -d "$CMD_PATH" ]; then
-        echo "   ⚠️  Command directory not found: $CMD_PATH"
-        continue
-    fi
-    
-    # Backup existing specialized command
-    if [ -d "$CMD_PATH" ]; then
-        cp -r "$CMD_PATH" "${CMD_PATH}.backup"
-        echo "   💾 Backed up existing command"
-    fi
-    
-    # Re-specialize command with updated knowledge
-    # This injects the new patterns, standards, flows, strategies into the command
-    
-    # Find all phase files in the command
-    PHASE_FILES=$(find "$CMD_PATH" -name "*.md" -type f | sort)
-    
-    echo "$PHASE_FILES" | while read phase_file; do
-        if [ -z "$phase_file" ]; then
-            continue
-        fi
-        
-        # Update phase file with new knowledge references
-        # The specialization process:
-        # 1. Read the phase file
-        # 2. Update knowledge placeholders with new patterns/standards
-        # 3. Update project-specific context
-        # 4. Write updated phase file
-        
-        echo "      Updated: $(basename "$phase_file")"
-    done
-    
-    RESPECIALIZED_COUNT=$((RESPECIALIZED_COUNT + 1))
-    echo "   ✅ Re-specialized: $cmd"
-done
-
-echo ""
-echo "📊 Re-specialized $RESPECIALIZED_COUNT core commands"
-```
-
-### 5.4 Update Supporting Structures
-
-Update standards, workflows, and agents based on knowledge changes:
-
-```bash
-echo ""
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "📚 UPDATING SUPPORTING STRUCTURES"
+echo "📋 UPDATING STANDARDS FROM BASEPOINTS"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 STANDARDS_UPDATED=0
-WORKFLOWS_UPDATED=0
-AGENTS_UPDATED=0
+STANDARDS_CREATED=0
+STANDARDS_REMOVED=0
 
-# Update Standards (if patterns/standards changed significantly)
-if [ "$PATTERNS_CHANGED" = "true" ] || [ "$STANDARDS_CHANGED" = "true" ]; then
-    echo ""
-    echo "📋 Updating standards with new patterns..."
+if [ "$PATTERNS_CHANGED" = "true" ] || [ "$STANDARDS_CHANGED" = "true" ] || [ "$LIBRARY_USAGE_CHANGED" = "true" ]; then
+    echo "   Changes detected - updating standards..."
     
-    # Find standard files that need updating
-    STANDARD_FILES=$(find geist/standards -name "*.md" -type f 2>/dev/null)
+    STANDARDS_DIR="geist/standards"
     
-    echo "$STANDARD_FILES" | while read std_file; do
-        if [ -z "$std_file" ]; then
-            continue
-        fi
-        
-        # Backup and update
-        cp "$std_file" "${std_file}.backup"
-        
-        # Update standard with new patterns
-        # (Inject new coding patterns, naming conventions, etc.)
-        
-        STANDARDS_UPDATED=$((STANDARDS_UPDATED + 1))
-        echo "   Updated: $std_file"
-    done
+    # Update existing standards with new patterns from basepoints
+    if [ -d "$STANDARDS_DIR" ]; then
+        for std_file in $(find "$STANDARDS_DIR" -name "*.md" -type f); do
+            # Backup before updating
+            cp "$std_file" "${std_file}.backup"
+            
+            # Update standard with new patterns
+            # - coding-style.md: Update with new coding patterns from basepoints
+            # - conventions.md: Update with new naming conventions
+            # - Add library-specific patterns if library usage changed
+            
+            STANDARDS_UPDATED=$((STANDARDS_UPDATED + 1))
+            echo "      Updated: $std_file"
+        done
+    fi
+    
+    # Create new standards if needed (e.g., new library patterns)
+    if [ "$LIBRARY_USAGE_CHANGED" = "true" ]; then
+        # Check if new library-specific standards are needed
+        # Create standards for new libraries if patterns are significant
+        echo "      Checking for new library-specific standards..."
+    fi
+    
+    # Remove standards if patterns no longer exist
+    # (Flag for manual review rather than auto-delete)
+    
+    echo "   ✅ Standards updated from basepoints"
 else
-    echo "   ✅ Standards: No update needed"
+    echo "   ℹ️ No standard updates needed (no relevant changes detected)"
 fi
-
-# Update Workflows (if flows changed)
-if [ "$FLOWS_CHANGED" = "true" ]; then
-    echo ""
-    echo "🔄 Updating workflows with new flows..."
-    
-    # Find workflow files that reference flows
-    WORKFLOW_FILES=$(find geist/workflows -name "*.md" -type f 2>/dev/null)
-    
-    echo "$WORKFLOW_FILES" | while read wf_file; do
-        if [ -z "$wf_file" ]; then
-            continue
-        fi
-        
-        # Check if workflow uses flow references
-        if grep -q "flow\|Flow" "$wf_file" 2>/dev/null; then
-            cp "$wf_file" "${wf_file}.backup"
-            # Update workflow with new flow patterns
-            WORKFLOWS_UPDATED=$((WORKFLOWS_UPDATED + 1))
-            echo "   Updated: $wf_file"
-        fi
-    done
-else
-    echo "   ✅ Workflows: No update needed"
-fi
-
-# Update Agents (if strategies changed)
-if [ "$STRATEGIES_CHANGED" = "true" ]; then
-    echo ""
-    echo "🤖 Updating agents with new strategies..."
-    
-    # Find agent files
-    AGENT_FILES=$(find geist/agents -name "*.md" -type f 2>/dev/null)
-    
-    echo "$AGENT_FILES" | while read agent_file; do
-        if [ -z "$agent_file" ]; then
-            continue
-        fi
-        
-        cp "$agent_file" "${agent_file}.backup"
-        # Update agent with new strategies
-        AGENTS_UPDATED=$((AGENTS_UPDATED + 1))
-        echo "   Updated: $agent_file"
-    done
-else
-    echo "   ✅ Agents: No update needed"
-fi
-
-echo ""
-echo "📊 Supporting structures updated:"
-echo "   Standards: $STANDARDS_UPDATED"
-echo "   Workflows: $WORKFLOWS_UPDATED"
-echo "   Agents: $AGENTS_UPDATED"
 ```
 
-### 5.5 Generate Re-specialization Summary
+### 5.3 Update Agents from Basepoints + Standards
 
-Create summary of all re-specialization actions:
+Update Agents based on basepoint and standards changes:
 
 ```bash
-cat > "$CACHE_DIR/respecialization-summary.md" << EOF
-# Re-specialization Summary
+echo ""
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "🤖 UPDATING AGENTS FROM BASEPOINTS + STANDARDS"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-**Re-specialization Time:** $(date -u +%Y-%m-%dT%H:%M:%SZ)
+AGENTS_UPDATED=0
+AGENTS_CREATED=0
+AGENTS_REMOVED=0
+
+if [ "$STRATEGIES_CHANGED" = "true" ] || [ "$FLOWS_CHANGED" = "true" ] || [ "$LIBRARY_USAGE_CHANGED" = "true" ]; then
+    echo "   Changes detected - updating agents..."
+    
+    AGENTS_DIR="geist/agents"
+    
+    # Update existing specialist agents with new expertise
+    if [ -d "$AGENTS_DIR" ]; then
+        for agent_file in $(find "$AGENTS_DIR" -name "*.md" -type f); do
+            # Backup before updating
+            cp "$agent_file" "${agent_file}.backup"
+            
+            # Update agent with new knowledge:
+            # - Inject new patterns, flows, library knowledge
+            # - Update agent contexts
+            # - Include library-specific expertise
+            
+            AGENTS_UPDATED=$((AGENTS_UPDATED + 1))
+            echo "      Updated: $agent_file"
+        done
+    fi
+    
+    # Create new agents if new abstraction layers detected
+    # (e.g., new module types that need specialist agents)
+    
+    # Remove agents if layers no longer exist
+    # (Flag for manual review rather than auto-delete)
+    
+    # Update registry.yml if agent capabilities changed
+    if [ -f "geist/agents/registry.yml" ]; then
+        cp "geist/agents/registry.yml" "geist/agents/registry.yml.backup"
+        echo "      Updated: registry.yml"
+    fi
+    
+    echo "   ✅ Agents updated from basepoints + standards"
+else
+    echo "   ℹ️ No agent updates needed (no relevant changes detected)"
+fi
+```
+
+### 5.4 Generate Update Summary
+
+Create summary of Standards and Agents updates:
+
+```bash
+# Calculate totals
+PHASE_START=$(cat "$CACHE_DIR/phase-5-start-time.txt" 2>/dev/null || echo "0")
+
+# Count files modified after phase start
+if [ -d "geist/standards" ]; then
+    STANDARDS_MODIFIED=$(find geist/standards -name "*.md" -newer "$CACHE_DIR/phase-5-start-time.txt" 2>/dev/null | wc -l | tr -d ' ')
+else
+    STANDARDS_MODIFIED=0
+fi
+
+if [ -d "geist/agents" ]; then
+    AGENTS_MODIFIED=$(find geist/agents -name "*.md" -newer "$CACHE_DIR/phase-5-start-time.txt" 2>/dev/null | wc -l | tr -d ' ')
+else
+    AGENTS_MODIFIED=0
+fi
+
+cat > "$CACHE_DIR/specialization-summary.md" << EOF
+# Specialization Summary
+
+**Update Time:** $(date -u +%Y-%m-%dT%H:%M:%SZ)
+
+## Key Principle
+
+\`\`\`
+STATIC (Never change after installation):
+  - Commands ✅ (unchanged)
+  - Workflows ✅ (unchanged)
+
+DYNAMIC (Updated based on code changes):
+  - Basepoints ✅ (updated in Phase 3)
+  - Standards ✅ (updated in this phase)
+  - Agents ✅ (updated in this phase)
+\`\`\`
 
 ## Knowledge Changes Detected
 
@@ -257,54 +208,36 @@ cat > "$CACHE_DIR/respecialization-summary.md" << EOF
 | Standards | $STANDARDS_CHANGED |
 | Flows | $FLOWS_CHANGED |
 | Strategies | $STRATEGIES_CHANGED |
-| Testing | $TESTING_CHANGED |
+| Library Usage | $LIBRARY_USAGE_CHANGED |
 
-## Core Commands Re-specialized
+## Updates Applied
 
-All 5 core commands were re-specialized with updated knowledge:
+### Standards
+- Updated: $STANDARDS_UPDATED
+- Created: $STANDARDS_CREATED
+- Removed: $STANDARDS_REMOVED
 
-| Command | Status |
-|---------|--------|
-| shape-spec | ✅ Re-specialized |
-| write-spec | ✅ Re-specialized |
-| create-tasks | ✅ Re-specialized |
-| implement-tasks | ✅ Re-specialized |
-| orchestrate-tasks | ✅ Re-specialized |
+### Agents
+- Updated: $AGENTS_UPDATED
+- Created: $AGENTS_CREATED
+- Removed: $AGENTS_REMOVED
 
-## Supporting Structures Updated
+## NOT Modified (Static)
 
-| Structure | Files Updated |
-|-----------|---------------|
-| Standards | $STANDARDS_UPDATED |
-| Workflows | $WORKFLOWS_UPDATED |
-| Agents | $AGENTS_UPDATED |
+| Item | Status |
+|------|--------|
+| Commands | ✅ Unchanged (static) |
+| Workflows | ✅ Unchanged (static) |
 
 ## Backup Files
 
 Backup files created for rollback:
-$(find geist/commands -name "*.backup" -type d 2>/dev/null | sed 's/^/- /' || echo "- Command backups")
-$(find geist/standards -name "*.backup" -type f 2>/dev/null | sed 's/^/- /' || echo "")
-$(find geist/workflows -name "*.backup" -type f 2>/dev/null | sed 's/^/- /' || echo "")
+$(find geist/standards -name "*.backup" -type f 2>/dev/null | sed 's/^/- /' || echo "- None")
 $(find geist/agents -name "*.backup" -type f 2>/dev/null | sed 's/^/- /' || echo "")
-
-## What Changed
-
-The following knowledge was injected into specialized commands:
-
-### New Patterns
-[Summary of new patterns added]
-
-### New Standards
-[Summary of new standards applied]
-
-### New Flows
-[Summary of new flows integrated]
-
-### New Strategies
-[Summary of new strategies incorporated]
 EOF
 
-echo "📋 Re-specialization summary saved to: $CACHE_DIR/respecialization-summary.md"
+echo ""
+echo "📋 Specialization summary saved to: $CACHE_DIR/specialization-summary.md"
 ```
 
 ## Expected Outputs
@@ -313,39 +246,43 @@ After this phase, the following should be updated/created:
 
 | Item | Description |
 |------|-------------|
-| Core commands | All 5 commands re-specialized |
-| Standards | Updated if patterns changed |
-| Workflows | Updated if flows changed |
-| Agents | Updated if strategies changed |
-| `respecialization-summary.md` | Summary of all changes |
+| Standards | Updated if patterns/library usage changed |
+| Agents | Updated if strategies/flows/library usage changed |
+| `specialization-summary.md` | Summary of all changes |
 | `*.backup` files | Backups for rollback |
+
+**NOT Modified:**
+- Commands (static)
+- Workflows (static)
 
 ## Display confirmation and next step
 
-Once re-specialization is complete, output the following message:
+Once specialization is complete, output the following message:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅ PHASE 5 COMPLETE: Re-specialize Commands
+✅ PHASE 5 COMPLETE: Update Standards and Agents
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-📊 Re-specialization Results:
+📊 Specialization Results:
 
-Core Commands (ALL re-specialized):
-   ✅ shape-spec
-   ✅ write-spec
-   ✅ create-tasks
-   ✅ implement-tasks
-   ✅ orchestrate-tasks
+Standards:
+   Updated: [N]
+   Created: [N]
+   Removed: [N]
 
-Supporting Structures:
-   Standards updated: [N]
-   Workflows updated: [N]
-   Agents updated:    [N]
+Agents:
+   Updated: [N]
+   Created: [N]
+   Removed: [N]
+
+Static (unchanged):
+   ℹ️ Commands: unchanged (static)
+   ℹ️ Workflows: unchanged (static)
 
 💾 Backups created for rollback if needed
 
-📋 Summary: geist/output/update-basepoints-and-redeploy/cache/respecialization-summary.md
+📋 Summary: geist/output/update-basepoints-and-redeploy/cache/specialization-summary.md
 
 NEXT STEP 👉 Run Phase 6: `6-validate-and-report.md`
 ```
@@ -353,18 +290,18 @@ NEXT STEP 👉 Run Phase 6: `6-validate-and-report.md`
 {{UNLESS standards_as_claude_code_skills}}
 ## User Standards & Preferences Compliance
 
-IMPORTANT: Ensure that your re-specialization process aligns with the user's preferences and standards as detailed in the following files:
+IMPORTANT: Ensure that your specialization process aligns with the user's preferences and standards as detailed in the following files:
 
 {{standards/global/*}}
 {{ENDUNLESS standards_as_claude_code_skills}}
 
 ## Important Constraints
 
-- **MUST re-specialize ALL 5 core commands** regardless of what changed
-- **MUST update standards** if patterns/standards changed significantly
-- **MUST update workflows** if flows changed
-- **MUST update agents** if strategies changed
+- **NEVER modify Commands** - Commands are STATIC after installation
+- **NEVER modify Workflows** - Workflows are STATIC after installation
+- **ONLY update Standards** if patterns/standards/library usage changed
+- **ONLY update Agents** if strategies/flows/library usage changed
 - **MUST create backups** before modifying any files
-- Must inject updated knowledge into specialized commands
-- Must preserve command structure while updating content
+- Must inject updated knowledge into Standards and Agents
+- Must include library knowledge in Standards and Agents
 - Must log all changes for traceability

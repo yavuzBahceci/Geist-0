@@ -23,6 +23,35 @@ Use the workflow to detect changes. The workflow will:
 4. **Filter irrelevant files** - Exclude node_modules, .git, geist/output, etc.
 5. **Identify product file changes** - Flag if `geist/product/*` files changed
 
+### 1.2.5 Detect Library Usage Changes
+
+After detecting file changes, check if library usage may have changed:
+
+```bash
+CACHE_DIR="geist/output/update-basepoints-and-redeploy/cache"
+CHANGED_FILES=$(cat "$CACHE_DIR/changed-files.txt" 2>/dev/null || echo "")
+
+# Initialize library usage change flag
+LIBRARY_USAGE_CHANGED="false"
+
+# Check for dependency file changes (package.json, requirements.txt, etc.)
+if echo "$CHANGED_FILES" | grep -qE "(package\.json|package-lock\.json|requirements\.txt|Pipfile|Cargo\.toml|Cargo\.lock|go\.mod|go\.sum|pubspec\.yaml|pubspec\.lock|Gemfile|Gemfile\.lock|pom\.xml|build\.gradle|composer\.json)"; then
+    LIBRARY_USAGE_CHANGED="true"
+    echo "📦 Dependency file changed - library usage may have changed"
+fi
+
+# Check for source files that might have import changes
+CODE_FILES_CHANGED=$(echo "$CHANGED_FILES" | grep -E "\.(ts|js|tsx|jsx|py|go|rs|swift|dart|kt|java|cs|rb|php|vue|svelte)$" | wc -l | tr -d ' ')
+if [ "$CODE_FILES_CHANGED" -gt 0 ]; then
+    echo "📝 $CODE_FILES_CHANGED source files changed - may have import changes"
+    # Note: Actual import diff analysis done in Phase 3
+fi
+
+# Write library usage change flag to cache
+echo "$LIBRARY_USAGE_CHANGED" > "$CACHE_DIR/library-usage-changed.txt"
+echo "$CODE_FILES_CHANGED" > "$CACHE_DIR/source-files-changed-count.txt"
+```
+
 ### 1.3 Handle First-Run Scenario
 
 If this is the first run (no previous update reference exists):
@@ -49,6 +78,8 @@ After this phase, the following files should exist in `geist/output/update-basep
 | `deleted-files.txt` | Files that were deleted |
 | `change-summary.md` | Human-readable summary report |
 | `product-files-changed.txt` | Boolean flag for product changes |
+| `library-usage-changed.txt` | Boolean flag for library usage changes |
+| `source-files-changed-count.txt` | Count of source files that may have import changes |
 
 ## Display confirmation and next step
 
@@ -66,6 +97,8 @@ Once change detection is complete, output the following message:
    Total:    [N] files
 
 📦 Product Files Changed: [Yes/No]
+📚 Library Usage Changed: [Yes/No]
+📝 Source Files Changed: [N] files (may have import changes)
 
 📋 Summary: geist/output/update-basepoints-and-redeploy/cache/change-summary.md
 

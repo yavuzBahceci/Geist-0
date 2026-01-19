@@ -101,18 +101,12 @@ geist/config/enriched-knowledge/
 ### Location
 
 ```
-geist/basepoints/libraries/
-├── README.md                    # Index of all library basepoints
-├── data/                        # Data access libraries
-│   └── [library].md
-├── domain/                      # Domain logic libraries
-│   └── [library].md
-├── util/                        # Utility libraries
-│   └── [library].md
-├── infrastructure/              # Infrastructure libraries
-│   └── [library].md
-└── framework/                   # Framework libraries
-    └── [library].md
+geist/basepoints/libraries/  (FLAT structure)
+├── README.md                # Simple index of all libraries
+├── axios.md                 # 150-200 lines each
+├── react.md
+├── prisma.md
+└── [library].md
 ```
 
 ### When Created
@@ -123,27 +117,24 @@ geist/basepoints/libraries/
 
 ### What It Contains
 
-Each library basepoint includes:
+Each library basepoint (150-200 lines) includes:
 
 | Section | Content | Source |
 |---------|---------|--------|
 | **Project Usage** | How YOUR project uses this library | Basepoints + codebase analysis |
-| **Boundaries** | What you use / don't use | Codebase analysis |
-| **Patterns** | YOUR usage and integration patterns | Basepoints + codebase |
-| **Workflows** | Internal and project-specific workflows | Official docs + codebase |
-| **Best Practices** | Official + project-specific | Web research + codebase |
-| **Security Notes** | CVEs and vulnerabilities | Merged from enriched-knowledge |
-| **Version Status** | Version info and upgrade notes | Merged from enriched-knowledge |
-| **Troubleshooting** | Common issues and debugging | Official docs + experience |
+| **Overview** | Version, category, importance | tech-stack.md |
+| **Our Usage - Deep Knowledge** | Functions/classes we actually use | Codebase analysis |
+| **Opportunities** | Unused features we could leverage | Official docs |
+| **Relevant Gotchas** | Version issues, common mistakes | Official docs + experience |
 
 ### Characteristics
 
-- ✅ **Project-specific** - knows how YOU use the library
-- ✅ **Has boundaries** - documents what you use/don't use
-- ✅ **Has troubleshooting** - in YOUR context
-- ✅ **Security info** - merged from enriched-knowledge
-- ✅ **Version info** - merged from enriched-knowledge
-- ✅ **Best practices** - both generic AND project-specific
+- ✅ **Concise** - 150-200 lines per library (usage-focused)
+- ✅ **Flat structure** - no category subfolders
+- ✅ **Deep for used** - detailed knowledge for functions/classes we use
+- ✅ **Surface for unused** - opportunities we could leverage
+- ✅ **Integrated** - module basepoints include `## Libraries Used` section
+- ✅ **Aggregated** - parent basepoints aggregate library usage from children
 
 ### Where Used
 
@@ -255,16 +246,18 @@ Each library basepoint includes:
     ┌──────▼──────────────────────────────────────────────────────────────────┐
     │  extract-library-basepoints-knowledge.md                                 │
     │  ────────────────────────────────────────                                │
-    │  • Traverses basepoints/libraries/                                       │
-    │  • Extracts patterns, workflows, best practices, troubleshooting         │
-    │  • Organizes by category (data, domain, util, infrastructure, framework) │
+    │  • Traverses basepoints/libraries/*.md (FLAT structure)                  │
+    │  • Extracts: Overview, Our Usage, Opportunities, Relevant Gotchas        │
+    │  • No category subfolders - direct file list                             │
     │  • Caches to implementation/cache/library-basepoints-knowledge.md        │
     └─────────────────────────────────────────────────────────────────────────┘
            │
     ┌──────▼──────────────────────────────────────────────────────────────────┐
-    │  Context Enrichment                                                      │
+    │  Context Enrichment (with deduplication and size limits)                 │
     │  ──────────────────                                                      │
     │  • Library knowledge injected into $ENRICHED_CONTEXT                     │
+    │  • Deduplicated to prevent context waste                                 │
+    │  • Size-limited (default: 3000 lines max)                                │
     │  • Used to inform spec writing, task creation, implementation            │
     │  • Provides boundaries (what to use / not use)                           │
     └─────────────────────────────────────────────────────────────────────────┘
@@ -393,14 +386,13 @@ Library basepoints merge information from enriched-knowledge to provide a comple
                                      ▼
                     ┌─────────────────────────────────┐
                     │   basepoints/libraries/         │
-                    │   • [category]/[library].md     │
-                    │     - Project Usage             │
-                    │     - Boundaries                │
-                    │     - Patterns                  │
-                    │     - Best Practices            │
-                    │     - Security Notes ◀──────── merged
-                    │     - Version Status ◀──────── merged
-                    │     - Troubleshooting           │
+                    │   (FLAT structure)              │
+                    │   • [library].md                │
+                    │     - Overview                  │
+                    │     - Our Usage - Deep Knowledge│
+                    │     - Opportunities             │
+                    │     - Relevant Gotchas          │
+                    │     (150-200 lines each)        │
                     └────────────────┬────────────────┘
                                      │
                                      │ Extracted by
@@ -453,4 +445,58 @@ Library basepoints merge information from enriched-knowledge to provide a comple
 
 ---
 
-*Last Updated: 2026-01-18*
+## Context Size Management
+
+The knowledge accumulation workflow now includes context size management:
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    CONTEXT SIZE MANAGEMENT                                   │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+    accumulate-knowledge.md
+    ════════════════════════
+
+    ┌─────────────────────────────────────────────────────────────────────────┐
+    │  1. SIZE ESTIMATION                                                      │
+    │     • estimate_context_size() - counts lines and characters              │
+    │     • MAX_CONTEXT_LINES = 3000 (configurable)                            │
+    └─────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+    ┌─────────────────────────────────────────────────────────────────────────┐
+    │  2. DEDUPLICATION                                                        │
+    │     • compute_section_hash() - hash sections (ignoring whitespace)       │
+    │     • is_duplicate_section() - track seen hashes                         │
+    │     • deduplicate_knowledge() - remove duplicate sections                │
+    └─────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+    ┌─────────────────────────────────────────────────────────────────────────┐
+    │  3. KEYWORD-BASED PRUNING                                                │
+    │     • extract_spec_keywords() - get key terms from spec.md               │
+    │     • score_section_relevance() - rank by keyword overlap                │
+    │     • Keep sections above MIN_RELEVANCE_SCORE threshold                  │
+    └─────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+    ┌─────────────────────────────────────────────────────────────────────────┐
+    │  4. TRUNCATION                                                           │
+    │     • truncate_knowledge() - if exceeds MAX_CONTEXT_LINES                │
+    │     • Truncates from end (oldest/least relevant)                         │
+    │     • Logs what was truncated                                            │
+    └─────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+    ┌─────────────────────────────────────────────────────────────────────────┐
+    │  5. REPORTING                                                            │
+    │     • knowledge-summary.md includes:                                     │
+    │       - Context size (lines/chars) vs limit                              │
+    │       - Unique sections vs duplicates removed                            │
+    │       - Pruning/truncation logs                                          │
+    └─────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+*Last Updated: 2026-01-19*

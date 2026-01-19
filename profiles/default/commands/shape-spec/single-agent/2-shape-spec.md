@@ -104,7 +104,45 @@ Generate a checklist of all resources consulted:
 {{workflows/basepoints/organize-and-cache-basepoints-knowledge}}
 ```
 
-After all steps complete, inform the user:
+## Step 4.5: Feedback Checkpoint
+
+After requirements are gathered, pause for user feedback before proceeding:
+
+```bash
+# Prepare feedback checkpoint
+CURRENT_COMMAND="shape-spec"
+OUTPUT_SUMMARY="
+Requirements gathered successfully!
+
+✅ Spec folder created: \`$SPEC_PATH\`
+✅ Requirements documented in: \`$SPEC_PATH/planning/requirements.md\`
+✅ Basepoints knowledge extracted: [Yes / No basepoints found]
+✅ Detected layer: $DETECTED_LAYER
+✅ Visual assets: [Found X files / No files provided]
+✅ Validation: [PASSED / WARNINGS]
+
+Key Requirements Summary:
+[AI: List 3-5 key requirements gathered]
+
+Files Created:
+- $SPEC_PATH/planning/initialization.md
+- $SPEC_PATH/planning/requirements.md
+"
+NEXT_STEP="/write-spec to create the spec.md document"
+ALLOW_UPDATE=true
+
+# Invoke feedback checkpoint
+{{workflows/human-review/feedback-checkpoint}}
+```
+
+**IMPORTANT**: 
+- **STOP and WAIT** for user response
+- If user provides feedback, update the requirements and re-display
+- Only proceed to next step when user confirms
+
+---
+
+After user confirms to continue:
 
 ```
 Spec initialized successfully!
@@ -126,14 +164,18 @@ Accumulate the enriched knowledge for subsequent commands (write-spec, create-ta
 ```bash
 # Set variables for knowledge accumulation
 CURRENT_COMMAND="shape-spec"
+KNOWLEDGE_SCOPE="all"           # Start fresh - no pruning
+KNOWLEDGE_DEPTH="architecture"  # Only gather product + top-level architecture
+
 NEW_BASEPOINTS_KNOWLEDGE="$EXTRACTED_KNOWLEDGE"
 NEW_LIBRARY_KNOWLEDGE="$LIBRARY_KNOWLEDGE"
 NEW_PRODUCT_KNOWLEDGE="$PRODUCT_KNOWLEDGE"
 
-# Accumulate knowledge
+# Accumulate knowledge with progressive refinement
 {{workflows/common/accumulate-knowledge}}
 
 echo "✅ Knowledge accumulated for subsequent commands"
+echo "   Scope: $KNOWLEDGE_SCOPE | Depth: $KNOWLEDGE_DEPTH"
 echo "   Next command (write-spec) will build upon this enriched context"
 ```
 

@@ -211,6 +211,41 @@ Proceed with implementation by following these instructions:
 
 {{workflows/implementation/implement-tasks}}
 
+## Step 5.5: Feedback Checkpoint (After Each Task Group)
+
+After each task group is completed, pause for user feedback before proceeding:
+
+```bash
+# Prepare feedback checkpoint
+CURRENT_COMMAND="implement-tasks"
+OUTPUT_SUMMARY="
+Task Group [$TASK_GROUP_NAME] Completed!
+
+✅ Tasks implemented in this group: [count]
+✅ Files created/modified: [list files]
+✅ Tests added/updated: [count]
+✅ Patterns applied: [list patterns used]
+
+Implementation Summary:
+[AI: Brief summary of what was implemented]
+
+Changes Made:
+[AI: List key changes/files]
+"
+NEXT_STEP="next task group or verification"
+ALLOW_UPDATE=true
+
+# Invoke feedback checkpoint
+{{workflows/human-review/feedback-checkpoint}}
+```
+
+**IMPORTANT**: 
+- **STOP and WAIT** for user response after each task group
+- If user provides feedback, update the implementation and re-display
+- Only proceed to next task group when user confirms
+
+---
+
 ## Display confirmation and next step
 
 Display a summary of what was implemented.

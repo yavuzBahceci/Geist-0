@@ -6,8 +6,20 @@
 2. **Extract Same-Layer Patterns**: Extract patterns specific to each abstraction layer
 3. **Extract Cross-Layer Patterns**: Identify patterns spanning multiple abstraction layers
 4. **Extract All Knowledge Categories**: Extract standards, flows, strategies, testing approaches, pros/cons, historical decisions
-5. **Organize Knowledge**: Structure extracted knowledge by category and abstraction layer
-6. **Cache Knowledge**: Store extracted knowledge for use during command execution
+5. **Extract Libraries Used**: Extract `## Libraries Used` from module basepoints and `## Libraries Used (Aggregated)` from parent basepoints
+6. **Organize Knowledge**: Structure extracted knowledge by category and abstraction layer
+7. **Cache Knowledge**: Store extracted knowledge for use during command execution
+
+## Inputs
+
+- `SPEC_PATH` (optional): Path to spec for cache location
+- `geist/basepoints/`: Basepoints folder containing headquarter.md and module basepoints
+
+## Outputs
+
+- `$CACHE_PATH/basepoints-knowledge.md`: Extracted basepoints knowledge including Libraries Used
+- `$CACHE_PATH/detected-layer.txt`: Detected abstraction layers
+- `$CACHE_PATH/resources-consulted.md`: List of resources consulted
 
 ## Workflow
 
@@ -155,6 +167,7 @@ if [ "$BASEPOINTS_AVAILABLE" = "true" ]; then
     ALL_STRATEGIES=""
     ALL_TESTING=""
     ALL_RELATED=""
+    ALL_LIBRARIES_USED=""
     
     # Find all basepoint files
     find "$BASEPOINTS_PATH" -name "$BASEPOINT_FILE_PATTERN" -type f | sort | while read basepoint_file; do
@@ -223,6 +236,24 @@ $TESTING"
 
 ### From: $MODULE_PATH ($MODULE_NAME)
 $RELATED"
+        fi
+        
+        # Extract Libraries Used section (from module basepoints)
+        LIBRARIES_USED=$(echo "$MODULE_CONTENT" | sed -n '/^## Libraries Used$/,/^## /p' | head -n -1)
+        if [ -n "$LIBRARIES_USED" ]; then
+            ALL_LIBRARIES_USED="${ALL_LIBRARIES_USED}
+
+### From: $MODULE_PATH ($MODULE_NAME)
+$LIBRARIES_USED"
+        fi
+        
+        # Extract Libraries Used (Aggregated) section (from parent basepoints)
+        LIBRARIES_AGGREGATED=$(echo "$MODULE_CONTENT" | sed -n '/^## Libraries Used (Aggregated)/,/^## /p' | head -n -1)
+        if [ -n "$LIBRARIES_AGGREGATED" ]; then
+            ALL_LIBRARIES_USED="${ALL_LIBRARIES_USED}
+
+### From: $MODULE_PATH ($MODULE_NAME) [Aggregated]
+$LIBRARIES_AGGREGATED"
         fi
     done
 fi
@@ -304,6 +335,14 @@ $ALL_RELATED
 
 ---
 
+## Libraries Used
+
+Library usage patterns extracted from module and parent basepoints:
+
+$ALL_LIBRARIES_USED
+
+---
+
 *Knowledge extracted automatically from basepoints.*
 KNOWLEDGE_EOF
 
@@ -357,6 +396,9 @@ echo "✅ Resources checklist generated"
 Provide summary of extraction:
 
 ```bash
+# Count libraries extracted
+LIBRARIES_USED_COUNT=$(echo "$ALL_LIBRARIES_USED" | grep -c "^### From:" || echo "0")
+
 echo ""
 echo "═══════════════════════════════════════════════════════"
 echo "  BASEPOINTS KNOWLEDGE EXTRACTION COMPLETE"
@@ -365,6 +407,7 @@ echo ""
 echo "  Basepoints Available: $BASEPOINTS_AVAILABLE"
 echo "  Headquarter Found: $HAS_HEADQUARTER"
 echo "  Module Basepoints: $BASEPOINT_COUNT"
+echo "  Libraries Used Sections: $LIBRARIES_USED_COUNT"
 echo "  Detected Layers: $ABSTRACTION_LAYERS"
 echo ""
 echo "  Cache Location: $CACHE_PATH"
@@ -391,6 +434,8 @@ Commands should check `BASEPOINTS_AVAILABLE` flag and adjust behavior accordingl
 
 - Must read all basepoint files including headquarter.md and all module-specific files
 - Must extract patterns, standards, flows, strategies, testing approaches
+- Must extract `## Libraries Used` from module basepoints
+- Must extract `## Libraries Used (Aggregated)` from parent basepoints
 - Must organize knowledge by abstraction layer and category
 - Must preserve source information (which basepoint file each piece of knowledge came from)
 - Must cache extracted knowledge to `$SPEC_PATH/implementation/cache/`

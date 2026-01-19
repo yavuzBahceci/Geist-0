@@ -134,9 +134,47 @@ Generate a checklist of all resources consulted:
 {{workflows/basepoints/organize-and-cache-basepoints-knowledge}}
 ```
 
-## Display confirmation and next step
+## Step 6.5: Feedback Checkpoint
 
-Display the following message to the user:
+After spec.md is created, pause for user feedback before proceeding:
+
+```bash
+# Prepare feedback checkpoint
+CURRENT_COMMAND="write-spec"
+OUTPUT_SUMMARY="
+Spec document created!
+
+✅ Spec document created at: \`$SPEC_PATH/spec.md\`
+✅ Basepoints knowledge integrated: [Yes / No basepoints found]
+✅ Detected layer: $DETECTED_LAYER
+✅ Trade-off review: [Completed / No trade-offs detected]
+✅ Validation: [PASSED / WARNINGS]
+
+Spec Summary:
+[AI: Provide brief summary of spec goals and scope]
+
+Key Features:
+[AI: List 3-5 key features from the spec]
+
+Files Created/Updated:
+- $SPEC_PATH/spec.md
+- $SPEC_PATH/implementation/cache/resources-consulted.md
+"
+NEXT_STEP="/create-tasks to break down the spec into implementable tasks"
+ALLOW_UPDATE=true
+
+# Invoke feedback checkpoint
+{{workflows/human-review/feedback-checkpoint}}
+```
+
+**IMPORTANT**: 
+- **STOP and WAIT** for user response
+- If user provides feedback, update the spec.md and re-display
+- Only proceed to next step when user confirms
+
+---
+
+After user confirms to continue:
 
 ```
 The spec has been created at `geist/specs/[this-spec]/spec.md`.
@@ -160,14 +198,18 @@ Accumulate the enriched knowledge for subsequent commands (create-tasks, orchest
 ```bash
 # Set variables for knowledge accumulation
 CURRENT_COMMAND="write-spec"
+KNOWLEDGE_SCOPE="architecture"  # Keep only architecture-related from shape-spec
+KNOWLEDGE_DEPTH="files"         # Add file patterns/standards (no code yet)
+
 NEW_BASEPOINTS_KNOWLEDGE="$EXTRACTED_KNOWLEDGE"
 NEW_LIBRARY_KNOWLEDGE="$LIBRARY_KNOWLEDGE"
 NEW_PRODUCT_KNOWLEDGE="$PRODUCT_KNOWLEDGE"
 
-# Accumulate knowledge (builds upon shape-spec's knowledge)
+# Accumulate knowledge with progressive refinement (builds upon shape-spec's knowledge)
 {{workflows/common/accumulate-knowledge}}
 
 echo "✅ Knowledge accumulated for subsequent commands"
+echo "   Scope: $KNOWLEDGE_SCOPE | Depth: $KNOWLEDGE_DEPTH"
 echo "   Next command (create-tasks) will build upon this enriched context"
 ```
 

@@ -452,8 +452,8 @@ All spec/implementation commands use "narrow focus + expand knowledge":
 
 **Output Files**:
 - `geist/basepoints/headquarter.md` (project overview)
-- `geist/basepoints/[layer]/[module]/agent-base-*.md` (one per module)
-- `geist/basepoints/libraries/[category]/[library]-basepoint.md`
+- `geist/basepoints/[layer]/[module]/agent-base-*.md` (one per module, includes `## Libraries Used`)
+- `geist/basepoints/libraries/[library].md` (flat structure, 150-200 lines each)
 
 ---
 

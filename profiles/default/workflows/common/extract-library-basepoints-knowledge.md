@@ -3,10 +3,20 @@
 ## Core Responsibilities
 
 1. **Check Library Basepoints Availability**: Verify that library basepoints exist before attempting extraction
-2. **Traverse Library Categories**: Navigate category-based folder structure (data, domain, util, infrastructure, framework)
-3. **Extract Library Knowledge**: Extract patterns, workflows, best practices, troubleshooting guidance from each library basepoint
-4. **Organize by Category**: Structure extracted knowledge by library category and importance
+2. **Traverse Flat Library Structure**: Navigate flat folder structure (geist/basepoints/libraries/*.md)
+3. **Extract Library Knowledge**: Extract Overview, Our Usage - Deep Knowledge, Opportunities, Relevant Gotchas from each library basepoint
+4. **Organize as Flat List**: Structure extracted knowledge as a flat list of libraries
 5. **Cache Library Knowledge**: Store extracted library knowledge for use during command execution
+
+## Inputs
+
+- `SPEC_PATH` (optional): Path to spec for cache location
+- `geist/basepoints/libraries/*.md`: Library basepoint files in flat structure
+
+## Outputs
+
+- `$CACHE_PATH/library-basepoints-knowledge.md`: Extracted library knowledge
+- `$CACHE_PATH/library-index.md`: Index of all library basepoints
 
 ## Workflow
 
@@ -23,8 +33,8 @@ if [ -d "$LIBRARY_BASEPOINTS_PATH" ]; then
     LIBRARY_BASEPOINTS_AVAILABLE="true"
     echo "✅ Library basepoints folder found"
     
-    # Count library basepoint files
-    LIBRARY_COUNT=$(find "$LIBRARY_BASEPOINTS_PATH" -name "*.md" -type f 2>/dev/null | wc -l | tr -d ' ')
+    # Count library basepoint files (flat structure - direct children only)
+    LIBRARY_COUNT=$(find "$LIBRARY_BASEPOINTS_PATH" -maxdepth 1 -name "*.md" -type f ! -name "README.md" 2>/dev/null | wc -l | tr -d ' ')
     echo "   Found $LIBRARY_COUNT library basepoint file(s)"
 else
     LIBRARY_BASEPOINTS_AVAILABLE="false"
@@ -54,127 +64,84 @@ mkdir -p "$CACHE_PATH"
 echo "📁 Cache location: $CACHE_PATH"
 ```
 
-### Step 3: Define Library Categories
+### Step 3: Extract Knowledge from Flat Library Structure
 
-Define the supported library categories:
-
-```bash
-# Define library categories
-# These match the folder structure under geist/basepoints/libraries/
-LIBRARY_CATEGORIES="data domain util infrastructure framework"
-
-echo "📚 Library categories: $LIBRARY_CATEGORIES"
-```
-
-### Step 4: Extract Knowledge from Each Category
-
-Traverse each category and extract knowledge from library basepoints:
+Traverse the flat libraries folder and extract knowledge from each library basepoint:
 
 ```bash
 if [ "$LIBRARY_BASEPOINTS_AVAILABLE" = "true" ]; then
     echo "📖 Extracting library basepoints knowledge..."
     
-    # Initialize collections by category
-    ALL_LIBRARY_PATTERNS=""
-    ALL_LIBRARY_WORKFLOWS=""
-    ALL_LIBRARY_BEST_PRACTICES=""
-    ALL_LIBRARY_TROUBLESHOOTING=""
-    ALL_LIBRARY_BOUNDARIES=""
+    # Initialize collections for new template sections
+    ALL_LIBRARY_OVERVIEW=""
+    ALL_LIBRARY_USAGE=""
+    ALL_LIBRARY_OPPORTUNITIES=""
+    ALL_LIBRARY_GOTCHAS=""
     
-    # Process each category
-    for category in $LIBRARY_CATEGORIES; do
-        CATEGORY_PATH="$LIBRARY_BASEPOINTS_PATH/$category"
+    # Process each library file in flat structure
+    for library_file in "$LIBRARY_BASEPOINTS_PATH"/*.md; do
+        # Skip README.md
+        if [ "$(basename "$library_file")" = "README.md" ]; then
+            continue
+        fi
         
-        if [ -d "$CATEGORY_PATH" ]; then
-            echo "  📂 Processing category: $category"
-            
-            # Find all library basepoint files in this category (including nested folders)
-            find "$CATEGORY_PATH" -name "*.md" -type f | sort | while read library_file; do
-                if [ -z "$library_file" ]; then
-                    continue
-                fi
-                
-                echo "    📄 Reading: $library_file"
-                
-                # Determine library name from file path
-                LIBRARY_NAME=$(basename "$library_file" .md)
-                RELATIVE_PATH=$(echo "$library_file" | sed "s|$LIBRARY_BASEPOINTS_PATH/||")
-                
-                # Read content
-                LIBRARY_CONTENT=$(cat "$library_file")
-                
-                # Extract Patterns section
-                PATTERNS=$(echo "$LIBRARY_CONTENT" | sed -n '/## Patterns/,/^## /p' | head -n -1)
-                if [ -z "$PATTERNS" ]; then
-                    PATTERNS=$(echo "$LIBRARY_CONTENT" | sed -n '/### Usage Patterns/,/^### /p' | head -n -1)
-                fi
-                if [ -n "$PATTERNS" ]; then
-                    ALL_LIBRARY_PATTERNS="${ALL_LIBRARY_PATTERNS}
+        # Skip if no files found (glob didn't match)
+        if [ ! -f "$library_file" ]; then
+            continue
+        fi
+        
+        echo "  📄 Reading: $library_file"
+        
+        # Determine library name from file
+        LIBRARY_NAME=$(basename "$library_file" .md)
+        
+        # Read content
+        LIBRARY_CONTENT=$(cat "$library_file")
+        
+        # Extract Overview section
+        OVERVIEW=$(echo "$LIBRARY_CONTENT" | sed -n '/^## Overview/,/^## /p' | head -n -1)
+        if [ -n "$OVERVIEW" ]; then
+            ALL_LIBRARY_OVERVIEW="${ALL_LIBRARY_OVERVIEW}
 
-### $category/$LIBRARY_NAME
-$PATTERNS"
-                fi
-                
-                # Extract Workflows section
-                WORKFLOWS=$(echo "$LIBRARY_CONTENT" | sed -n '/## Workflows/,/^## /p' | head -n -1)
-                if [ -z "$WORKFLOWS" ]; then
-                    WORKFLOWS=$(echo "$LIBRARY_CONTENT" | sed -n '/### Internal Workflows/,/^### /p' | head -n -1)
-                fi
-                if [ -n "$WORKFLOWS" ]; then
-                    ALL_LIBRARY_WORKFLOWS="${ALL_LIBRARY_WORKFLOWS}
+### $LIBRARY_NAME
+$OVERVIEW"
+        fi
+        
+        # Extract Our Usage - Deep Knowledge section
+        USAGE=$(echo "$LIBRARY_CONTENT" | sed -n '/^## Our Usage - Deep Knowledge/,/^## /p' | head -n -1)
+        if [ -n "$USAGE" ]; then
+            ALL_LIBRARY_USAGE="${ALL_LIBRARY_USAGE}
 
-### $category/$LIBRARY_NAME
-$WORKFLOWS"
-                fi
-                
-                # Extract Best Practices section
-                BEST_PRACTICES=$(echo "$LIBRARY_CONTENT" | sed -n '/## Best Practices/,/^## /p' | head -n -1)
-                if [ -z "$BEST_PRACTICES" ]; then
-                    BEST_PRACTICES=$(echo "$LIBRARY_CONTENT" | sed -n '/### Official Guidelines/,/^### /p' | head -n -1)
-                fi
-                if [ -n "$BEST_PRACTICES" ]; then
-                    ALL_LIBRARY_BEST_PRACTICES="${ALL_LIBRARY_BEST_PRACTICES}
+### $LIBRARY_NAME
+$USAGE"
+        fi
+        
+        # Extract Opportunities - Surface Knowledge section
+        OPPORTUNITIES=$(echo "$LIBRARY_CONTENT" | sed -n '/^## Opportunities - Surface Knowledge/,/^## /p' | head -n -1)
+        if [ -z "$OPPORTUNITIES" ]; then
+            # Try alternative header
+            OPPORTUNITIES=$(echo "$LIBRARY_CONTENT" | sed -n '/^## Opportunities/,/^## /p' | head -n -1)
+        fi
+        if [ -n "$OPPORTUNITIES" ]; then
+            ALL_LIBRARY_OPPORTUNITIES="${ALL_LIBRARY_OPPORTUNITIES}
 
-### $category/$LIBRARY_NAME
-$BEST_PRACTICES"
-                fi
-                
-                # Extract Troubleshooting section
-                TROUBLESHOOTING=$(echo "$LIBRARY_CONTENT" | sed -n '/## Troubleshooting/,/^## /p' | head -n -1)
-                if [ -z "$TROUBLESHOOTING" ]; then
-                    TROUBLESHOOTING=$(echo "$LIBRARY_CONTENT" | sed -n '/### Common Issues/,/^### /p' | head -n -1)
-                fi
-                if [ -z "$TROUBLESHOOTING" ]; then
-                    TROUBLESHOOTING=$(echo "$LIBRARY_CONTENT" | sed -n '/### Debugging/,/^### /p' | head -n -1)
-                fi
-                if [ -n "$TROUBLESHOOTING" ]; then
-                    ALL_LIBRARY_TROUBLESHOOTING="${ALL_LIBRARY_TROUBLESHOOTING}
+### $LIBRARY_NAME
+$OPPORTUNITIES"
+        fi
+        
+        # Extract Relevant Gotchas section
+        GOTCHAS=$(echo "$LIBRARY_CONTENT" | sed -n '/^## Relevant Gotchas/,/^## /p' | head -n -1)
+        if [ -n "$GOTCHAS" ]; then
+            ALL_LIBRARY_GOTCHAS="${ALL_LIBRARY_GOTCHAS}
 
-### $category/$LIBRARY_NAME
-$TROUBLESHOOTING"
-                fi
-                
-                # Extract Boundaries section (what is/isn't used)
-                BOUNDARIES=$(echo "$LIBRARY_CONTENT" | sed -n '/## Boundaries/,/^## /p' | head -n -1)
-                if [ -z "$BOUNDARIES" ]; then
-                    BOUNDARIES=$(echo "$LIBRARY_CONTENT" | sed -n '/### Scope/,/^### /p' | head -n -1)
-                fi
-                if [ -z "$BOUNDARIES" ]; then
-                    BOUNDARIES=$(echo "$LIBRARY_CONTENT" | sed -n '/### What We Use/,/^### /p' | head -n -1)
-                fi
-                if [ -n "$BOUNDARIES" ]; then
-                    ALL_LIBRARY_BOUNDARIES="${ALL_LIBRARY_BOUNDARIES}
-
-### $category/$LIBRARY_NAME
-$BOUNDARIES"
-                fi
-            done
+### $LIBRARY_NAME
+$GOTCHAS"
         fi
     done
 fi
 ```
 
-### Step 5: Compile and Cache Library Knowledge
+### Step 4: Compile and Cache Library Knowledge
 
 Generate the library-basepoints-knowledge.md file:
 
@@ -193,43 +160,35 @@ cat > "$CACHE_PATH/library-basepoints-knowledge.md" << 'LIBRARY_KNOWLEDGE_EOF'
 
 ---
 
-## Library Patterns
+## Library Overview
 
-Patterns extracted from library basepoints, organized by category:
+Brief descriptions and purposes of each library:
 
-$ALL_LIBRARY_PATTERNS
-
----
-
-## Library Workflows
-
-Internal workflows and execution paths from library basepoints:
-
-$ALL_LIBRARY_WORKFLOWS
+$ALL_LIBRARY_OVERVIEW
 
 ---
 
-## Best Practices
+## Our Usage - Deep Knowledge
 
-Official guidelines and best practices from library documentation:
+How we actually use each library in this project - patterns, configurations, and implementation details:
 
-$ALL_LIBRARY_BEST_PRACTICES
-
----
-
-## Troubleshooting Guide
-
-Common issues, debugging strategies, and known gotchas:
-
-$ALL_LIBRARY_TROUBLESHOOTING
+$ALL_LIBRARY_USAGE
 
 ---
 
-## Library Boundaries
+## Opportunities - Surface Knowledge
 
-What parts of each library are used and not used in this project:
+Features and capabilities we're aware of but haven't fully utilized:
 
-$ALL_LIBRARY_BOUNDARIES
+$ALL_LIBRARY_OPPORTUNITIES
+
+---
+
+## Relevant Gotchas
+
+Critical issues, version-specific problems, and known limitations:
+
+$ALL_LIBRARY_GOTCHAS
 
 ---
 
@@ -239,9 +198,9 @@ LIBRARY_KNOWLEDGE_EOF
 echo "✅ Library knowledge cached to: $CACHE_PATH/library-basepoints-knowledge.md"
 ```
 
-### Step 6: Generate Library Index
+### Step 5: Generate Library Index
 
-Create an index of all library basepoints for quick reference:
+Create a flat index of all library basepoints for quick reference:
 
 ```bash
 echo "📋 Generating library index..."
@@ -249,26 +208,24 @@ echo "📋 Generating library index..."
 cat > "$CACHE_PATH/library-index.md" << 'INDEX_EOF'
 # Library Basepoints Index
 
-## Categories
+## Libraries
 
 INDEX_EOF
 
-# Add each category and its libraries
-for category in $LIBRARY_CATEGORIES; do
-    CATEGORY_PATH="$LIBRARY_BASEPOINTS_PATH/$category"
-    
-    if [ -d "$CATEGORY_PATH" ]; then
-        echo "### $category" >> "$CACHE_PATH/library-index.md"
-        echo "" >> "$CACHE_PATH/library-index.md"
-        
-        find "$CATEGORY_PATH" -name "*.md" -type f | sort | while read library_file; do
-            LIBRARY_NAME=$(basename "$library_file" .md)
-            RELATIVE_PATH=$(echo "$library_file" | sed "s|$LIBRARY_BASEPOINTS_PATH/||")
-            echo "- [$LIBRARY_NAME]($library_file)" >> "$CACHE_PATH/library-index.md"
-        done
-        
-        echo "" >> "$CACHE_PATH/library-index.md"
+# Add each library (flat structure)
+for library_file in "$LIBRARY_BASEPOINTS_PATH"/*.md; do
+    # Skip README.md
+    if [ "$(basename "$library_file")" = "README.md" ]; then
+        continue
     fi
+    
+    # Skip if no files found
+    if [ ! -f "$library_file" ]; then
+        continue
+    fi
+    
+    LIBRARY_NAME=$(basename "$library_file" .md)
+    echo "- [$LIBRARY_NAME]($library_file)" >> "$CACHE_PATH/library-index.md"
 done
 
 cat >> "$CACHE_PATH/library-index.md" << 'INDEX_EOF'
@@ -281,7 +238,7 @@ INDEX_EOF
 echo "✅ Library index generated"
 ```
 
-### Step 7: Return Status
+### Step 6: Return Status
 
 Provide summary of extraction:
 
@@ -307,7 +264,7 @@ echo "════════════════════════�
 When library basepoints don't exist or are incomplete:
 
 1. **No libraries folder**: Set `LIBRARY_BASEPOINTS_AVAILABLE=false`, continue without library knowledge
-2. **Empty categories**: Skip empty categories
+2. **No library files**: Skip if glob doesn't match any files
 3. **Missing sections**: Skip missing sections in library basepoints
 4. **Empty extraction**: Generate empty knowledge file with metadata
 
@@ -315,9 +272,9 @@ Commands should check `LIBRARY_BASEPOINTS_AVAILABLE` flag and adjust behavior ac
 
 ## Important Constraints
 
-- Must traverse the category-based folder structure (data, domain, util, infrastructure, framework)
-- Must extract patterns, workflows, best practices, troubleshooting from each library basepoint
-- Must organize knowledge by category
+- Must traverse the flat folder structure (`geist/basepoints/libraries/*.md`)
+- Must extract: Overview, Our Usage - Deep Knowledge, Opportunities, Relevant Gotchas
+- Must organize knowledge as flat library list (no categories)
 - Must preserve source information (which library file each piece of knowledge came from)
 - Must cache extracted knowledge to `$SPEC_PATH/implementation/cache/`
 - Must provide graceful fallback when library basepoints don't exist

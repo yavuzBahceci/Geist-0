@@ -32,7 +32,7 @@ This workflow is called by `create-basepoints` Phase 8 after module basepoints a
 
 ## Outputs
 
-- Library basepoints in `geist/basepoints/libraries/[category]/[library].md`
+- Library basepoints in `geist/basepoints/libraries/[library].md` (flat structure, 150-200 lines each)
 - Library index at `geist/basepoints/libraries/README.md`
 
 ---
@@ -1254,29 +1254,18 @@ categorize_library() {
     fi
 }
 
-# Create category directories
-mkdir -p "$LIBRARIES_DIR/data"
-mkdir -p "$LIBRARIES_DIR/domain"
-mkdir -p "$LIBRARIES_DIR/util"
-mkdir -p "$LIBRARIES_DIR/infrastructure"
-mkdir -p "$LIBRARIES_DIR/framework"
-mkdir -p "$LIBRARIES_DIR/ui"
-mkdir -p "$LIBRARIES_DIR/state"
-mkdir -p "$LIBRARIES_DIR/testing"
-mkdir -p "$LIBRARIES_DIR/auth"
-mkdir -p "$LIBRARIES_DIR/validation"
-mkdir -p "$LIBRARIES_DIR/observability"
-mkdir -p "$LIBRARIES_DIR/build"
+# Create flat libraries directory (no category subfolders)
+mkdir -p "$LIBRARIES_DIR"
 
-echo "✅ Library categories created"
+echo "✅ Libraries directory created (flat structure)"
 ```
 
-### Step 8: Generate Library Basepoint Files
+### Step 8: Generate Library Basepoint Files (Concise 150-200 Line Template)
 
-For each library, generate a comprehensive basepoint file:
+For each library, generate a concise, usage-focused basepoint file:
 
 ```bash
-echo "📝 Generating library basepoint files..."
+echo "📝 Generating library basepoint files (concise template)..."
 
 if [ -n "$LIBRARIES_LIST" ] && [ -f "/tmp/libraries_list.txt" ]; then
     cat /tmp/libraries_list.txt | while read library_line; do
@@ -1284,228 +1273,134 @@ if [ -n "$LIBRARIES_LIST" ] && [ -f "/tmp/libraries_list.txt" ]; then
         LIBRARY_VERSION=$(echo "$library_line" | cut -d'|' -f2)
         LIBRARY_IMPORTANCE=$(echo "$library_line" | cut -d'|' -f4)
         
-        # Categorize the library
+        # Categorize the library (for metadata only, not folder structure)
         LIBRARY_CATEGORY=$(categorize_library "$LIBRARY_NAME" "")
         
         # Load gathered knowledge
         USAGE_PATTERNS=$(cat "/tmp/library-usage-$LIBRARY_NAME.txt" 2>/dev/null)
         IMPL_PATTERNS=$(cat "/tmp/library-impl-$LIBRARY_NAME.txt" 2>/dev/null)
         
-        # Determine output path
+        # Determine output path (FLAT structure - no category subfolder)
         LIBRARY_SLUG=$(echo "$LIBRARY_NAME" | tr '[:upper:]' '[:lower:]' | tr ' /:' '---' | tr -cd 'a-z0-9-')
-        OUTPUT_FILE="$LIBRARIES_DIR/$LIBRARY_CATEGORY/$LIBRARY_SLUG.md"
+        OUTPUT_FILE="$LIBRARIES_DIR/$LIBRARY_SLUG.md"
         
         echo "   Creating: $OUTPUT_FILE"
         
         # Extract major version
         MAJOR_VERSION=$(echo "$LIBRARY_VERSION" | cut -d'.' -f1)
         
-        # Generate basepoint content
+        # ═══════════════════════════════════════════════════════════════════════
+        # NEW CONCISE TEMPLATE (150-200 lines)
+        # Sections: Overview, Our Usage - Deep Knowledge, Opportunities, Gotchas
+        # ═══════════════════════════════════════════════════════════════════════
+        
         cat > "$OUTPUT_FILE" << BASEPOINT_EOF
-# Library Basepoint: $LIBRARY_NAME
+# $LIBRARY_NAME
 
 ## Overview
 
 | Attribute | Value |
 |-----------|-------|
-| **Library** | $LIBRARY_NAME |
-| **Our Version** | $LIBRARY_VERSION |
-| **Major Version** | v$MAJOR_VERSION |
+| **Version** | $LIBRARY_VERSION |
 | **Category** | $LIBRARY_CATEGORY |
 | **Importance** | $LIBRARY_IMPORTANCE |
-| **Project Type** | $PROJECT_TYPE |
-| **Generated** | $(date) |
 
-> ⚠️ **Version Notice**: This basepoint documents behavior specific to **v$LIBRARY_VERSION**. 
-> APIs, patterns, and internals may differ in other versions.
+**What it does**: [One-liner description of the library's purpose]
 
----
-
-## Version-Specific Information
-
-### Our Version: $LIBRARY_VERSION
-
-[Document version-specific behavior, APIs, and characteristics for v$LIBRARY_VERSION]
-
-### Key Features in v$MAJOR_VERSION
-
-[List the main features available in this major version]
-
-- [Feature 1]
-- [Feature 2]
-
-### Deprecations in Our Version
-
-[List any deprecated APIs or patterns in v$LIBRARY_VERSION that we should avoid or migrate away from]
-
-- [Deprecated API 1] - Use [Alternative] instead
-- [Deprecated Pattern 2] - Replaced by [New Pattern]
-
-### Breaking Changes from Previous Versions
-
-[Document breaking changes if we upgraded to this version, or changes to be aware of]
-
-- [Change 1] - How it affects our code
-- [Change 2] - Migration notes
+**Why we use it**: [Brief explanation of why this library was chosen]
 
 ---
 
-## Project Usage
+## Our Usage - Deep Knowledge
 
-### How We Use This Library
-
-[Summary of how this library is used in our project, based on basepoints and codebase analysis]
-
-### Usage Patterns from Basepoints
+[Deep knowledge for functions/classes we actually use in our codebase]
 
 $USAGE_PATTERNS
 
-### Implementation Patterns from Codebase
-
 $IMPL_PATTERNS
 
----
+### [Function/Class 1 We Use]
 
-## How It Works (v$MAJOR_VERSION)
+**What it does**: [Brief description]
 
-### Core Architecture
+**How we use it**:
+\`\`\`
+[Code example from our codebase]
+\`\`\`
 
-[Document how this library works internally - specific to our version]
+**Parameters & Behavior**:
+- [Parameter 1]: [What it does, default value]
+- [Parameter 2]: [What it does, default value]
 
-- Execution model
-- Key abstractions
-- Data flow
+**Edge Cases**:
+- [Edge case 1]: [How it behaves]
+- [Edge case 2]: [How it behaves]
 
-### Key Internals
+**Our Pattern**: [How we typically use this in our codebase]
 
-[For critical libraries: document internal workings relevant to our usage]
+### [Function/Class 2 We Use]
 
-- [Internal concept 1]
-- [Internal concept 2]
+**What it does**: [Brief description]
 
-### Performance Characteristics
+**How we use it**:
+\`\`\`
+[Code example from our codebase]
+\`\`\`
 
-[Document performance characteristics specific to v$LIBRARY_VERSION]
+**Parameters & Behavior**:
+- [Parameter 1]: [What it does]
 
-- Memory usage patterns
-- CPU characteristics
-- Known bottlenecks
+**Our Pattern**: [How we typically use this]
 
----
-
-## Boundaries
-
-### What We Use
-
-[List the specific features, APIs, and patterns from this library that we actively use]
-
-- [Feature 1]
-- [Feature 2]
-- [API/Pattern 3]
-
-### What We Don't Use
-
-[List features and APIs that are available but NOT used in our project - important for understanding scope]
-
-- [Unused Feature 1]
-- [Unused Feature 2]
+[Continue for each function/class we actually use...]
 
 ---
 
-## Patterns (v$MAJOR_VERSION)
+## Opportunities - Surface Knowledge
 
-### Usage Patterns
+[Features we don't currently use but could leverage]
 
-[Document common usage patterns observed in our codebase - specific to v$LIBRARY_VERSION]
+### [Unused Feature 1]
+- **What it does**: [1-2 line description]
+- **When to use**: [Scenario where this would be useful]
 
-### Integration Patterns
+### [Unused Feature 2]
+- **What it does**: [1-2 line description]
+- **When to use**: [Scenario where this would be useful]
 
-[How this library integrates with other libraries in our project]
+### [Unused Feature 3]
+- **What it does**: [1-2 line description]
+- **When to use**: [Scenario where this would be useful]
 
-### Anti-Patterns to Avoid
-
-[Patterns that don't work well in v$MAJOR_VERSION or are deprecated]
-
----
-
-## Best Practices (v$MAJOR_VERSION)
-
-### Official Guidelines for v$MAJOR_VERSION
-
-[Best practices from official documentation for this version]
-
-### Project-Specific Practices
-
-[Best practices specific to how we use this library in our project]
-
-### Version-Specific Recommendations
-
-[Recommendations that are specific to v$LIBRARY_VERSION]
+[List other unused features as opportunities...]
 
 ---
 
-## Troubleshooting (v$LIBRARY_VERSION)
+## Relevant Gotchas
 
-### Known Issues in v$LIBRARY_VERSION
+[Version-specific issues, common mistakes, and performance considerations for what we use]
 
-[Bugs and issues specific to our version]
+### Version-Specific (v$LIBRARY_VERSION)
+- [Gotcha 1]: [What to watch for]
+- [Gotcha 2]: [What to watch for]
 
-| Issue | Workaround | Fixed In |
-|-------|------------|----------|
-| [Issue 1] | [Workaround] | v[X.Y.Z] |
+### Common Mistakes
+- ⚠️ **[Mistake 1]**: [What happens and how to avoid]
+- ⚠️ **[Mistake 2]**: [What happens and how to avoid]
 
-### Common Problems
-
-[Common problems and their solutions - from official docs and our experience]
-
-### Debugging Strategies
-
-[How to debug issues with this library in v$MAJOR_VERSION]
-
-### Version-Specific Gotchas
-
-[Edge cases and pitfalls specific to v$LIBRARY_VERSION]
+### Performance Considerations
+- [Performance note 1]: [Impact and mitigation]
+- [Performance note 2]: [Impact and mitigation]
 
 ---
 
-## Upgrade Considerations
-
-### Current Version: $LIBRARY_VERSION
-
-### Upgrade Path
-
-[If considering upgrade, document the path and breaking changes]
-
-| From | To | Breaking Changes |
-|------|-----|------------------|
-| v$LIBRARY_VERSION | v[Next] | [Changes] |
-
-### Why We're on v$LIBRARY_VERSION
-
-[Document why we're using this version - stability, compatibility, features needed]
-
----
-
-## Resources
-
-### Official Documentation (v$MAJOR_VERSION)
-- [Official Docs for v$MAJOR_VERSION](URL)
-- [API Reference for v$LIBRARY_VERSION](URL)
-- [Migration Guide](URL)
-
-### Internal References
-- [List relevant module basepoints that use this library]
-
----
-
-*Generated by Geist Library Basepoints Workflow*
-*Importance: $LIBRARY_IMPORTANCE | Category: $LIBRARY_CATEGORY*
+*Generated by Geist | Category: $LIBRARY_CATEGORY | Importance: $LIBRARY_IMPORTANCE*
 BASEPOINT_EOF
 
     done
 fi
 
-echo "✅ Library basepoint files generated"
+echo "✅ Library basepoint files generated (concise 150-200 line template)"
 ```
 
 ### Step 9: Detect Solution-Specific Patterns
@@ -1542,63 +1437,25 @@ fi
 echo "✅ Solution-specific patterns detected"
 ```
 
-### Step 10: Generate Library Index
+### Step 10: Generate Library Index (Simplified Flat Structure)
 
-Create an index of all library basepoints:
+Create a simple index of all library basepoints:
 
 ```bash
-echo "📋 Generating library index..."
+echo "📋 Generating library index (flat structure)..."
 
 cat > "$LIBRARIES_DIR/README.md" << INDEX_EOF
 # Library Basepoints Index
 
 ## Overview
 
-This folder contains basepoints for libraries used in the project, organized by category.
-Each basepoint combines:
-- Project basepoints knowledge (how we use the library)
-- Official documentation research (best practices, architecture)
-- Codebase analysis (actual implementation patterns)
+This folder contains basepoints for libraries used in the project.
+Each basepoint (150-200 lines) includes:
+- **Our Usage - Deep Knowledge**: Functions/classes we actually use
+- **Opportunities**: Features we could leverage
+- **Relevant Gotchas**: Version-specific issues and common mistakes
 
 ## Project Type: $PROJECT_TYPE
-
-## Categories
-
-### Framework (\`framework/\`)
-Web frameworks, UI frameworks, and app frameworks.
-
-### UI (\`ui/\`)
-UI components, styling, and animation libraries.
-
-### State (\`state/\`)
-State management libraries.
-
-### Data (\`data/\`)
-Libraries for data access, databases, ORM, and persistence.
-
-### Infrastructure (\`infrastructure/\`)
-Libraries for networking, HTTP, threading, and system-level operations.
-
-### Auth (\`auth/\`)
-Authentication and authorization libraries.
-
-### Validation (\`validation/\`)
-Validation and schema libraries.
-
-### Testing (\`testing/\`)
-Testing frameworks and utilities.
-
-### Observability (\`observability/\`)
-Logging, monitoring, and tracing libraries.
-
-### Build (\`build/\`)
-Build tools and bundlers.
-
-### Domain (\`domain/\`)
-Libraries for domain logic, business rules, and core models.
-
-### Util (\`util/\`)
-Utility libraries, helpers, and common functions.
 
 ## Library Index
 
@@ -1606,7 +1463,7 @@ Utility libraries, helpers, and common functions.
 |---------|----------|------------|-----------|
 INDEX_EOF
 
-# Add each library to the index
+# Add each library to the index (flat structure - no category subfolder in path)
 if [ -f "/tmp/libraries_list.txt" ]; then
     cat /tmp/libraries_list.txt | while read library_line; do
         LIBRARY_NAME=$(echo "$library_line" | cut -d'|' -f1)
@@ -1614,7 +1471,8 @@ if [ -f "/tmp/libraries_list.txt" ]; then
         LIBRARY_CATEGORY=$(categorize_library "$LIBRARY_NAME" "")
         LIBRARY_SLUG=$(echo "$LIBRARY_NAME" | tr '[:upper:]' '[:lower:]' | tr ' /:' '---' | tr -cd 'a-z0-9-')
         
-        echo "| $LIBRARY_NAME | $LIBRARY_CATEGORY | $LIBRARY_IMPORTANCE | [$LIBRARY_SLUG](./$LIBRARY_CATEGORY/$LIBRARY_SLUG.md) |" >> "$LIBRARIES_DIR/README.md"
+        # FLAT structure - link directly to library file (no category subfolder)
+        echo "| $LIBRARY_NAME | $LIBRARY_CATEGORY | $LIBRARY_IMPORTANCE | [$LIBRARY_SLUG](./$LIBRARY_SLUG.md) |" >> "$LIBRARIES_DIR/README.md"
     done
 fi
 
@@ -1633,47 +1491,13 @@ To regenerate library basepoints after adding new libraries:
 1. Update \`geist/product/tech-stack.md\`
 2. Run \`/update-basepoints-and-redeploy\`
 
-## Supported Project Types
-
-This workflow supports dependency extraction from:
-
-| Ecosystem | Files Detected |
-|-----------|----------------|
-| **Node.js/TypeScript** | package.json |
-| **Python** | requirements.txt, pyproject.toml, Pipfile |
-| **Rust** | Cargo.toml |
-| **Go** | go.mod |
-| **Ruby** | Gemfile |
-| **PHP** | composer.json |
-| **Java (Maven)** | pom.xml |
-| **Java/Kotlin (Gradle)** | build.gradle, build.gradle.kts |
-| **Android** | app/build.gradle, app/build.gradle.kts |
-| **iOS (CocoaPods)** | Podfile |
-| **iOS (SPM)** | Package.swift |
-| **Flutter/Dart** | pubspec.yaml |
-| **React Native** | package.json (with react-native) |
-| **.NET/C#** | *.csproj, packages.config |
-| **Elixir** | mix.exs |
-| **Scala** | build.sbt |
-| **Clojure** | deps.edn, project.clj |
-| **Haskell** | package.yaml, *.cabal |
-| **C/C++ (CMake)** | CMakeLists.txt |
-| **C/C++ (Conan)** | conanfile.txt, conanfile.py |
-| **C/C++ (vcpkg)** | vcpkg.json |
-| **Julia** | Project.toml |
-| **R** | DESCRIPTION, renv.lock |
-| **Perl** | cpanfile |
-| **Lua** | *.rockspec |
-| **Zig** | build.zig.zon |
-| **Nim** | *.nimble |
-
 ---
 
 *Generated: $(date)*
 *By: Geist Library Basepoints Workflow*
 FOOTER_EOF
 
-echo "✅ Library index generated"
+echo "✅ Library index generated (flat structure)"
 ```
 
 ### Step 11: Cleanup and Return Status
@@ -1687,7 +1511,8 @@ echo ""
 echo "  Project Type: $PROJECT_TYPE"
 
 if [ -f "/tmp/libraries_list.txt" ]; then
-    echo "  Libraries Processed: $(cat /tmp/libraries_list.txt | wc -l | tr -d ' ')"
+    TOTAL_LIBS=$(cat /tmp/libraries_list.txt | wc -l | tr -d ' ')
+    echo "  Libraries Processed: $TOTAL_LIBS"
     echo "  Critical: $(grep -c "|critical$" /tmp/libraries_list.txt 2>/dev/null || echo 0)"
     echo "  Important: $(grep -c "|important$" /tmp/libraries_list.txt 2>/dev/null || echo 0)"
     echo "  Supporting: $(grep -c "|supporting$" /tmp/libraries_list.txt 2>/dev/null || echo 0)"
@@ -1697,16 +1522,14 @@ else
 fi
 
 echo ""
-echo "  Output Location: $LIBRARIES_DIR"
+echo "  Output Location: $LIBRARIES_DIR (flat structure)"
 echo "  Index: $LIBRARIES_DIR/README.md"
+echo "  Template: 150-200 lines per library (concise, usage-focused)"
 echo ""
-echo "  Categories:"
-for category in framework ui state data infrastructure auth validation testing observability build domain util; do
-    COUNT=$(ls -1 "$LIBRARIES_DIR/$category" 2>/dev/null | wc -l | tr -d ' ')
-    if [ "$COUNT" -gt 0 ]; then
-        echo "    - $category/: $COUNT basepoints"
-    fi
-done
+
+# Count actual basepoint files
+BASEPOINT_COUNT=$(ls -1 "$LIBRARIES_DIR"/*.md 2>/dev/null | grep -v "README.md" | wc -l | tr -d ' ')
+echo "  Basepoint files created: $BASEPOINT_COUNT"
 echo ""
 
 # Cleanup temp files

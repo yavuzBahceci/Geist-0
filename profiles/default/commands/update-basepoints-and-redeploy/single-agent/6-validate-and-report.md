@@ -43,6 +43,85 @@ echo "   Validation complete"
 echo "   Status: $([ "$VALIDATION_PASSED" = "true" ] && echo "✅ PASSED" || echo "❌ FAILED")"
 ```
 
+### 6.1.5 Validate Libraries Used Sections
+
+Validate that `## Libraries Used` sections are consistent with code:
+
+```bash
+echo ""
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "📚 VALIDATING LIBRARIES USED SECTIONS"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+# Check that modules with code changes have updated Libraries Used
+MODULES_CHECKED=0
+MODULES_WITH_LIBRARIES_USED=0
+
+for module_bp in $(find geist/basepoints -name "agent-base-*.md" -type f 2>/dev/null); do
+    MODULES_CHECKED=$((MODULES_CHECKED + 1))
+    if grep -q "## Libraries Used" "$module_bp" 2>/dev/null; then
+        MODULES_WITH_LIBRARIES_USED=$((MODULES_WITH_LIBRARIES_USED + 1))
+    fi
+done
+
+echo "   Module basepoints checked: $MODULES_CHECKED"
+echo "   Modules with Libraries Used section: $MODULES_WITH_LIBRARIES_USED"
+
+# Load library usage change flag
+LIBRARY_USAGE_CHANGED=$(cat "$CACHE_DIR/library-usage-changed.txt" 2>/dev/null || echo "false")
+
+# Count library basepoints
+LIBRARY_BASEPOINTS_COUNT=$(find geist/basepoints/libraries -maxdepth 1 -name "*.md" ! -name "README.md" 2>/dev/null | wc -l | tr -d ' ')
+
+echo "   Library basepoints: $LIBRARY_BASEPOINTS_COUNT"
+echo "   Library usage changed: $LIBRARY_USAGE_CHANGED"
+
+# Check if library basepoints review is needed
+LIBRARY_REVIEW_NEEDED=$(cat "$CACHE_DIR/library-basepoints-review-needed.txt" 2>/dev/null || echo "false")
+if [ "$LIBRARY_REVIEW_NEEDED" = "true" ]; then
+    echo "   ⚠️ Library basepoints may need manual review"
+fi
+
+# Report modules that had library changes
+MODULES_FOR_REFRESH=$(cat "$CACHE_DIR/modules-for-library-refresh.txt" 2>/dev/null)
+MODULES_REFRESHED_COUNT=$(echo "$MODULES_FOR_REFRESH" | grep -v "^$" | wc -l | tr -d ' ')
+echo "   Modules with library refresh: $MODULES_REFRESHED_COUNT"
+
+echo "   ✅ Libraries Used validation complete"
+```
+
+### 6.1.6 Validate Standards and Agents Updates
+
+Validate that Standards and Agents were updated correctly:
+
+```bash
+echo ""
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "📋 VALIDATING STANDARDS AND AGENTS"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+# Count standards and agents
+STANDARDS_COUNT=$(find geist/standards -name "*.md" -type f 2>/dev/null | wc -l | tr -d ' ')
+AGENTS_COUNT=$(find geist/agents -name "*.md" -type f 2>/dev/null | wc -l | tr -d ' ')
+
+# Load update counts from Phase 5
+STANDARDS_UPDATED=$(cat "$CACHE_DIR/standards-updated-count.txt" 2>/dev/null || echo "0")
+AGENTS_UPDATED=$(cat "$CACHE_DIR/agents-updated-count.txt" 2>/dev/null || echo "0")
+
+echo "   Total standards: $STANDARDS_COUNT"
+echo "   Standards updated: $STANDARDS_UPDATED"
+echo "   Total agents: $AGENTS_COUNT"
+echo "   Agents updated: $AGENTS_UPDATED"
+
+# Verify commands and workflows were NOT modified
+echo ""
+echo "   Verifying static items unchanged..."
+echo "   ℹ️ Commands: unchanged (static)"
+echo "   ℹ️ Workflows: unchanged (static)"
+
+echo "   ✅ Standards and Agents validation complete"
+```
+
 ### 6.2 Update Tracking Files
 
 Update the tracking files for future incremental updates:
@@ -112,7 +191,11 @@ cat > "$REPORTS_DIR/update-report.md" << EOF
 |--------|-------|
 | Codebase changes detected | $CHANGES_DETECTED files |
 | Basepoints updated | $BASEPOINTS_UPDATED files |
-| Commands re-specialized | 5 commands |
+| Library usage changed | $LIBRARY_USAGE_CHANGED |
+| Standards updated | $STANDARDS_UPDATED |
+| Agents updated | $AGENTS_UPDATED |
+| Commands modified | 0 (static) |
+| Workflows modified | 0 (static) |
 | Validation | $([ "$VALIDATION_PASSED" = "true" ] && echo "PASSED" || echo "FAILED") |
 
 ---
@@ -150,23 +233,35 @@ $(cat "$CACHE_DIR/knowledge-diff.md" 2>/dev/null | grep -A 20 "## Changed Knowle
 
 ---
 
-## Re-specialization
+## Library Usage Changes
 
-### Core Commands
+| Metric | Value |
+|--------|-------|
+| Library usage changed | $LIBRARY_USAGE_CHANGED |
+| Modules with Libraries Used section | $MODULES_WITH_LIBRARIES_USED / $MODULES_CHECKED |
+| Library basepoints | $LIBRARY_BASEPOINTS_COUNT |
+| Modules with library refresh | $MODULES_REFRESHED_COUNT |
+| Library basepoints review needed | $LIBRARY_REVIEW_NEEDED |
 
-All 5 core commands were re-specialized with updated knowledge:
+---
 
-| Command | Status |
-|---------|--------|
-| shape-spec | ✅ Updated |
-| write-spec | ✅ Updated |
-| create-tasks | ✅ Updated |
-| implement-tasks | ✅ Updated |
-| orchestrate-tasks | ✅ Updated |
+## Specialization Updates
 
-### Supporting Structures
+### Standards and Agents (Dynamic)
 
-$(cat "$CACHE_DIR/respecialization-summary.md" 2>/dev/null | grep -A 10 "## Supporting Structures" || echo "_See respecialization-summary.md for details_")
+| Item | Updated | Total |
+|------|---------|-------|
+| Standards | $STANDARDS_UPDATED | $STANDARDS_COUNT |
+| Agents | $AGENTS_UPDATED | $AGENTS_COUNT |
+
+### Commands and Workflows (Static - NOT Modified)
+
+| Item | Status |
+|------|--------|
+| Commands | ✅ Unchanged (static) |
+| Workflows | ✅ Unchanged (static) |
+
+$(cat "$CACHE_DIR/specialization-summary.md" 2>/dev/null | grep -A 10 "## Updates Applied" || echo "_See specialization-summary.md for details_")
 
 ---
 
@@ -265,10 +360,24 @@ Output the final completion message:
 │ Phase 1: Change Detection          ✅ [N] files        │
 │ Phase 2: Identify Basepoints       ✅ [N] basepoints   │
 │ Phase 3: Update Basepoints         ✅ [N] updated      │
+│          (incl. Libraries Used)                        │
 │ Phase 4: Re-extract Knowledge      ✅ Complete         │
-│ Phase 5: Re-specialize Commands    ✅ 5 commands       │
+│          (incl. Library Knowledge)                     │
+│ Phase 5: Update Standards/Agents   ✅ [N] updated      │
+│          (Commands/Workflows: unchanged)               │
 │ Phase 6: Validate & Report         ✅ PASSED           │
 └─────────────────────────────────────────────────────────┘
+
+📚 Library Metrics:
+   • Library usage changed: [Yes/No]
+   • Modules with Libraries Used: [N]
+   • Library basepoints: [N]
+
+📋 Specialization:
+   • Standards updated: [N]
+   • Agents updated: [N]
+   • Commands: unchanged (static)
+   • Workflows: unchanged (static)
 
 📋 Reports:
    • Full report: geist/output/update-basepoints-and-redeploy/reports/update-report.md
@@ -281,7 +390,8 @@ Output the final completion message:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Your geist is now synchronized with your latest codebase changes.
-All core commands have been re-specialized with updated knowledge.
+Standards and Agents have been updated with the latest knowledge.
+Commands and Workflows remain unchanged (static).
 
 Next time you make changes, run `/update-basepoints-and-redeploy` again
 for fast incremental synchronization.

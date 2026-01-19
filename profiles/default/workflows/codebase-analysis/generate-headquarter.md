@@ -4,9 +4,10 @@
 
 1. **Load Product Files**: Read product files (mission.md, roadmap.md, tech-stack.md)
 2. **Load Detected Layers**: Retrieve detected abstraction layers from phase 2
-3. **Generate Headquarter**: Create headquarter.md at root of basepoints folder
-4. **Bridge Abstractions**: Connect product-level abstraction with software project-level abstraction
-5. **Document Architecture**: Document overall architecture, abstraction layers, and module relationships
+3. **Load Library Basepoints**: Aggregate library knowledge from library basepoints
+4. **Generate Headquarter**: Create headquarter.md at root of basepoints folder
+5. **Bridge Abstractions**: Connect product-level abstraction with software project-level abstraction
+6. **Document Architecture**: Document overall architecture, abstraction layers, module relationships, and library usage
 
 ## Workflow
 
@@ -38,6 +39,28 @@ TOP_LEVEL_BASEPOINTS=$(find geist/basepoints -mindepth 1 -maxdepth 1 -name "agen
 MODULE_COUNT=$(find geist/basepoints -name "agent-base-*.md" | wc -l)
 ```
 
+### Step 3.5: Load Library Basepoints Knowledge
+
+Aggregate library knowledge from library basepoints:
+
+```bash
+LIBRARIES_DIR="geist/basepoints/libraries"
+LIBRARY_COUNT=$(find "$LIBRARIES_DIR" -maxdepth 1 -name "*.md" ! -name "README.md" 2>/dev/null | wc -l | tr -d ' ')
+
+# Extract library summaries for headquarter
+LIBRARY_SUMMARIES=""
+if [ "$LIBRARY_COUNT" -gt 0 ]; then
+    for lib_file in "$LIBRARIES_DIR"/*.md; do
+        if [ "$(basename "$lib_file")" != "README.md" ] && [ -f "$lib_file" ]; then
+            LIB_NAME=$(basename "$lib_file" .md)
+            # Extract Overview section (first paragraph after ## Overview)
+            LIB_OVERVIEW=$(sed -n '/^## Overview/,/^## /p' "$lib_file" | head -n 10 | tail -n +2)
+            LIBRARY_SUMMARIES="${LIBRARY_SUMMARIES}\n### $LIB_NAME\n$LIB_OVERVIEW\n"
+        fi
+    done
+fi
+```
+
 ### Step 4: Generate Headquarter Content
 
 Create the headquarter.md file with comprehensive content including:
@@ -46,11 +69,28 @@ Create the headquarter.md file with comprehensive content including:
 - Abstraction Bridge (Product → Software Project Mapping, Technology Decisions, Feature → Module Mapping)
 - Architecture Patterns
 - Standards and Conventions
+- **Library Knowledge** (aggregated from library basepoints)
 - Development Workflow
 - Testing Strategy
 - Key Insights
-- Navigation (By Abstraction Layer, By Module)
+- Navigation (By Abstraction Layer, By Module, By Library)
 - References
+
+### Library Knowledge Section Template
+
+Include this section in the headquarter:
+
+```markdown
+## Library Knowledge
+
+This section aggregates knowledge from library basepoints.
+
+**Total Libraries Documented:** [LIBRARY_COUNT]
+
+[LIBRARY_SUMMARIES]
+
+For detailed library documentation, see: `geist/basepoints/libraries/`
+```
 
 ### Step 5: Populate Headquarter Content
 
@@ -66,5 +106,7 @@ Verify the headquarter file was generated correctly and contains all required se
 - Must bridge product-level abstraction with software project-level abstraction
 - Must include detected abstraction layers
 - Must document overall architecture and module relationships
-- Must provide navigation to all basepoint files
+- **Must include Library Knowledge section** aggregated from library basepoints
+- Must provide navigation to all basepoint files (including library basepoints)
 - Must be placed at root of basepoints folder (`geist/basepoints/headquarter.md`)
+- Headquarter is the **final aggregation point** merging codebase + library knowledge

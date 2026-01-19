@@ -53,10 +53,6 @@ done
 echo "Product planning complete! Review your product documentation in geist/product/"
 ```
 
-{{UNLESS standards_as_claude_code_skills}}
-## User Standards & Preferences Compliance
+## Standards Compliance
 
-IMPORTANT: Ensure the product mission and roadmap are ALIGNED and DO NOT CONFLICT with the user's preferences and standards as detailed in the following files:
-
-{{standards/global/*}}
-{{ENDUNLESS standards_as_claude_code_skills}}
+Follow standards at runtime: @geist/standards/*

@@ -1,19 +1,17 @@
-# Phase 8: Generate Library Basepoints
+# Phase 7: Generate Library Basepoints
 
-Now that module basepoints, parent basepoints, and headquarter have been generated, proceed with creating library basepoints for the project's tech stack.
+Now that module basepoints and parent basepoints have been generated, proceed with creating library basepoints for the project's tech stack.
 
 ## Prerequisites
 
 - Tech stack must be documented in `geist/product/tech-stack.md`
 - Module basepoints should be generated (Phase 5)
 - Parent basepoints should be generated (Phase 6)
-- Headquarter should be generated (Phase 7)
 
 ## Step 1: Validate Prerequisites
 
 ```bash
 TECH_STACK_FILE="geist/product/tech-stack.md"
-HEADQUARTER_FILE="geist/basepoints/headquarter.md"
 BASEPOINTS_DIR="geist/basepoints"
 
 if [ ! -f "$TECH_STACK_FILE" ]; then
@@ -23,16 +21,18 @@ if [ ! -f "$TECH_STACK_FILE" ]; then
     exit 0
 fi
 
-if [ ! -f "$HEADQUARTER_FILE" ]; then
-    echo "⚠️ Headquarter not found at $HEADQUARTER_FILE"
-    echo "   Module basepoints must be generated first (Phases 5-7)"
+# Check that module basepoints exist
+MODULE_BASEPOINTS_COUNT=$(find "$BASEPOINTS_DIR" -name "agent-base-*.md" 2>/dev/null | wc -l | tr -d ' ')
+if [ "$MODULE_BASEPOINTS_COUNT" -eq 0 ]; then
+    echo "⚠️ No module basepoints found in $BASEPOINTS_DIR"
+    echo "   Module basepoints must be generated first (Phases 5-6)"
     exit 1
 fi
 
 echo "✅ Prerequisites validated"
 echo "   - Tech stack: $TECH_STACK_FILE"
-echo "   - Headquarter: $HEADQUARTER_FILE"
-echo "   - Basepoints: $BASEPOINTS_DIR"
+echo "   - Module basepoints: $MODULE_BASEPOINTS_COUNT found"
+echo "   - Basepoints dir: $BASEPOINTS_DIR"
 ```
 
 ## Step 2: Generate Library Basepoints
@@ -128,16 +128,18 @@ echo "🔍 Verifying library basepoints..."
 # Count libraries from tech stack
 TECH_STACK_LIBRARIES=$(grep -cE "^\s*-\s+[a-zA-Z]" "$TECH_STACK_FILE" 2>/dev/null || echo "0")
 
-# Count generated basepoints
-GENERATED_BASEPOINTS=$(find "$LIBRARIES_PATH" -name "*.md" -type f ! -name "README.md" 2>/dev/null | wc -l | tr -d ' ')
+# Count generated basepoints (flat structure - direct children only)
+GENERATED_BASEPOINTS=$(find "$LIBRARIES_PATH" -maxdepth 1 -name "*.md" -type f ! -name "README.md" 2>/dev/null | wc -l | tr -d ' ')
 
 echo "   Libraries in tech stack: $TECH_STACK_LIBRARIES"
 echo "   Basepoints generated: $GENERATED_BASEPOINTS"
 
-# Verify each category has content
-for category in data domain util infrastructure framework; do
-    COUNT=$(ls -1 "$LIBRARIES_PATH/$category" 2>/dev/null | wc -l | tr -d ' ')
-    echo "   - $category/: $COUNT basepoints"
+# List generated library basepoints
+echo "   Generated libraries:"
+for lib_file in "$LIBRARIES_PATH"/*.md; do
+    if [ "$(basename "$lib_file")" != "README.md" ] && [ -f "$lib_file" ]; then
+        echo "     - $(basename "$lib_file" .md)"
+    fi
 done
 ```
 
@@ -163,12 +165,12 @@ Knowledge Sources Combined:
   ✅ Codebase analysis (imports, usage patterns)
   ✅ Official documentation research
 
-Categories:
-  - data/: [count] basepoints
-  - domain/: [count] basepoints
-  - util/: [count] basepoints
-  - infrastructure/: [count] basepoints
-  - framework/: [count] basepoints
+Structure: FLAT (no category subfolders)
+Template: 150-200 lines per library (concise, usage-focused)
+  - ## Overview
+  - ## Our Usage - Deep Knowledge
+  - ## Opportunities
+  - ## Relevant Gotchas
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🔍 VERIFICATION
@@ -178,8 +180,7 @@ Libraries from tech stack: [N]
 Library basepoints created: [N]
 Status: ✅ COMPLETE (or ❌ INCOMPLETE if mismatch)
 
-✅ Create-basepoints command complete!
-   All basepoints (module, parent, headquarter, library) have been generated.
+👉 Proceeding to Phase 8: Generate Headquarter (final aggregation)
 ```
 
 ## User Standards & Preferences Compliance

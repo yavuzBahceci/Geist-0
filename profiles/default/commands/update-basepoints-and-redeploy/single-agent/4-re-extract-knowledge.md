@@ -28,15 +28,24 @@ UPDATED_COUNT=$(echo "$UPDATED_BASEPOINTS" | grep -v "^$" | wc -l | tr -d ' ')
 echo "📋 Updated basepoints to extract from: $UPDATED_COUNT"
 ```
 
-### 4.2 Extract Knowledge from Updated Basepoints
+### 4.2 Extract Knowledge from Updated Basepoints (Including Libraries Used)
 
-Re-extract knowledge from only the updated basepoints:
+Re-extract knowledge from only the updated basepoints, using the updated extraction workflow that now includes `## Libraries Used` sections:
 
 ```bash
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "🔍 EXTRACTING KNOWLEDGE FROM UPDATED BASEPOINTS"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+# Use the updated workflow that extracts Libraries Used sections
+SPEC_PATH="geist/output/update-basepoints-and-redeploy"
+{{workflows/basepoints/extract-basepoints-knowledge-automatic}}
+
+# This workflow now extracts:
+# - Patterns, Standards, Flows, Strategies, Testing
+# - ## Libraries Used (from module basepoints)
+# - ## Libraries Used (Aggregated) (from parent basepoints)
 
 # Initialize extraction output
 > "$CACHE_DIR/extracted-knowledge.md"
@@ -100,6 +109,29 @@ EOF
 done
 
 echo "   ✅ Knowledge extracted from $UPDATED_COUNT basepoints"
+```
+
+### 4.2.5 Extract Library Basepoints Knowledge
+
+Extract knowledge from library basepoints using the updated workflow (flat structure):
+
+```bash
+echo ""
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "📚 EXTRACTING LIBRARY BASEPOINTS KNOWLEDGE"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+# Use the updated workflow for flat library structure
+{{workflows/common/extract-library-basepoints-knowledge}}
+
+# This extracts from geist/basepoints/libraries/*.md:
+# - Overview
+# - Our Usage - Deep Knowledge
+# - Opportunities
+# - Relevant Gotchas
+
+LIBRARY_COUNT=$(find geist/basepoints/libraries -maxdepth 1 -name "*.md" ! -name "README.md" 2>/dev/null | wc -l | tr -d ' ')
+echo "   ✅ Library knowledge extracted from $LIBRARY_COUNT library basepoints"
 ```
 
 ### 4.3 Check for Product Knowledge Updates
@@ -185,7 +217,8 @@ EOF
 # 4. Preserve knowledge from unchanged basepoints
 
 # For each knowledge category, merge intelligently
-KNOWLEDGE_CATEGORIES=("Patterns" "Standards" "Flows" "Strategies" "Testing")
+# Now includes Libraries Used and Library Knowledge
+KNOWLEDGE_CATEGORIES=("Patterns" "Standards" "Flows" "Strategies" "Testing" "Libraries Used" "Library Knowledge")
 
 for category in "${KNOWLEDGE_CATEGORIES[@]}"; do
     echo "   Merging: $category"
@@ -335,6 +368,8 @@ Once knowledge re-extraction is complete, output the following message:
    - Flows
    - Strategies
    - Testing
+   - Libraries Used
+   - Library Knowledge
 
 📋 Diff: geist/output/update-basepoints-and-redeploy/cache/knowledge-diff.md
 

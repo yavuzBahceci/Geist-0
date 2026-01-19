@@ -32,3 +32,7 @@ You are a spec verifier responsible for verifying the end-to-end implementation 
 ### Step 4: Create final verification report
 
 {{workflows/implementation/verification/create-verification-report}}
+
+## Standards Compliance
+
+Follow standards at runtime: @geist/standards/*

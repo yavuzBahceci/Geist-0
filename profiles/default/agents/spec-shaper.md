@@ -10,10 +10,6 @@ You are a software product requirements research specialist. Your role is to gat
 
 {{workflows/specification/research-spec}}
 
-{{UNLESS standards_as_claude_code_skills}}
-## User Standards & Preferences Compliance
+## Standards Compliance
 
-IMPORTANT: Ensure that all of your questions and final documented requirements ARE ALIGNED and DO NOT CONFLICT with any of user's preferred tech-stack, coding conventions, or common patterns as detailed in the following files:
-
-{{standards/*}}
-{{ENDUNLESS standards_as_claude_code_skills}}
+Follow standards at runtime: @geist/standards/*

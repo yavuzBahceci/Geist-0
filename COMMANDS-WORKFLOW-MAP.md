@@ -110,6 +110,7 @@ workflows/
 ├── human-review/               # Human decision workflows
 │   ├── review-trade-offs.md
 │   ├── create-checkpoint.md
+│   ├── feedback-checkpoint.md               ◀── NEW
 │   └── ...
 │
 ├── implementation/             # Implementation workflows
@@ -364,8 +365,8 @@ Phase 7: Generate Headquarter
 │                                          • Key patterns                              │
 └─────────────────────────────────────────────────────────────────────────────────────┘
 
-Phase 8: Generate Library Basepoints ◀── NEW
-════════════════════════════════════
+Phase 8: Generate Library Basepoints (Concise, Flat Structure)
+══════════════════════════════════════════════════════════════
 ┌─────────────────────────────────────────────────────────────────────────────────────┐
 │  ┌─────────────────────────────────┐                                                │
 │  │ {{workflows/codebase-analysis/  │                                                │
@@ -376,27 +377,26 @@ Phase 8: Generate Library Basepoints ◀── NEW
 │    ▼             ▼             ▼             ▼             ▼                        │
 │ Load          Extract       Analyze      Research      Generate                     │
 │ tech-stack    usage from    codebase     official      basepoints                   │
-│               basepoints    imports      docs                                       │
+│               basepoints    imports      docs          (150-200 lines)              │
 │    │             │             │             │             │                        │
 │    └─────────────┴─────────────┴─────────────┴─────────────┘                        │
 │                                │                                                     │
 │                                ▼                                                     │
 │                  ┌─────────────────────────────┐                                    │
-│                  │ geist/basepoints/        │                                    │
-│                  │ libraries/                  │                                    │
-│                  │ ├── data/                   │                                    │
-│                  │ ├── domain/                 │                                    │
-│                  │ ├── util/                   │                                    │
-│                  │ ├── infrastructure/         │                                    │
-│                  │ ├── framework/              │                                    │
+│                  │ geist/basepoints/           │                                    │
+│                  │ libraries/  (FLAT)          │                                    │
+│                  │ ├── axios.md                │                                    │
+│                  │ ├── react.md                │                                    │
+│                  │ ├── prisma.md               │                                    │
 │                  │ └── README.md               │                                    │
 │                  └─────────────────────────────┘                                    │
 │                                                                                      │
-│  Each library basepoint contains:                                                    │
+│  Each library basepoint (150-200 lines) contains:                                   │
 │  ┌─────────────────────────────────────────────────────────────────────────────┐    │
-│  │  ## How WE Use It      ## Boundaries (what is/isn't used)                   │    │
-│  │  ## Patterns           ## Workflows                                         │    │
-│  │  ## Best Practices     ## Troubleshooting                                   │    │
+│  │  ## Overview              (version, category, one-liner)                    │    │
+│  │  ## Our Usage - Deep      (functions/classes we actually use)               │    │
+│  │  ## Opportunities         (unused features we could leverage)               │    │
+│  │  ## Relevant Gotchas      (version issues, common mistakes)                 │    │
 │  └─────────────────────────────────────────────────────────────────────────────┘    │
 └─────────────────────────────────────────────────────────────────────────────────────┘
 
@@ -1004,6 +1004,84 @@ OUTPUT: fix-report.md (success) OR guidance-request.md (needs help)
 ═══════════════════════════════════════════════════════════════════
 ```
 
+#### review-implementation ◀── NEW COMMAND
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                            REVIEW-IMPLEMENTATION                                     │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+Phase 1: Load Context
+═════════════════════
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│  Input: Spec path (optional - uses most recent if not provided)                      │
+│                                                                                      │
+│  Loads:                                                                              │
+│  • spec.md, requirements.md, tasks.md                                                │
+│  • Accumulated knowledge from implementation                                         │
+│  • Files mentioned in tasks                                                          │
+│  • Acceptance criteria to verify                                                     │
+│                                                                                      │
+│  Output: review-context.md                                                           │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+Phase 2: Review Abstraction Layers
+══════════════════════════════════
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│  Reviews from HIGHEST to LOWEST abstraction layer:                                   │
+│                                                                                      │
+│  PRODUCT → ARCHITECTURE → MODULE → CODE → TEST                                      │
+│                                                                                      │
+│  Each layer checks for:                                                              │
+│  • Requirements alignment                                                            │
+│  • Pattern compliance                                                                │
+│  • Standards adherence                                                               │
+│  • Issues at that abstraction level                                                  │
+│                                                                                      │
+│  Output: layer-findings.md                                                           │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+Phase 3: Enrich with Basepoints
+═══════════════════════════════
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│  Compares implementation against:                                                    │
+│  • Module basepoints (patterns, standards, flows)                                   │
+│  • Parent basepoints (aggregated knowledge)                                         │
+│  • Headquarter (project-wide patterns)                                              │
+│                                                                                      │
+│  Output: basepoint-findings.md                                                       │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+Phase 4: Enrich with Library Knowledge
+══════════════════════════════════════
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│  Checks implementation against library basepoints:                                   │
+│  • Best practices compliance                                                         │
+│  • Anti-patterns detection                                                           │
+│  • Limitation violations                                                             │
+│  • Version-specific issues                                                           │
+│                                                                                      │
+│  Output: library-findings.md                                                         │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+Phase 5: Generate Report
+════════════════════════
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│  Consolidates all findings:                                                          │
+│  • Categorizes by severity (Critical, High, Medium, Low)                            │
+│  • Groups by abstraction layer                                                       │
+│  • Includes basepoint/standard references                                            │
+│  • Generates recommended actions                                                     │
+│                                                                                      │
+│  ⚠️ IMPORTANT: Does NOT auto-fix issues - REPORT ONLY                               │
+│                                                                                      │
+│  Output: [spec-path]/implementation/review-report.md                                 │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+OUTPUT: review-report.md (findings only - no auto-fix)
+═══════════════════════════════════════════════════════
+```
+
 ---
 
 ### 3. Maintenance Commands
@@ -1162,14 +1240,11 @@ Each command:
 geist/
 ├── basepoints/                          # Created by: create-basepoints
 │   ├── headquarter.md
-│   ├── [layer]/[module]/agent-base-*.md
-│   └── libraries/                       # Created by: Phase 8
-│       ├── data/
-│       ├── domain/
-│       ├── util/
-│       ├── infrastructure/
-│       ├── framework/
-│       └── README.md
+│   ├── [layer]/[module]/agent-base-*.md  # Now includes ## Libraries Used section
+│   │   └── (aggregated up through parent basepoints)
+│   └── libraries/                       # Created by: Phase 8 (FLAT structure)
+│       ├── [library].md                 # 150-200 lines each (concise template)
+│       └── README.md                    # Simple index
 │
 ├── commands/                            # Specialized by: deploy-agents
 ├── workflows/                           # Specialized by: deploy-agents
@@ -1197,10 +1272,21 @@ geist/
 │       │   ├── basepoints-knowledge.md
 │       │   ├── library-basepoints-knowledge.md
 │       │   ├── accumulated-knowledge.md
+│       │   ├── refined-knowledge.md             ◀── NEW (progressive enrichment)
+│       │   ├── knowledge-sources.md             ◀── NEW
+│       │   ├── knowledge-summary.md             ◀── NEW
 │       │   ├── detected-layer.txt
 │       │   ├── implementation-decision.md
 │       │   ├── verification-issues.md
-│       │   └── validation-report.md
+│       │   ├── validation-report.md
+│       │   ├── feedback-checkpoints/            ◀── NEW (checkpoint records)
+│       │   │   └── [command]_[timestamp].md
+│       │   └── review/                          ◀── NEW (review-implementation)
+│       │       ├── review-context.md
+│       │       ├── layer-findings.md
+│       │       ├── basepoint-findings.md
+│       │       └── library-findings.md
+│       ├── review-report.md                     ◀── NEW (review output)
 │       └── prompts/                     # Created by: orchestrate-tasks
 │           └── [N]-[task-group].md
 │
@@ -1224,5 +1310,5 @@ geist/
 
 ---
 
-*Last Updated: 2026-01-18*
-*Version: 2.0 (includes context enrichment and fix-bug command)*
+*Last Updated: 2026-01-19*
+*Version: 2.1 (includes review-implementation command, feedback-checkpoint workflow, progressive knowledge enrichment)*

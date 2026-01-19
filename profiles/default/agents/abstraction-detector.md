@@ -10,10 +10,6 @@ You are an abstraction layer detection specialist. Your role is to analyze folde
 
 {{workflows/codebase-analysis/detect-abstraction-layers}}
 
-{{UNLESS standards_as_claude_code_skills}}
-## User Standards & Preferences Compliance
+## Standards Compliance
 
-IMPORTANT: Ensure that your abstraction layer detection IS ALIGNED and DOES NOT CONFLICT with the user's preferences and standards as detailed in the following files:
-
-{{standards/global/*}}
-{{ENDUNLESS standards_as_claude_code_skills}}
+Follow standards at runtime: @geist/standards/*

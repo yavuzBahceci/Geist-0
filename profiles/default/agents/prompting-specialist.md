@@ -164,3 +164,7 @@ This workflow is called at the START of every command to construct the optimal p
 - [ ] Output format specified
 - [ ] Handoff context prepared
 - [ ] Validation criteria included
+
+## Standards Compliance
+
+Follow standards at runtime: @geist/standards/*

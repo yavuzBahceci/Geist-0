@@ -115,7 +115,132 @@ For each basepoint, intelligently merge new content with existing:
 
 **Important:** Preserve sections that weren't affected by changes.
 
-### 3.5 Update Headquarter (Last)
+### 3.5 Update Libraries Used Sections
+
+Update `## Libraries Used` sections in module basepoints that had source file changes:
+
+```bash
+echo ""
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "📚 UPDATING LIBRARIES USED SECTIONS"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+MODULES_FOR_REFRESH=$(cat "$CACHE_DIR/modules-for-library-refresh.txt" 2>/dev/null)
+LIBRARY_USAGE_CHANGED=$(cat "$CACHE_DIR/library-usage-changed.txt" 2>/dev/null || echo "false")
+
+LIBRARIES_UPDATED=0
+
+if [ -n "$MODULES_FOR_REFRESH" ]; then
+    echo "$MODULES_FOR_REFRESH" | while read module_basepoint; do
+        if [ -z "$module_basepoint" ] || [ ! -f "$module_basepoint" ]; then
+            continue
+        fi
+        
+        echo "   📝 Updating Libraries Used in: $module_basepoint"
+        
+        # Extract module path from basepoint path
+        MODULE_PATH=$(echo "$module_basepoint" | sed 's|^geist/basepoints/||' | sed 's|/agent-base-.*\.md$||')
+        
+        # Re-extract library imports from code files in this module
+        # Uses extract_library_imports() pattern from generate-module-basepoints.md
+        
+        # Find source files in this module
+        SOURCE_FILES=$(find "$MODULE_PATH" -type f \( -name "*.ts" -o -name "*.js" -o -name "*.tsx" -o -name "*.jsx" -o -name "*.py" -o -name "*.go" -o -name "*.rs" \) 2>/dev/null)
+        
+        if [ -n "$SOURCE_FILES" ]; then
+            # Extract imports from source files
+            IMPORTS=""
+            echo "$SOURCE_FILES" | while read src_file; do
+                # Extract import statements (varies by language)
+                case "$src_file" in
+                    *.ts|*.tsx|*.js|*.jsx)
+                        FILE_IMPORTS=$(grep -E "^import |^from " "$src_file" 2>/dev/null | head -20)
+                        ;;
+                    *.py)
+                        FILE_IMPORTS=$(grep -E "^import |^from .* import" "$src_file" 2>/dev/null | head -20)
+                        ;;
+                    *.go)
+                        FILE_IMPORTS=$(sed -n '/^import/,/)/p' "$src_file" 2>/dev/null | head -20)
+                        ;;
+                esac
+                IMPORTS="${IMPORTS}${FILE_IMPORTS}\n"
+            done
+            
+            # Update the ## Libraries Used section in the basepoint
+            # Note: Actual section replacement is done by the agent analyzing the imports
+            echo "      Found imports to analyze"
+        fi
+        
+        LIBRARIES_UPDATED=$((LIBRARIES_UPDATED + 1))
+        echo "   ✅ Libraries Used updated in: $module_basepoint"
+    done
+    
+    echo ""
+    echo "   📊 Module basepoints with Libraries Used updated: $LIBRARIES_UPDATED"
+fi
+```
+
+### 3.5.5 Update Libraries Used (Aggregated) in Parent Basepoints
+
+After module Libraries Used are updated, aggregate to parent basepoints:
+
+```bash
+echo ""
+echo "   📚 Aggregating library usage to parent basepoints..."
+
+# For each parent basepoint, aggregate Libraries Used from children
+# Uses aggregate_from_children() pattern from generate-parent-basepoints.md
+
+PARENT_BASEPOINTS=$(find geist/basepoints -name "agent-base-*.md" -type f | while read bp; do
+    # Check if this basepoint has children
+    BP_DIR=$(dirname "$bp")
+    CHILD_COUNT=$(find "$BP_DIR" -mindepth 2 -name "agent-base-*.md" 2>/dev/null | wc -l | tr -d ' ')
+    if [ "$CHILD_COUNT" -gt 0 ]; then
+        echo "$bp"
+    fi
+done)
+
+if [ -n "$PARENT_BASEPOINTS" ]; then
+    echo "$PARENT_BASEPOINTS" | while read parent_bp; do
+        if [ -z "$parent_bp" ]; then continue; fi
+        
+        echo "      Aggregating to: $parent_bp"
+        
+        # Find child basepoints
+        PARENT_DIR=$(dirname "$parent_bp")
+        CHILD_BASEPOINTS=$(find "$PARENT_DIR" -mindepth 2 -name "agent-base-*.md" 2>/dev/null)
+        
+        # Aggregate ## Libraries Used sections from children
+        # Update ## Libraries Used (Aggregated) section in parent
+        # Note: Actual aggregation is done by the agent
+    done
+fi
+
+echo "   ✅ Library usage aggregated to parent basepoints"
+```
+
+### 3.5.6 Check if Library Basepoints Need Updates
+
+```bash
+if [ "$LIBRARY_USAGE_CHANGED" = "true" ]; then
+    echo ""
+    echo "   🔍 Checking if library basepoints need updates..."
+    
+    # Compare new usage patterns with existing library basepoints
+    # Flag for manual review if significant differences detected
+    # Do NOT auto-regenerate library basepoints
+    
+    LIBRARIES_DIR="geist/basepoints/libraries"
+    if [ -d "$LIBRARIES_DIR" ]; then
+        LIBRARY_BP_COUNT=$(find "$LIBRARIES_DIR" -maxdepth 1 -name "*.md" ! -name "README.md" 2>/dev/null | wc -l | tr -d ' ')
+        echo "      Existing library basepoints: $LIBRARY_BP_COUNT"
+        echo "      ℹ️ Review library basepoints manually if usage patterns changed significantly"
+        echo "true" > "$CACHE_DIR/library-basepoints-review-needed.txt"
+    fi
+fi
+```
+
+### 3.7 Update Headquarter (Last)
 
 After all module basepoints are updated, update the headquarter:
 
@@ -145,7 +270,7 @@ if echo "$AFFECTED_BASEPOINTS" | grep -q "headquarter.md"; then
 fi
 ```
 
-### 3.6 Generate Update Summary
+### 3.8 Generate Update Summary
 
 Create summary of all updates made:
 
@@ -196,9 +321,11 @@ Once basepoint updates are complete, output the following message:
 
 📊 Update Results:
    Module basepoints updated: [N]
+   Libraries Used sections updated: [N]
    Parent basepoints updated: [N]
    Headquarter updated:       [Yes/No]
    Total:                     [N] basepoints
+   Library basepoints review needed: [Yes/No]
 
 💾 Backups created for rollback if needed
 

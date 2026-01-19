@@ -1035,7 +1035,7 @@ The complete development cycle from spec to implementation:
 
 ### Context Enrichment Strategy
 
-All spec/implementation commands follow a consistent "narrow focus + expand knowledge" strategy:
+All spec/implementation commands follow a consistent "narrow focus + expand knowledge" strategy with context size management:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -1045,39 +1045,57 @@ All spec/implementation commands follow a consistent "narrow focus + expand know
 For each command:
 1. NARROW FOCUS: Scope to specific task (spec, task group, feature)
 2. EXPAND KNOWLEDGE: Extract from multiple sources:
-   ├── Basepoints knowledge
-   ├── Library basepoints knowledge (NEW)
+   ├── Basepoints knowledge (includes ## Libraries Used sections)
+   ├── Library basepoints knowledge (FLAT structure)
    ├── Product documentation
    └── Codebase navigation
 
 3. ACCUMULATE: Each command builds upon previous command's knowledge
    shape-spec → write-spec → create-tasks → orchestrate-tasks → implement-tasks
+
+4. OPTIMIZE: Context management ensures efficient knowledge use:
+   ├── Deduplication: Remove duplicate sections (hash-based)
+   ├── Keyword pruning: Keep only relevant sections
+   └── Size limiting: MAX_CONTEXT_LINES = 3000 (configurable)
 ```
 
 ### Library Basepoints Knowledge Extraction
 
-A new workflow extracts knowledge from library basepoints:
+A workflow extracts knowledge from library basepoints:
 
 ```
 {{workflows/common/extract-library-basepoints-knowledge}}
 
-Extracts from: geist/basepoints/libraries/
-├── data/           - Data access, databases, ORM
-├── domain/         - Domain logic, business rules
-├── util/           - Utilities, helpers
-├── infrastructure/ - Networking, HTTP, threading
-└── framework/      - Framework components, UI
+Extracts from: geist/basepoints/libraries/*.md (FLAT structure)
+├── [library].md    - 150-200 lines per library
+└── README.md       - Simple index
 
-Knowledge extracted:
-├── Library patterns and workflows
-├── Best practices from official documentation
-├── Troubleshooting guidance
-└── Library boundaries (what is/isn't used)
+Each library basepoint contains:
+├── ## Overview (version, category, importance)
+├── ## Our Usage - Deep Knowledge (functions/classes we use)
+├── ## Opportunities (unused features)
+└── ## Relevant Gotchas (version issues, mistakes)
+```
+
+### Libraries Used Section Extraction
+
+Module and parent basepoints now include library usage information:
+
+```
+{{workflows/basepoints/extract-basepoints-knowledge-automatic}}
+
+Extracts from module basepoints:
+├── ## Libraries Used (which libraries each module uses)
+
+Extracts from parent basepoints:
+├── ## Libraries Used (Aggregated) (consolidated from children)
+
+This enables understanding of library usage patterns per module.
 ```
 
 ### Knowledge Accumulation
 
-Knowledge accumulates across commands using:
+Knowledge accumulates across commands with context optimization:
 
 ```
 {{workflows/common/accumulate-knowledge}}
@@ -1086,8 +1104,17 @@ Stored in: $SPEC_PATH/implementation/cache/accumulated-knowledge.md
 
 Each command:
 1. Loads previous accumulated knowledge
-2. Extracts fresh knowledge
-3. Combines and stores for next command
+2. Extracts fresh knowledge (basepoints + library)
+3. Deduplicates content (hash-based)
+4. Prunes by keyword relevance (from spec.md)
+5. Truncates if exceeding MAX_CONTEXT_LINES (3000)
+6. Stores refined knowledge for next command
+
+Outputs:
+├── refined-knowledge.md     - Optimized for next command
+├── accumulated-knowledge.md - Full history
+├── knowledge-summary.md     - Size and dedup stats
+└── knowledge-sources.md     - Command contributions
 ```
 
 ### Knowledge Sources
@@ -1171,4 +1198,4 @@ Each command:
 
 ---
 
-*Last Updated: 2026-01-16*
+*Last Updated: 2026-01-19*
