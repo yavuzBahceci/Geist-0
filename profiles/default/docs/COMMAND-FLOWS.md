@@ -692,45 +692,79 @@ Phase 3: Verify Implementation
 
 ### 10. orchestrate-tasks
 
-**Purpose**: Coordinate multi-agent task implementation.
+**Purpose**: Coordinate task implementation with specialist assignment.
 
 **Location**: `commands/orchestrate-tasks/`
 
 **Prerequisites**: `tasks.md` (from create-tasks)
 
 **Outputs**:
-- `geist/specs/[spec-name]/orchestration.yml`
+- `geist/specs/[spec-name]/orchestration.yml` (with specialist assignments)
 - `geist/specs/[spec-name]/implementation/prompts/[N]-[task-group].md`
 
 #### Flow
 
 ```
-├── Step 1: Extract Sub-Agent Context
+├── Step 1: Extract Basepoints Knowledge
 │   └── Match: tasks to relevant module basepoints
 │
 ├── Step 2: Create Task Groups
 │   └── Parse: tasks.md for task groups
 │
-├── Step 3: Match Basepoints
-│   └── For each group: find relevant basepoints
+├── Step 3: Auto-detect Layer Specialists
+│   └── For each task group:
+│       ├── Analyze: task keywords
+│       ├── Detect: abstraction layer(s)
+│       └── Suggest: specialist(s)
 │
-├── Step 4: Generate Orchestration
-│   └── Create: orchestration.yml
+├── Step 4: User Confirmation
+│   └── Present: suggested specialists
+│       ├── Accept all
+│       ├── Modify some
+│       └── Assign manually
 │
-├── Step 5: Generate Prompts
+├── Step 5: Generate Orchestration
+│   └── Create: orchestration.yml with specialists
+│
+├── Step 6: Generate Prompts (single-agent mode)
 │   └── For each group:
 │       Create: [N]-[task-group].md
 │       ├── Task description
 │       ├── Context references
 │       ├── Basepoints knowledge injection
+│       ├── Specialist context (if assigned)
 │       ├── Standards compliance
 │       ├── Validation step
-│       ├── Human review check
 │       └── Auto-proceed to next prompt
 │
-└── Step 6: Validate
+└── Step 7: Validate
     └── Update: validation-report.md
 ```
+
+#### Multi-Specialist Support
+
+Task groups can have **multiple specialists** assigned for cross-layer work:
+
+```yaml
+# orchestration.yml
+task_groups:
+  - name: user-profile-ui
+    specialists: [ui-specialist]
+    detected_layers: [ui]
+    
+  - name: user-dashboard-feature
+    specialists: [ui-specialist, api-specialist]  # Cross-layer
+    detected_layers: [ui, api]
+    
+  - name: database-migration
+    specialists: [data-specialist]
+    detected_layers: [data]
+```
+
+When multiple specialists are assigned:
+- Context from ALL specialists is loaded
+- Combined expertise guides implementation
+- Works in both Cursor (single-agent) and Claude Code (multi-agent)
 
 #### Prompt Template
 
@@ -744,31 +778,30 @@ Phase 3: Verify Implementation
 - @geist/specs/[spec]/spec.md
 - @geist/specs/[spec]/planning/requirements.md
 
+## Specialist Knowledge (if assigned)
+[Context from assigned specialist(s)]
+
 ## Basepoints Knowledge Context
 [Extracted patterns and standards relevant to this task group]
 
 ## Implementation Instructions
-{{workflows/implementation/implement-tasks}}
+@geist/workflows/implementation/implement-tasks.md
 
 ## Standards Compliance
-{{standards/global/*}}
+@geist/standards/global/*
 
 ## ✅ Completion and Validation
 
 ### Step 1: Run Implementation Validation
-```bash
 SPEC_PATH="geist/specs/[spec]"
-{{workflows/validation/validate-implementation}}
-```
+@geist/workflows/validation/validate-implementation.md
 
 ### Step 2: Mark Completion
 - Mark tasks complete [x] in tasks.md
 - Add ✅ marker to Task Group [N]
 
 ### Step 3: Check Human Review
-```bash
-{{workflows/human-review/review-trade-offs}}
-```
+@geist/workflows/human-review/review-trade-offs.md
 
 ### Step 4: Proceed to Next Prompt
 - If validation passes and no review needed → auto-proceed

@@ -173,20 +173,24 @@ This is the default template that gets installed into your project. It provides 
   │ ✅ config/*.yml (from Step 1)         │
   └──────────┬────────────────────────────┘
              │
-             │ Process
+             │ Process (7 phases)
              ▼
   ┌───────────────────────────────────────┐
-  │ 1. Read all knowledge (Steps 1 & 2)   │
-  │ 2. Transform templates                │
-  │ 3. Replace {{PLACEHOLDERS}}           │
-  │ 4. Configure validation commands      │
+  │ 1. Validate prerequisites             │
+  │ 2. Extract basepoints knowledge       │
+  │ 3. Extract product knowledge          │
+  │ 4. Merge knowledge                    │
+  │ 5. Specialize standards               │
+  │ 6. Create specialist agents           │
+  │ 7. Navigate to cleanup                │
   └──────────┬────────────────────────────┘
              │
              │ Creates Files
              ▼
   ┌───────────────────────────────────────┐
-  │ 📁 commands/ (specialized)            │
-  │ 📁 workflows/ (specialized)           │
+  │ 📁 standards/ (specialized)           │
+  │ 📁 agents/specialists/ (layer agents) │
+  │ 📁 output/deploy-agents/ (knowledge)  │
   │ ✅ Ready to use                       │
   └───────────────────────────────────────┘
              │
@@ -455,14 +459,21 @@ All spec/implementation commands use "narrow focus + expand knowledge":
 
 #### `/deploy-agents`
 **Input**: Everything from steps 1 & 2  
-**Process**:
-1. Reads all knowledge (product, basepoints, profile)
-2. Transforms abstract templates → project-specific
-3. Replaces `{{PROJECT_BUILD_COMMAND}}` → `npm run build`
-4. Injects your patterns into commands
-5. Configures validation commands
+**Process** (7 phases):
+1. Validates prerequisites (basepoints + product files exist)
+2. Extracts knowledge from basepoints (patterns, standards, flows)
+3. Extracts knowledge from product files (mission, features, tech stack)
+4. Merges knowledge (resolves conflicts if any)
+5. Specializes standards with project-specific patterns
+6. Creates specialist agents based on abstraction layers
+7. Navigates to cleanup
 
-**Output**: Specialized `geist/commands/` and `geist/workflows/`
+**Output**:
+- Specialized `geist/standards/` (project-specific patterns)
+- Specialist agents in `geist/agents/specialists/`
+- Knowledge files in `geist/output/deploy-agents/`
+
+**Key design**: Commands and workflows stay generic (use references). Specialization happens at the standards level.
 
 ---
 
@@ -522,11 +533,14 @@ All spec/implementation commands use "narrow focus + expand knowledge":
 **Input**: `tasks.md` (from create-tasks) + full accumulated context  
 **Process**:
 1. Loads full accumulated knowledge
-2. Reads tasks and basepoints knowledge
-3. Uses your coding patterns and standards
-4. Implements code changes
-5. Validates with your build/test/lint commands
-6. Reports results
+2. Loads specialist context (if assigned in orchestration.yml)
+3. Reads tasks and basepoints knowledge
+4. Uses your coding patterns and standards
+5. Implements code changes
+6. Validates with your build/test/lint commands
+7. Reports results
+
+**Multi-specialist support**: Task groups can have multiple specialists assigned for cross-layer work. Context from ALL assigned specialists is loaded and combined.
 
 **Output**: Code changes (files you review) + validation report
 
@@ -658,4 +672,4 @@ Geist builds on the foundational concepts from [Agent OS](https://buildermethods
 
 ---
 
-**Last Updated**: 2026-01-18
+**Last Updated**: 2026-01-19
